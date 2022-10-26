@@ -1,0 +1,91 @@
+Create Departments
+----
+tags:
+  - "Departments"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    description: "unit_id"
+    schema:
+      $ref: "#/definitions/CreteDepartment"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreteDepartmentSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreteDepartmentError"
+definitions:
+#  subarea_id,costcntr,shop_name,dept_group,hod_man,hod_functional_area,
+#  clms_nodal_user,clms_nodal_ajs,clms_nodal_secu,clms_nodal_hr,clms_nodal_safety,clms_nodal_medical,
+#  status
+  CreteDepartment:
+    type: "object"
+    properties:
+      subarea_id:
+        type: "int"
+        example: 1
+      costcntr:
+        type: "string"
+        example: "qw223"
+      shop_name:
+        type: "string"
+        example: "abc"
+      dept_group:
+        type: "string"
+        example: "abc"
+      hod_man:
+        type: "string"
+        example: "abc"
+      hod_functional_area:
+        type: "string"
+        example: "abc"
+      clms_nodal_user:
+        type: "string"
+        example: "abc"
+      clms_nodal_ajs:
+        type: "string"
+        example: "abc"
+      clms_nodal_secu:
+        type: "string"
+        example: "abc"
+      clms_nodal_hr:
+        type: "string"
+        example: "abc"
+      clms_nodal_safety:
+        type: "string"
+        example: "abc"
+      clms_nodal_medical:
+        type: "string"
+        example: "abc"
+      status:
+        type: "string"
+        example: "active"
+  CreteDepartmentSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Department created successfully"
+      departments:
+        type: "object"
+        example : {}
+  CreteDepartmentError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,44 @@
+Get CR Form group
+---
+tags:
+  - "CR Form Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page_no"
+    in: path
+    required: true
+    description: "page no"
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormGetSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormGetError"
+definitions:
+  Authlog:
+    type: "object"
+  FetchAllCRFormGetSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR group fetched successfully"
+  FetchAllCRFormGetError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

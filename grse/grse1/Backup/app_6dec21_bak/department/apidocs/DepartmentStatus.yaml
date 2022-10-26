@@ -1,0 +1,55 @@
+Department Status Update
+---
+tags:
+  - "Departments"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    description: "unit_id"
+    schema:
+      $ref: "#/definitions/DepartmentsStatusUpdate"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DepartmentsStatusUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DepartmentsStatusUpdateError"
+definitions:
+  DepartmentsStatusUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "Active"
+  DepartmentsStatusUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Department Status updated successfully"
+      departments:
+        type: "object"
+        example : {}
+  DepartmentsStatusUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

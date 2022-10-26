@@ -1,0 +1,9 @@
+button.input-group-text {
+    border-radius: 0 10px 10px 0;
+}
+
+th,
+td {
+    vertical-align: middle;
+    white-space: nowrap;
+}

@@ -1,0 +1,9 @@
+URL - http://14.140.119.59:9004/v1/terminals?offset=0&limit=999999999
+
+Method - GET
+
+Request.BODY - {}
+
+REQUEST.HEADER{
+  Cookie: 'ucsinfo=51702dd8-b312-4733-659d-a2cdc01d6e24; extinfo=9d51b4e236ec593131500a12691fa26a'
+}

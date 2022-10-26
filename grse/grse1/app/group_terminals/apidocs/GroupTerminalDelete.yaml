@@ -1,0 +1,52 @@
+DELETE Terminals From Group
+----
+tags:
+  - "Terminal Grouping"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/TermGroupingDelete"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/TermGroupingDeleteSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/TermGroupingDeleteError"
+definitions:
+#   name,code,shift_start_time,shift_end_time,status
+  TermGroupingDelete:
+    type: "object"
+    properties:
+      group_id:
+        type: "int"
+        example: 1
+      terminal_id:
+        type: "array"
+        example: [1,2,3,4,5]
+  TermGroupingDeleteSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Terminal Added successfully"
+  TermGroupingDeleteError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

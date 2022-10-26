@@ -1,0 +1,58 @@
+Assign User to Terminal Group
+----
+tags:
+  - "UserTerminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/AssignUsertoTerminals"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/AssignUsertoTerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/AssignUsertoTerminalsError"
+definitions:
+            # user_id, terminal_id, is_block, block_from, block_to, status
+  AssignUsertoTerminals:
+    type: "object"
+    properties:
+      user_id:
+        type: "int"
+        example: 1
+      group_id:
+        type: "int"
+        example: 1
+      alpeta_user_id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "Active"
+  AssignUsertoTerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+  AssignUsertoTerminalsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

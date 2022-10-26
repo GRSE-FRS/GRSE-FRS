@@ -1,0 +1,62 @@
+Update Demog Status
+---
+tags:
+  - "Demog Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DemogUpdateStatusSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllDemogUpdateStatusSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllDemogUpdateStatusError"
+definitions:
+  Authlog:
+    type: "object"
+  DemogUpdateStatusSearch:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      code:
+        type: "string"
+        example: "ct_lab_lic"
+      name:
+        type: "string"
+        example: "CT-01A-Labour License"
+      is_required:
+        type: "boolean"
+        example: True
+      type:
+        type: "string"
+        example: ""
+  FetchAllDemogUpdateStatusSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Demong master updated successfully"
+  FetchAllDemogUpdateStatusError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

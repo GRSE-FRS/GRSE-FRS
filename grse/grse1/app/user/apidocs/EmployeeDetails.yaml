@@ -1,0 +1,43 @@
+View Employee Details By EmployeeCode
+---
+tags:
+  - "Users"
+produces:
+  - "application/json"
+parameters:
+  - name: "employee_code"
+    in: path
+    required: true
+    description: "fetch Employee details"
+    type: "string"
+responses:
+  200:
+    description: "Success"
+    schema:
+      $ref: "#/definitions/Fetch_success"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/Fetch_Error"
+definitions:
+  Fetch_success:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Account details fetched successfully"
+      user_data:
+        type: "object"
+        example: {}
+  Fetch_Error:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

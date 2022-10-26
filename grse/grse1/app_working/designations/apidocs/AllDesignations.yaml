@@ -1,0 +1,39 @@
+View ALL Designation
+---
+tags:
+  - "Designations"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/ALLDesignationSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/ALLDesignationError"
+definitions:
+  ALLDesignationSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      designation:
+        type: "object"
+        example : {}
+  ALLDesignationError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

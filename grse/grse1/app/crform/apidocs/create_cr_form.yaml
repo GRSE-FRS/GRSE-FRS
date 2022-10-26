@@ -1,0 +1,141 @@
+Initiate CR Form
+---
+tags:
+  - "CR Form"
+consumes:
+  - "multipart/form-data"
+produces:
+  - "application/json"
+parameters:
+  - name: "file"
+    in: formData
+    allowMultiple: True
+    description: "The uploaded file data"
+    type: file
+  - name: "form_name"
+    in: formData
+    type: string
+  - name: "form_shortcode"
+    in: formData
+    type: string
+  - name: "form_description"
+    in: formData
+    type: string
+  - name: "form_heading"
+    in: formData
+    type: string
+  - name: "form_slug"
+    in: formData
+    type: string
+  - name: "form_sub_heading"
+    in: formData
+    type: string
+  - name: "status"
+    in: formData
+    type: string
+  - name: "department"
+    in: formData
+    type: string
+  - name: "yard_no"
+    in: formData
+    type: string
+  - name: "unit"
+    in: formData
+    type: string
+  - name: "po_number"
+    in: formData
+    type: string
+  - name: "costcenter"
+    in: formData
+    type: string
+  - name: "attachment_code"
+    in: formData
+    type: string
+  - name: "details"
+    in: formData
+    type: string
+  - name: "dcode_details"
+    in: formData
+    type: string
+  - name: "dremarks"
+    in: formData
+    type: string
+  - name: "details"
+    in: formData
+    type: string
+  - name: "cr_code  "
+    in: formData
+    type: string
+
+#    schema:
+#      $ref: "#/definitions/CRFormAddSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormAddSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormAddError"
+definitions:
+  Authlog:
+    type: "object"
+  CRFormAddSearch:
+    type: "object"
+    properties:
+#      form_name:
+#        type: "string"
+#        example: "Contractors' Workmen Detail"
+#      form_shortcode:
+#        type: "string"
+#        example: "B2"
+#      form_description:
+#        type: "string"
+#        example: "Application for permit/pass for contractors' workmen"
+#      form_heading:
+#        type: "string"
+##        example: "Form-B2:Contractors' Workmen Detail"
+#      form_slug:
+#        type: "string"
+#        example: "Form B2"
+#      form_sub_heading:
+#        type: "string"
+#        example: "Details of the contractors' workmen"
+#      status:
+#        type: "string"
+#        example: "active"
+#      department:
+#        type: "string"
+#        example: "Assembly Shop"
+#      yard_no:
+#        type: "int"
+#        example: 066
+#      unit:
+#        type: "string"
+#        example: "shop"
+#      po_number:
+#        type: "string"
+#        example: "7800000023"
+#      costcenter:
+#        type: "string"
+#        example: "90000001"
+
+  FetchAllCRFormAddSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form created successfully"
+  FetchAllCRFormAddError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

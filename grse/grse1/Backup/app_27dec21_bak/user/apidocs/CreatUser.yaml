@@ -1,0 +1,142 @@
+Create User
+----
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CreateUser"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreateUserSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreateUserError"
+definitions:
+#  employee_id, , vendor_id, alpeta_user_id, designation_id, role_id, shift_id, first_name,
+#  middle_name, last_name, dob, gender, nationality, marital_status, address, email, phone ,esi_no ,pf_no
+#  ,employment_start_date ,employment_end_date ,password ,alpeta_password ,profile_picture ,status ,
+#  last_updated_by, last_update_date ,is_delete ,created_at ,updated_at
+  CreateUser:
+    type: "object"
+    properties:
+      employee_id:
+        type: "string"
+        example: "oo11"
+      costcntr:
+        type: "int"
+        example: 2
+      vendor_id:
+        type: "int"
+        example: 2
+      alpeta_user_id:
+        type: "int"
+        example: 2
+      designation_id:
+        type: "int"
+        example: 2
+      role_id:
+        type: "int"
+        example: 2
+      shift_id:
+        type: "int"
+        example: 2
+      full_name:
+        type: "string"
+        example: "Test_name"
+      dob:
+        type: "Date"
+        example: ""
+      gender:
+        type: "string"
+        example: "M"
+      nationality:
+        type: "string"
+        example: ""
+      marital_status:
+        type: "string"
+        example: ""
+      address:
+        type: "string"
+        example: ""
+      email:
+        type: "string"
+        example: ""
+      phone:
+        type: "string"
+        example: ""
+      esi_no:
+        type: "string"
+        example: ""
+      pf_no:
+        type: "string"
+        example: ""
+      employment_start_date:
+        type: "Date"
+        example: ""
+      employment_end_date:
+        type: "Date"
+        example: ""
+      employment_separation_date:
+        type: "Date"
+        example: ""
+      password:
+        type: "string"
+        example: ""
+      alpeta_password:
+        type: "int"
+        example: 123456
+      profile_picture:
+        type: "string"
+        example: ""
+      status:
+        type: "string"
+        example: "Active"
+      last_updated_by:
+        type: "string"
+        example: ""
+      last_update_date:
+        type: "date"
+        example: ""
+      is_deleted:
+        type: "binary"
+        example: 0
+      alpeta_fingerprint_data:
+        type: "object"
+        example: { }
+      alpeta_face_data:
+        type: "object"
+        example: { }
+      alpeta_card_data:
+        type: "object"
+        example: { }
+  CreateUserSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "User created successfully"
+      user:
+        type: "object"
+        example : {}
+  CreateUserError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

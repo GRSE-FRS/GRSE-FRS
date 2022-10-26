@@ -1,0 +1,119 @@
+<div id="kt_aside" class="aside" data-kt-drawer="true" data-kt-drawer-name="aside" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="auto" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_aside_toggle">
+
+    <div class="aside-logo flex-column-auto pt-10 pt-lg-10" id="kt_aside_logo">
+        <a routerLink="/admin">
+            <img alt="Logo" src="assets/images/icon-logo.png" class="h-80px" />
+        </a>
+    </div>
+
+    <div class="aside-menu flex-column-fluid pt-0 pb-5 py-lg-5" id="kt_aside_menu">
+        <div id="kt_aside_menu_wrapper" class="w-100 hover-scroll-overlay-y scroll-ps d-flex" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside, #kt_aside_menu"
+            data-kt-scroll-offset="0">
+
+            <div id="kt_aside_menu" class="menu menu-column menu-title-gray-600 menu-state-primary menu-state-icon-primary menu-state-bullet-primary menu-icon-gray-400 menu-arrow-gray-400 fw-bold fs-6" data-kt-menu="true">
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/dashboard" title="Dashboard" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                          <span class="svg-icon svg-icon-2x">
+                            <img src="assets/images/icons/dashboard.png" alt="">
+                          </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/employees" title="Employees" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                    <span class="svg-icon svg-icon-2x">
+                      <img src="assets/images/icons/profile-user.png" alt="">
+                    </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/vendor-employees" title="Vendor Employees" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                  <span class="svg-icon svg-icon-2x">
+                    <img src="assets/images/icons/group.png" alt="">
+                  </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/attendance" title="Attendance" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                          <span class="svg-icon svg-icon-2x">
+                            <img src="assets/images/icons/gas-station-attendant.png" alt="">
+                          </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/terminals" title="Terminals" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                      <span class="svg-icon svg-icon-2x">
+                        <img src="assets/images/icons/biometric-recognition.png" alt="">
+                      </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/departments" title="Departments" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                    <span class="svg-icon svg-icon-2x">
+                      <img src="assets/images/icons/department.png" alt="">
+                    </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/vendors" title="Vendors" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                  <span class="svg-icon svg-icon-2x">
+                    <img src="assets/images/icons/company.png" alt="">
+                  </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" href="javascript:;" title="Projects" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                          <span class="svg-icon svg-icon-2x">
+                            <img src="assets/images/icons/blueprint.png" alt="">
+                          </span>
+                        </span>
+                    </a>
+                </div>
+
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" routerLinkActive="active" routerLink="/admin/profile" title="Account Settings" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                          <span class="svg-icon svg-icon-2x">
+                            <img src="assets/images/icons/edit.png" alt="">
+                          </span>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="menu-item py-3">
+                    <a class="menu-link" href="javascript:;" (click)="logout()" title="Logout" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                        <span class="menu-icon">
+                        <span class="svg-icon svg-icon-2x">
+                          <img src="assets/images/icons/logout.png" alt="">
+                        </span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

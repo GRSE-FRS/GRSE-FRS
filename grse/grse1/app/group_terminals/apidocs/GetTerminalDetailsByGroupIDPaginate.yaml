@@ -1,0 +1,51 @@
+Fetch Terminal Details By GroupID with Paginate
+---
+tags:
+  - "Terminal Grouping"
+produces:
+  - "application/json"
+parameters:
+  - name: "group_id"
+    in: path
+    required: true
+    description: "fetch terminal details"
+    type: "string"
+  - name: "page"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+responses:
+  200:
+    description: "Success"
+    schema:
+      $ref: "#/definitions/Fetch_Term_success"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/Fetch_TErm_Error"
+definitions:
+  Fetch_Term_success:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      GroupDetais:
+        type: "object"
+        example: {}
+      TerminalsDetails:
+        type: "object"
+        example: {}
+  Fetch_TErm_Error:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

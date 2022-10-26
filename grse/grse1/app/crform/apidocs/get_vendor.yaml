@@ -1,0 +1,44 @@
+Get Vendors
+---
+tags:
+  - "Vendors"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page_no"
+    in: path
+    required: true
+    description: "page_no"
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchVendorsGetSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchVendorsGetError"
+definitions:
+  Vendor:
+    type: "object"
+  FetchVendorsGetSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Vendors fetched successfully"
+  FetchVendorsGetError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

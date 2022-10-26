@@ -1,0 +1,67 @@
+Create Terminals
+----
+tags:
+  - "Terminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CreateTerminals"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreateTerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreateTerminalsError"
+definitions:
+                # name, alpeta_terminal_id, short_code, terminal_type, description, status,
+  CreateTerminals:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: ""
+      alpeta_terminal_id:
+        type: "int"
+        example: 1
+      short_code:
+        type: "string"
+        example: ""
+      terminal_type:
+        type: "string"
+        example: ""
+      description:
+        type: "string"
+        example: ""
+      status:
+        type: "string"
+        example: "active"
+  CreateTerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      terminals:
+        type: "object"
+        example : {}
+  CreateTerminalsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

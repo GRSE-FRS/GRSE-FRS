@@ -1,0 +1,45 @@
+View ALL User Terminals with Paginate
+---
+tags:
+  - "UserTerminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UserTerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UserTerminalserror"
+definitions:
+  UserTerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      user_terminals:
+        type: "object"
+        example : {}
+  UserTerminalserror:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

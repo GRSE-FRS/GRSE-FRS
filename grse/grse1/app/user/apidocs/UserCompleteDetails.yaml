@@ -1,0 +1,43 @@
+Fetch User Complete Details
+---
+tags:
+  - "Users"
+produces:
+  - "application/json"
+parameters:
+  - name: "id"
+    in: path
+    required: true
+    description: "Completedetails"
+    type: "string"
+responses:
+  200:
+    description: "Success"
+    schema:
+      $ref: "#/definitions/Completedetailssuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CompletedetailsError"
+definitions:
+  Completedetailssuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Details fetched successfully"
+      user_data:
+        type: "object"
+        example: {}
+  CompletedetailsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

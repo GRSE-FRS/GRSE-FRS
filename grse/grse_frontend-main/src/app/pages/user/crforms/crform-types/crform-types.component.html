@@ -1,0 +1,200 @@
+<div class="card mb-5 mb-xl-10" *ngIf="this.permission?.form_init == true">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">All Available Forms</h3>
+        </div>
+        <div class="card-toolbar">
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="row">
+            <div class="col-xl-6 mx-auto-none text-center fm-list" *ngFor="let item of formTypes">
+                <div class="card card-stretch">
+                    <a routerLink="/user/cr-forms/{{item.form_slug}}/register" class="btn btn-block bg-dark flex-column justfiy-content-start align-items-start text-start w-100 p-10 text-center">
+                        <p class="fs-5 fw-bolder mt-0 mb-0 text-white">{{item.form_heading}}</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10" id="submitted-forms">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Submitted/Upcoming CR Forms</h3>
+        </div>
+        <div class="card-toolbar">
+            <a *ngIf="this.permission?.form_init == true" routerLink="/user/cr-forms/bucket" class="btn btn-dark">B2 Bucket</a>
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <form (submit)="fetchSubmittedCrForms({'page' : 1})" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input type="text" class="form-control" placeholder="Search..." id="search-key">
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-row-bordered gy-5 gs-7">
+                        <thead>
+                            <tr class="fw-bold fs-6 text-gray-800">
+                                <th>#</th>
+                                <th>For</th>
+                                <th class="text-center">Action</th>
+                                <th>State</th>
+                                <th>Submission Date</th>
+                                <th>Initiated By</th>
+                                <th>Current Status</th>
+                                <!-- <th>Current Department</th> -->
+                                <th>Last Updated By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of formSubmitted; let i = index">
+                                <td class="fw-bolder text-primary">
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/view">{{item.unique_id}}</a>
+                                </td>
+                                <td><b class="text-info">{{item.form_heading}}</b></td>
+                                <td class="text-center">
+                                    <!-- <button class="btn btn-sm btn-dark mx-1"><i class="fa fa-edit"></i> Edit</button> -->
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/view" class="btn btn-sm btn-primary mx-1"><i class="fa fa-eye"></i> View</a>
+                                </td>
+                                <td class="fw-bolder text-uppercase">{{item.form_state_status}}</td>
+                                <td>{{ item.created_at | date }}</td>
+                                <td class="fw-bolder">{{item.init_by}}</td>
+                                <td>
+                                    <ng-container [ngSwitch]="item.form_status">
+                                        <span class="badge badge-sm badge-primary" *ngSwitchCase="'initiated'">Initiated</span>
+                                        <span class="badge badge-sm badge-warning" *ngSwitchCase="'inprogress'">In Progress</span>
+                                        <span class="badge badge-sm badge-warning" *ngSwitchCase="'pending'">Pending</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'completed'">Completed</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'complete'">Completed</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'onboard'">Onboared</span>
+                                        <span class="badge badge-sm badge-danger" *ngSwitchCase="'rejected'">Rejected</span>
+                                        <span class="badge badge-sm badge-info text-capitalize" *ngSwitchDefault>{{item.form_status}}</span>
+                                    </ng-container>
+                                </td>
+                                <!-- <td>{{item.current_dept}}</td> -->
+                                <td class="fw-bolder">{{item.last_updated_by}}</td>
+                            </tr>
+
+                            <tr *ngIf="formSubmitted?.length == 0">
+                                <td class="text-center" colspan="100%">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12 text-center mt-5 mb-0">
+                <app-pagination [rows]="formSubmitted" [tableOptions]="submittedFormTableOptions" (onPrevPageClicked)="fetchSubmittedCrForms({page: submittedFormTableOptions.page - 1})" (onNextPageClicked)="fetchSubmittedCrForms({page: submittedFormTableOptions.page + 1})"></app-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10" id="pending-forms">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Action Pending</h3>
+        </div>
+        <div class="card-toolbar">
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <form (submit)="fetchAccessibleCrForms({'page' : 1})" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input type="text" class="form-control" placeholder="Search..." id="search-key">
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-row-bordered gy-5 gs-7">
+                        <thead>
+                            <tr class="fw-bold fs-6 text-gray-800">
+                                <th>#</th>
+                                <th>For</th>
+                                <th class="text-center">Action</th>
+                                <th>State</th>
+                                <th>Submission Date</th>
+                                <th>Initiated By</th>
+                                <th>Current Status</th>
+                                <!-- <th>Current Department</th> -->
+                                <th>Last Updated By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of formPending; let i = index">
+                                <td class="fw-bolder text-primary">
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/view">{{item.unique_id}}</a>
+                                </td>
+                                <td><b class="text-info">{{item.form_heading}}</b></td>
+                                <td class="text-center">
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/edit" class="btn btn-sm btn-dark mx-1"><i class="fa fa-edit"></i> Edit</a>
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/view" class="btn btn-sm btn-primary mx-1"><i class="fa fa-eye"></i> View</a>
+                                </td>
+                                <td class="fw-bolder text-uppercase">{{item.form_state_status}}</td>
+                                <td>{{ item.created_at | date }}</td>
+                                <td class="fw-bolder">{{item.init_by}}</td>
+                                <td>
+                                    <ng-container [ngSwitch]="item.form_status">
+                                        <span class="badge badge-sm badge-primary" *ngSwitchCase="'initiated'">Initiated</span>
+                                        <span class="badge badge-sm badge-warning" *ngSwitchCase="'inprogress'">In Progress</span>
+                                        <span class="badge badge-sm badge-warning" *ngSwitchCase="'pending'">Pending</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'completed'">Completed</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'complete'">Completed</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'onboard'">Onboared</span>
+                                        <span class="badge badge-sm badge-danger" *ngSwitchCase="'rejected'">Rejected</span>
+                                        <span class="badge badge-sm badge-info text-capitalize" *ngSwitchDefault>{{item.form_status}}</span>
+                                    </ng-container>
+                                </td>
+                                <!-- <td>{{item.current_dept}}</td> -->
+                                <td class="fw-bolder">{{item.last_updated_by}}</td>
+                            </tr>
+
+                            <tr *ngIf="formPending?.length == 0">
+                                <td class="text-center" colspan="100%">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12 text-center mt-5 mb-0">
+                <app-pagination [rows]="formPending" [tableOptions]="pendingFormTableOptions" (onPrevPageClicked)="fetchAccessibleCrForms({page: pendingFormTableOptions.page - 1})" (onNextPageClicked)="fetchAccessibleCrForms({page: pendingFormTableOptions.page + 1})"></app-pagination>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,586 @@
+import traceback
+from pymongo.errors import DuplicateKeyError, BulkWriteError
+from helpers import *
+from app import *
+from app.Models import *
+from flask.views import MethodView
+from flask import Blueprint, send_file, url_for
+import copy
+from app.m_models import *
+from datetime import datetime
+from bson import json_util
+
+Clm_view = Blueprint('clm_view', __name__)
+
+
+class ClmListViews(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/clm_view_list.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            employee_id = request_data['employee_id']
+            cl_employer = request_data["cl_employer"]
+            page = request_data["page_no"]
+            search_status = request_data["search_status"]
+
+            if employee_id and search_status:
+                test_query = db.session.execute(
+                    f"SELECT * FROM mvw_cl_current_profile WHERE "
+                    f"mvw_cl_current_profile.employee_id ilike '%{employee_id}%'")
+                mvw_cl_current_profile = mvw_cl_current_profile_schema(many=True)
+                output = mvw_cl_current_profile.dump(test_query)
+            elif cl_employer and search_status:
+                test_query = db.session.execute(
+                    f"SELECT * FROM mvw_cl_current_profile WHERE "
+                    f"mvw_cl_current_profile.cl_employer ilike '%{cl_employer}%'")
+                mvw_cl_current_profile = mvw_cl_current_profile_schema(many=True)
+                output = mvw_cl_current_profile.dump(test_query)
+            else:
+                test_query = db.session.execute(
+                    f"SELECT * FROM mvw_cl_current_profile")
+                mvw_cl_current_profile = mvw_cl_current_profile_schema(many=True)
+                output = mvw_cl_current_profile.dump(test_query)
+            response = {
+                "status": "success",
+                "message": "Success",
+                "SearchCount": len(output),
+                "Users": Paginate(output, page)}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class ClmListViewsDetail(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/clm_view_list_details.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            employee_id = request_data['employee_id']
+            test_query = db.session.execute(
+                f"SELECT * FROM mvw_cl_detail_profile WHERE "
+                f"mvw_cl_detail_profile.employee_id ilike '%{employee_id}%'")
+            print(str(test_query))
+            mvw_cl_current_detail = mvw_cl_current_detail_schema(many=True)
+            output = mvw_cl_current_detail.dump(test_query)
+            response = {
+                "status": "success",
+                "message": "Success",
+                "SearchCount": len(output),
+                "Users": output}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class CreateDemog(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/add_demog.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            code = request_data['code']
+            name = request_data['name']
+            type = request_data['type']
+            value = request_data['value']
+            is_required = request_data['is_required']
+            type_master = ["text", "number", "date", "yesno", "datetime-local", "acknowledge-ck","select-options"]
+            check_demong_code = dm.get_demog_by_code(code)
+            if type in type_master:
+                if check_demong_code:
+                    response = {
+                        "status": "success",
+                        "message": "Demong code already exist "}
+                else:
+                    dm.Add_dm(code, name, is_required, type, value, "active")
+                    response = {
+                        "status": "success",
+                        "message": "Demong master created successfully"}
+            else:
+                response = {
+                    "status": "error",
+                    "message": "Input type is not in list"}
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class UpdateDemog(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/update_demog.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            _id = request_data['id']
+            code = request_data['code']
+            name = request_data['name']
+            _type = request_data['type']
+            _value = request_data['value']
+            is_required = request_data['is_required']
+            type_master = ["text", "number", "date", "yesno", "datetime-local", "acknowledge-ck","select-options"]
+            if _type in type_master:
+                dm.Update_dm(_id, code, name, is_required, _type, _value)
+                response = {
+                    "status": "success",
+                    "message": "Demog master updated successfully"}
+            else:
+                response = {
+                    "status": "error",
+                    "message": "Input type is not in list"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class UpdateDemogStatus(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/update_demog_status.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            _id = request_data['id']
+            status = request_data['status']
+            dm.Change_Status(_id, status)
+            response = {
+                "status": "success",
+                "message": "Demong master status change successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class GetDemogBycode(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/get_demog.yaml', methods=['GET'])
+    def get(self, page_no):
+        try:
+            DemogMaster = dm.query.filter(dm.status != "delete").order_by(dm.name).all()
+            DemogSchema = dm_schema(many=True)
+            output = DemogSchema.dump(DemogMaster)
+            response = {
+                "status": "success",
+                "message": "Demong master fetched successfully",
+                "DemogList": Paginate(output, page_no) if page_no != "all" else output,
+                "SearchCount": len(output)}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class CreateCrGroup(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/add_cr_group.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            name = request_data['name']
+
+            check_demong_name = cr_groups.get_demog_by_name(name)
+            if check_demong_name:
+                response = {
+                    "status": "Error",
+                    "message": "CR group name already exits"}
+            else:
+                cr_groups.Add_cr_groups(name, "active")
+                response = {
+                    "status": "success",
+                    "message": "CR group created successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class UpdateCrGroup(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/update_cr_group.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            _id = request_data['id']
+            name = request_data['name']
+            cr_groups.Update_cr_groups(_id, name)
+            response = {
+                "status": "success",
+                "message": "CR group updated successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class UpdateCrGroupStatus(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/update_cr_group_status.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            _id = request_data['id']
+            status = request_data['status']
+            cr_groups.Change_Status(_id, status)
+            response = {
+                "status": "success",
+                "message": "CR group status changed successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class GetCrgroup(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/get_cr_group.yaml', methods=['GET'])
+    def get(self, page_no):
+        try:
+            cr_group = cr_groups.query.filter(cr_groups.status != "delete").order_by(cr_groups.name).all()
+            CRGroupSchema = cr_groups_schema(many=True)
+            output = CRGroupSchema.dump(cr_group)
+            data = list()
+            for each in output:
+                demong_list = cr_demog_groups.Fetch_cr_demog_group(each["id"])
+                each["Demog_list"] = len(demong_list) if demong_list else 0
+            response = {
+                "status": "success",
+                "message": "CR group fetched successfully",
+                "CrgroupList": Paginate(output, page_no) if page_no != "all" else output,
+                "SearchCount": len(output)}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class CreateCrDemogGroup(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/add_cr_demog_group.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            demog_id = request_data["demog_id"]  # list
+            group_id = request_data["group_id"]
+            _type = request_data.get("type", "")
+            status = request_data['status']
+            cr_demog_group = cr_demog_groups.query.filter_by(group_id=str(group_id)) \
+                .with_entities(cr_demog_groups.id).all()
+            CRDemogGroupSchema = cr_demog_groups_schema(many=True)
+            output = CRDemogGroupSchema.dump(cr_demog_group)
+            output = [each["id"] for each in output]
+            for _each in output:
+                cr_demog_groups.query.filter_by(id=int(_each)).delete()
+                db.session.commit()
+            for each in demog_id:
+                if cr_demog_groups.check_terminal_if_exists_in_group(each, group_id):
+                    cr_demog_groups.Add_cr_demog_groups(each, group_id, _type, status)
+            response = {
+                "status": "success",
+                "message": "CR demog group created successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc(e)
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class GetCRDemongDetails(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/fetch_cr_demog_group_details.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            group_id = request_data['group_id']
+            group_details = cr_groups.Fetch_cr_group_by_groupid(group_id)
+            demong_list = cr_demog_groups.Fetch_cr_demog_group(group_id)
+            response = {
+                "group_details": group_details,
+                "demog_assign": demong_list,
+                "status": "success",
+                "message": "CR demog group details fetched successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class UpdateCrDemogGroup(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/update_cr_demog_group.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            _id = request_data["id"]
+            demog_id = request_data["demog_id"]
+            group_id = request_data["group_id"]
+            cr_demog_groups.Update_cr_demog_groups(_id, demog_id, group_id)
+            response = {
+                "status": "success",
+                "message": "CR demog group updated successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class UpdateCrDemogGroupStatus(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/update_cr_demog_group_status.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            _id = request_data["id"]
+            status = request_data['status']
+            cr_demog_groups.Change_Status(_id, status)
+            response = {
+                "status": "success",
+                "message": "CR demog group status updated successfully"}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class GetCrdemoggroup(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/get_cr_demog_group.yaml', methods=['GET'])
+    def get(self, page_no):
+        try:
+            cr_demog_group = cr_demog_groups.query.filter(cr_demog_groups.status != "delete"). \
+                order_by(cr_demog_groups.updated_at.desc()).all()
+            CRDemogGroupSchema = cr_demog_groups_schema(many=True)
+            output = CRDemogGroupSchema.dump(cr_demog_group)
+            response = {
+                "status": "success",
+                "message": "CR Demog group fetched successfully",
+                "CrDemogGroupList": Paginate(output, page_no) if page_no != "all" else output,
+                "SearchCount": len(output)}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+class GetYard(MethodView):
+    @cross_origin(supports_credentials=True)
+    # @swag_from('apidocs/get_cr_demog_group.yaml', methods=['GET'])
+    def get(self):
+        try:
+            response = {
+                "status": "success",
+                "message": "fetch yard list successfully",
+                "YardList": dm.get_demog_by_code("cl_yard")}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc(e)
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+class GetDemogCode(MethodView):
+    @cross_origin(supports_credentials=True)
+    # @swag_from('apidocs/get_cr_demog_group.yaml', methods=['GET'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            demog_code = request_data["demog_code"]
+            response = {
+                "status": "success",
+                "message": "CR Demog group fetched successfully",
+                "DemogList": dm.get_demog_by_code(demog_code),
+                "SearchCount": len(dm.get_demog_by_code(demog_code))}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc(e)
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+class GetB2OnBoardLimit(MethodView):
+    @cross_origin(supports_credentials=True)
+    # @swag_from('apidocs/get_cr_demog_group.yaml', methods=['GET'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            Vendor_code = request_data["vendor_code"]
+            response = {
+                "status": "success",
+                "message": "Get B2 onboard labour limit successfully",
+                "Labour_limit": vendors.fetch_vendor_by_vendor_code(Vendor_code),
+                "Labour_onboarded": Users.FetchUSerDetails_By_vendor_id(Vendor_code)}
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc(e)
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+            
+class GetPoUserListByVendor(MethodView):
+    @cross_origin(supports_credentials=True)
+    # @swag_from('apidocs/get_cr_demog_group.yaml', methods=['GET'])
+    def post(self):
+        try:
+            vendor_details = list()
+            v_details = dict()
+            user_data = list()
+            user_list = None
+            request_data = request.get_json(force=True)
+            Vendor_code = request_data["vendor_code"]
+            # vendors.fetch_unique_by_vendor_code(Vendor_code) take this vendor code fron cr_dd
+            unique_id = vendors.fetch_unique_by_vendor_code(Vendor_code)
+            for each_unique in unique_id:
+                #print("Jhar ache")
+                #print(each_unique)
+                v_details = Cr_info.Fetch_cr_info(each_unique["unique_id"])[0]
+                #print(Cr_info.Fetch_cr_info(each_unique["unique_id"]))
+                #print("Errrrrrrrrrrrrrrrrrrrrrrorrrrrrrrrrrrrrrrr")
+                form_id = list(set(Cr_info.Fetch_cr_info_po(Cr_info.Fetch_cr_info(each_unique["unique_id"])[0]["po_number"])))
+                print(form_id)
+                for each_ in form_id:
+                    user_list = cr_dd.get_user_demog_value_by_demog_id(each_)
+                    print("Usssssssssssssssssssssssssssserrrrrrrrrrrrrrrrrrrrrrr")
+                    print(user_list)
+                    if user_list:
+                        for each in user_list:
+                            if each.get("d_value") != None and each.get("d_value") != '' :
+                                user_data.append(Users.FetchUSerDetails_By_clms_id(each.get("d_value")))
+                            
+                print(user_data)
+                v_details["user_details"] = user_data
+                vendor_details.append(v_details)
+            response = {
+                "status": "success",
+                "message": "vendor_details fetched successfully",
+                "vendor_details": vendor_details,
+                "vendor_info": vendors.fetch_unique_by_vendor_code(Vendor_code)[0]
+            }
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+            
+            
+class GetVendorUserListByPo(MethodView):
+    @cross_origin(supports_credentials=True)
+    # @swag_from('apidocs/get_cr_demog_group.yaml', methods=['GET'])
+    def post(self):
+        try:
+            vendor_details = list()
+            v_details = dict()
+            user_data = list()
+            user_list = None
+            request_data = request.get_json(force=True)
+            d_value = request_data["po_number"]
+            unique_id = cr_dd.get_po_value_by_demog_value(d_value)
+            for each in unique_id:
+                clms_id = cr_dd.get_user_demog_value_by_demog_id(each["unique_id"])
+                if clms_id[0]["d_value"]:
+                    each = Users.FetchUSerDetails_By_clms_id(clms_id[0]["d_value"])
+                    each["gate_pass"] = cr_dd.get_user_pass_validity_by_demog_id(each["unique_id"])[0]
+                    each["pcc_validity"] = cr_dd.get_user_pcc_validity_by_demog_id(each["unique_id"])[0]
+                    each["vendors_details"] = vendors.fetch_unique_by_vendor_code(each["vendor_id"])[0]
+                    user_data.append(each)
+
+            response = {
+                "status": "success",
+                "message": "vendor_details fetched successfully",
+                "vendor_details": user_data
+            }
+            print(response)
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc(e)
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+            
+
+# # # Creating View Function/Resources
+ClmListViews = ClmListViews.as_view("ClmListViews")
+ClmListViews_detail = ClmListViewsDetail.as_view("ClmListViews_detail")
+CreateDemog = CreateDemog.as_view("CreateDemog")
+UpdateDemog = UpdateDemog.as_view("UpdateDemog")
+UpdateDemogStatus = UpdateDemogStatus.as_view("UpdateDemogStatus")
+GetDemog = GetDemogBycode.as_view("GetDemog")
+CreateCrGroup = CreateCrGroup.as_view("CreateCrGroup")
+UpdateCrGroup = UpdateCrGroup.as_view("UpdateCrGroup")
+UpdateCrGroupStatus = UpdateCrGroupStatus.as_view("UpdateCrGroupStatus")
+GetCrgroup = GetCrgroup.as_view("GetCrgroup")
+CreateCrDemogGroup = CreateCrDemogGroup.as_view("CreateCrDemogGroup")
+UpdateCrDemogGroup = UpdateCrDemogGroup.as_view("UpdateCrDemogGroup")
+UpdateCrDemogGroupStatus = UpdateCrDemogGroupStatus.as_view("UpdateCrDemogGroupStatus")
+GetCrdemoggroup = GetCrdemoggroup.as_view("GetCrdemoggroup")
+GetCRDemongDetails = GetCRDemongDetails.as_view("GetCRDemongDetails")
+GetB2OnBoardLimit = GetB2OnBoardLimit.as_view("GetB2OnBoardLimit")
+GetYard = GetYard.as_view("GetYard")
+GetPoUserListByVendor = GetPoUserListByVendor.as_view("GetPoUserListByVendor")
+GetDemogCode = GetDemogCode.as_view("GetDemogCode")
+GetVendorUserListByPo = GetVendorUserListByPo.as_view("GetVendorUserListByPo")
+# # # adding routes to the Views we just created
+Clm_view.add_url_rule('/clm_list', view_func=ClmListViews, methods=['POST'])
+Clm_view.add_url_rule('/clm_list_detail', view_func=ClmListViews_detail, methods=['POST'])
+Clm_view.add_url_rule('/add_demog', view_func=CreateDemog, methods=['POST'])
+Clm_view.add_url_rule('/update_demog', view_func=UpdateDemog, methods=['POST'])
+Clm_view.add_url_rule('/update_demog_status', view_func=UpdateDemogStatus, methods=['POST'])
+Clm_view.add_url_rule('/get_demog/<page_no>', view_func=GetDemog, methods=['GET'])
+Clm_view.add_url_rule('/add_crgroup', view_func=CreateCrGroup, methods=['POST'])
+Clm_view.add_url_rule('/update_crgroup', view_func=UpdateCrGroup, methods=['POST'])
+Clm_view.add_url_rule('/update_crgroup_status', view_func=UpdateCrGroupStatus, methods=['POST'])
+Clm_view.add_url_rule('/get_crgroup/<page_no>', view_func=GetCrgroup, methods=['GET'])
+Clm_view.add_url_rule('/add_cr_demog_group', view_func=CreateCrDemogGroup, methods=['POST'])
+Clm_view.add_url_rule('/update_cr_demog_group', view_func=UpdateCrDemogGroup, methods=['POST'])
+Clm_view.add_url_rule('/update_cr_demog_group_status', view_func=UpdateCrDemogGroupStatus, methods=['POST'])
+Clm_view.add_url_rule('/get_cr_demog_group/<page_no>', view_func=GetCrdemoggroup, methods=['GET'])
+Clm_view.add_url_rule('/get_cr_demog_details', view_func=GetCRDemongDetails, methods=['POST'])
+Clm_view.add_url_rule('/get_yard', view_func=GetYard, methods=['GET'])
+Clm_view.add_url_rule('/get_onboard_limit', view_func=GetB2OnBoardLimit, methods=['POST'])
+Clm_view.add_url_rule('/get_po_user_by_vendor', view_func=GetPoUserListByVendor, methods=['POST'])
+Clm_view.add_url_rule('/get_demog_by_code', view_func=GetDemogCode, methods=['POST'])
+Clm_view.add_url_rule('/get_vendor_user_by_po', view_func=GetVendorUserListByPo, methods=['POST'])
+

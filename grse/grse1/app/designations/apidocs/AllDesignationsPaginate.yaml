@@ -1,0 +1,45 @@
+View ALL Designation with Paginate
+---
+tags:
+  - "Designations"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/ALLDesignationSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/ALLDesignationError"
+definitions:
+  ALLDesignationSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      designation:
+        type: "object"
+        example : {}
+  ALLDesignationError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

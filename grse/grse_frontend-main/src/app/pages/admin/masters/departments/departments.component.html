@@ -1,0 +1,308 @@
+<div class="card mb-5 mb-xl-10" id="department-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">All Departments</h3>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex">
+                <form (submit)="fetch(1)" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input id="table-search" type="text" class="form-control" placeholder="Search...">
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+
+        <table class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="fw-bold fs-6 text-gray-800">
+                    <th>SL</th>
+                    <th>Cost Center</th>
+                    <th>Name</th>
+                    <th>Last Updated</th>
+                    <th>Current Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="departments.length > 0; else noDepartmentRecordsFound">
+                    <tr *ngFor="let item of departments; let i = index">
+                        <td>{{item.id}}</td>
+                        <td>{{item.costcntr}}</td>
+                        <td>{{item.shop_name}}</td>
+                        <td>{{item.updated_at | date}}</td>
+                        <td>
+                            <div class="form-check form-check-solid form-switch fv-row">
+                                <input (click)="changeStatus(item)" class="form-check-input w-45px h-30px" type="checkbox" [attr.checked]="item.status == 'active' ? 'checked' : null" />
+                                <label class="form-check-label" for="allowmarketing"></label>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-info mx-1" (click)="getEdit(item)"><i class="fa fa-edit"></i>&nbsp;Edit</button>
+                            <!-- <button class="btn btn-sm btn-danger mx-1" (click)="deleteItem(item)"><i class="fa fa-trash"></i>&nbsp;Delete</button> -->
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <ng-template #noDepartmentRecordsFound>
+                    <tr>
+                        <td colspan="100%" class="text-center">No Records Found</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+
+        <app-pagination [rows]="departments" [tableOptions]="tableOptions" (onPrevPageClicked)="fetch(tableOptions.page - 1)" (onNextPageClicked)="fetch(tableOptions.page + 1)"></app-pagination>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10" id="department-submit-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0" *ngIf="editActionId == ''; else editHeader">Add New Department</h3>
+            <ng-template #editHeader>
+                <h3 class="fw-bolder m-0">Edit Department</h3>
+            </ng-template>
+        </div>
+    </div>
+
+    <form class="form" [formGroup]="departmentForm">
+        <div class="card-body border-top p-9">
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Subarea</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="subarea_id" [options]="subareaMaster" class="form-control" [config]="{search: true, placeholder: 'Select Subarea'}" [class.is-invalid]="( departmentForm.controls.subarea_id.dirty || departmentForm.controls.subarea_id.touched )"></ngx-select-dropdown>
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.subarea_id.hasError('required') && ( departmentForm.controls.subarea_id.dirty || departmentForm.controls.subarea_id.touched )">
+                        <div>Please select a subarea for the department</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Shop Name</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="shop_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Department Shop Name" [class.is-invalid]="( departmentForm.controls.shop_name.dirty || departmentForm.controls.shop_name.touched )">
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.shop_name.hasError('required') && ( departmentForm.controls.shop_name.dirty || departmentForm.controls.shop_name.touched )">
+                        <div>The department shop name field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Department HOD</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="hod_man" [options]="hodUserMaster" (searchChange)="userListSearched('hod', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.hod_man.dirty || departmentForm.controls.hod_man.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.hod_man.hasError('required') && ( departmentForm.controls.hod_man.dirty || departmentForm.controls.hod_man.touched )">
+                        <div>The department hod field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">HOD functional area</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="hod_functional_area" [options]="hodFunctionalUserMaster" (searchChange)="userListSearched('hodfunct', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.hod_functional_area.dirty || departmentForm.controls.hod_functional_area.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.hod_functional_area.hasError('required') && ( departmentForm.controls.hod_functional_area.dirty || departmentForm.controls.hod_functional_area.touched )">
+                        <div>The hod functional area field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Department Group</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="dept_group" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Department group" [class.is-invalid]="( departmentForm.controls.dept_group.dirty || departmentForm.controls.dept_group.touched )">
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.dept_group.hasError('required') && ( departmentForm.controls.dept_group.dirty || departmentForm.controls.dept_group.touched )">
+                        <div>The department group field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Department Cost Center</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="costcntr" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Department Cost Center" [class.is-invalid]="( departmentForm.controls.costcntr.dirty || departmentForm.controls.costcntr.touched )">
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.costcntr.hasError('required') && ( departmentForm.controls.costcntr.dirty || departmentForm.controls.costcntr.touched )">
+                        <div>The department cost center field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">CLMS Nodal User</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="clms_nodal_user" [options]="nodalUserMaster" (searchChange)="userListSearched('nodaluser', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.clms_nodal_user.dirty || departmentForm.controls.clms_nodal_user.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.clms_nodal_user.hasError('required') && ( departmentForm.controls.clms_nodal_user.dirty || departmentForm.controls.clms_nodal_user.touched )">
+                        <div>The CLMS Nodal User field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">CLMS Nodal AJS</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="clms_nodal_ajs" [options]="nodalAjsMaster" (searchChange)="userListSearched('nodalajs', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.clms_nodal_ajs.dirty || departmentForm.controls.clms_nodal_ajs.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.clms_nodal_ajs.hasError('required') && ( departmentForm.controls.clms_nodal_ajs.dirty || departmentForm.controls.clms_nodal_ajs.touched )">
+                        <div>The CLMS Nodal AJS field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">CLMS Nodal HR Person</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="clms_nodal_hr" [options]="nodalHrMaster" (searchChange)="userListSearched('nodalhr', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.clms_nodal_hr.dirty || departmentForm.controls.clms_nodal_hr.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.clms_nodal_hr.hasError('required') && ( departmentForm.controls.clms_nodal_hr.dirty || departmentForm.controls.clms_nodal_hr.touched )">
+                        <div>The CLMS Nodal HR Person field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">CLMS Nodal Security</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="clms_nodal_secu" [options]="nodalSecurityMaster" (searchChange)="userListSearched('nodalsecurity', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.clms_nodal_secu.dirty || departmentForm.controls.clms_nodal_secu.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.clms_nodal_secu.hasError('required') && ( departmentForm.controls.clms_nodal_secu.dirty || departmentForm.controls.clms_nodal_secu.touched )">
+                        <div>The CLMS Nodal Security field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">CLMS Nodal Medical Person</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="clms_nodal_medical" [options]="nodalMedicalMaster" (searchChange)="userListSearched('nodalmedical', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.clms_nodal_medical.dirty || departmentForm.controls.clms_nodal_medical.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.clms_nodal_medical.hasError('required') && ( departmentForm.controls.clms_nodal_medical.dirty || departmentForm.controls.clms_nodal_medical.touched )">
+                        <div>The CLMS Nodal Medical Person field is required</div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">CLMS Nodal Safety</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="clms_nodal_safety" [options]="nodalSafetyMaster" (searchChange)="userListSearched('nodalsafety', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"
+                        [class.is-invalid]="( departmentForm.controls.clms_nodal_safety.dirty || departmentForm.controls.clms_nodal_safety.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="departmentForm.controls.clms_nodal_safety.hasError('required') && ( departmentForm.controls.clms_nodal_safety.dirty || departmentForm.controls.clms_nodal_safety.touched )">
+                        <div>The CLMS Nodal AJS field is required</div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="button" (click)="this.cancelSubmit()" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+
+            <button type="submit" (click)="add($event)" class="btn btn-primary" *ngIf="editActionId == ''; else editButtonSection">
+                <span class="indicator-label">Add Department</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </button>
+
+            <ng-template #editButtonSection>
+                <button type="submit" (click)="edit($event)" class="btn btn-primary">
+                    <span class="indicator-label">Save Changes</span>
+                    <span class="indicator-progress">Please wait...
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                </button>
+            </ng-template>
+        </div>
+    </form>
+</div>
+
+
+
+<!-- <button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#user-fetch-modal" id="open-user-fetch-modal"></button>
+<div class="modal fade" tabindex="-1" id="user-fetch-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Fetch Employees</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search by Name">
+                            <div class="input-group-append">
+                                <button class="input-group-text" type="submit" (click)="fetch({'page': 1})"><i class="fa fa-search p-2"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search by Employee ID">
+                            <div class="input-group-append">
+                                <button class="input-group-text" type="submit" (click)="fetch({'page': 1})"><i class="fa fa-search p-2"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7" style="border: 1px solid #eee;">
+                    <thead class="bg-dark text-white">
+                        <th>SL</th>
+                        <th>Employee ID</th>
+                        <th>Full Name</th>
+                        <th>Cost Center</th>
+                        <th class="text-center">Action</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of userList; let i = index">
+                            <td>{{(i + 1)}}</td>
+                            <td>{{item.employee_id ?? "N/A"}}</td>
+                            <td>{{item.full_name ?? "N/A"}}</td>
+                            <td>{{item.costcntr ?? "N/A"}}</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-primary" (click)="useEmployeeId(fieldNameSearched, item.employee_id)"><i class="fa fa-copy"></i> Use</button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="userList.length == 0">
+                            <td colspan="100%" class="text-center">No Employees Found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> -->

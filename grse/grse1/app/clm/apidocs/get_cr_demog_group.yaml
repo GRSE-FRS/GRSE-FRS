@@ -1,0 +1,44 @@
+Get CR Demog group
+---
+tags:
+  - "CR Demog Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page_no"
+    in: path
+    required: true
+    description: "page no"
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRDemogGetSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRDemogGetError"
+definitions:
+  Authlog:
+    type: "object"
+  FetchAllCRDemogGetSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR group fetched successfully"
+  FetchAllCRDemogGetError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

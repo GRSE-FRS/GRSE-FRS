@@ -1,0 +1,52 @@
+<div class="card mb-5 mb-xl-10" id="terminalGroup-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Assign Demog Master <small>{{groupDetails?.name}}</small></h3>
+        </div>
+        <div class="card-toolbar">
+            <!-- <input type="checkbox" id="selectall">
+            <label for="selectall">&nbsp;Select All</label> -->
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <table class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="bg-dark text-white text-uppercase">
+                    <th><input type="checkbox" (change)="allRowsCheckboxChecked($event)" id="selectall-checkbox"></th>
+                    <th><b>ID</b></th>
+                    <th><b>Code</b></th>
+                    <th><b>Name</b></th>
+                    <th><b>Type</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of demogmasters">
+                    <td>
+                        <input type="checkbox" name="selected_demogmasters[]" value="{{item.id}}" (change)="demogMasterCheckboxChecked()">
+                    </td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.code}}</td>
+                    <td>{{item.name}}</td>
+                    <td class="text-uppercase">{{item.type}}</td>
+                </tr>
+
+                <tr *ngIf="demogmasters.length < 1">
+                    <td colspan="6" class="text-center">No Masters Found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer py-6 px-9">
+        <div class="row">
+            <div class="d-flex justify-content-end col-md-12">
+                <button type="submit" (click)="submitGroup($event)" class="btn btn-primary">
+                    <span class="indicator-label">Submit</span>
+                    <span class="indicator-progress">Please wait...
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

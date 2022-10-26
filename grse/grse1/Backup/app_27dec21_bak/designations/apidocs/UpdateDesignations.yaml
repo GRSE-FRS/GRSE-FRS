@@ -1,0 +1,60 @@
+Update Designations
+----
+tags:
+  - "Designations"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateDesignations"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UpdateDesignationsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UpdateDesignationserror"
+definitions:
+  UpdateDesignations:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      code:
+        type: "string"
+        example: "qw1123"
+      name:
+        type: "string"
+        example: "Test"
+      status:
+        type: "string"
+        example: "Inactive"
+  UpdateDesignationsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Designation updated successfully"
+      designation:
+        type: "object"
+        example : {}
+  UpdateDesignationserror:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

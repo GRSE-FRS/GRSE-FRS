@@ -1,0 +1,10 @@
+.text-prof {
+    background: #181c32;
+    color: #fdfdfe;
+    padding: 12px 65px;
+    font-size: 8rem;
+    border-radius: 12px;
+    font-weight: 700;
+    border: 2px solid #2c294b;
+    user-select: none;
+}

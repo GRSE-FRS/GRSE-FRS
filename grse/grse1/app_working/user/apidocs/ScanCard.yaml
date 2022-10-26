@@ -1,0 +1,51 @@
+Scan Card
+----
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/scanCard"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/scanCardSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/scanCardError"
+definitions:
+  scanCard:
+    type: "object"
+    properties:
+      terminal_id:
+        type: "int"
+        example: 2
+  scanCardSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Card captured successfully."
+      CardData:
+        type: "object"
+        example : {}
+  scanCardError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

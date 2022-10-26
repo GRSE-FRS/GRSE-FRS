@@ -1,0 +1,116 @@
+body {
+    margin-top: 20px;
+}
+
+.timeline-steps {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap
+}
+
+.timeline-steps .timeline-step {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 0.6rem
+}
+
+@media (min-width:768px) {
+    .timeline-steps .timeline-step:not(:last-child):after {
+        content: "";
+        display: block;
+        border-top: .25rem solid #2c294b;
+        width: 5rem;
+        position: absolute;
+        left: 7.5rem;
+        top: .3125rem
+    }
+    .timeline-steps .timeline-step:not(:first-child):before {
+        content: "";
+        display: block;
+        border-top: .25rem solid #2c294b;
+        width: 5rem;
+        position: absolute;
+        right: 7.5rem;
+        top: .3125rem
+    }
+}
+
+.timeline-steps .timeline-content {
+    width: 10rem;
+    text-align: center
+}
+
+.timeline-steps .timeline-content .inner-circle {
+    border-radius: 1.5rem;
+    height: 0.6rem;
+    width: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3b82f6
+}
+
+.timeline-steps .timeline-content .inner-circle:before {
+    content: "";
+    background-color: #3b82f6;
+    display: inline-block;
+    height: 2rem;
+    width: 2rem;
+    min-width: 2rem;
+    border-radius: 6.25rem;
+    opacity: .5
+}
+
+.timeline-content p,
+th,
+td {
+    white-space: nowrap;
+}
+
+.step-completed .timeline-content .inner-circle:before {
+    background: green !important;
+}
+
+.step-completed .timeline-content .inner-circle {
+    background: green !important;
+}
+
+.step-completed p {
+    color: green;
+}
+
+.step-pending .timeline-content .inner-circle:before {
+    background: black !important;
+}
+
+.step-pending .timeline-content .inner-circle {
+    background: black !important;
+}
+
+.step-current .timeline-content .inner-circle:before {
+    background: orange !important;
+}
+
+.step-current .timeline-content .inner-circle {
+    background: orange !important;
+}
+
+.step-current p {
+    color: orange;
+    font-size: medium;
+}
+
+.step-rejected .timeline-content .inner-circle:before {
+    background: red !important;
+}
+
+.step-rejected .timeline-content .inner-circle {
+    background: red !important;
+}
+
+.step-rejected p {
+    color: red;
+    font-size: medium;
+}

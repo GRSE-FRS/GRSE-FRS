@@ -1,0 +1,39 @@
+View ALL Departments
+---
+tags:
+  - "Departments"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/ALLDepartmentsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/ALLDepartmentsError"
+definitions:
+  ALLDepartmentsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      departments:
+        type: "object"
+        example : {}
+  ALLDepartmentsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

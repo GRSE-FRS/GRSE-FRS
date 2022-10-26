@@ -1,0 +1,50 @@
+URL - http://14.140.119.59:9004/v1/login
+METHOD - POST
+REQUEST.BODY - { userId: 'Master', password: '0000', userType: 2 }
+REQUEST.HEADER - { 'Content-Type': 'application/json' }
+
+RESPONSE.BODY - {
+    Result: { ResultCode: 0 },
+    AccountInfo: {
+      UserID: 1000000000000000000,
+      UniqueID: '',
+      Uuid: '51702dd8-b312-4733-659d-a2cdc01d6e24',
+      Name: 'Master',
+      LoginPW: '',
+      Privilege: 1,
+      FirstLoginFlag: 0,
+      ServerID: 11,
+      LoginAllowed: 1,
+      LoginFailCount: 0,
+      WebLogin: 1,
+      VisitLogin: 0,
+      LoginIP: '',
+      LoginTime: '2021-11-03 15:38:08',
+      LastLoginIP: '',
+      LastLoginTime: '2021-11-03 15:35:52'
+    },
+    SystemInfo: {
+      Version: '1.0.88.0',
+      LicenseLevel: 40,
+      LicenseStatus: 0,
+      BrandType: 1,
+      TimezoneVersion: 0,
+      HTTPSFlag: 0,
+      SiteName: '',
+      SiteLogo: '',
+      SiteMessageWarning: ''
+    },
+    LoginFailInfo: { RemindCount: 0 }
+}
+
+RESPONSE.HEADER - {
+    'content-type': 'application/json',
+    'set-cookie': [
+      'ucsinfo=51702dd8-b312-4733-659d-a2cdc01d6e24; Expires=Thu, 04 Nov 2021 10:08:08 GMT; HttpOnly',
+      'extinfo=9d51b4e236ec593131500a12691fa26a; Expires=Thu, 04 Nov 2021 10:08:08 GMT; HttpOnly'
+    ],
+    date: 'Wed, 03 Nov 2021 10:08:08 GMT',
+    'content-length': '580',
+    connection: 'close'
+}
+

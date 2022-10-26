@@ -1,0 +1,62 @@
+Update Vendors
+---
+tags:
+  - "Vendors"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/VendorsSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchVendorsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchVendorsError"
+definitions:
+  Authlog:
+    type: "object"
+  VendorsSearch:
+    type: "object"
+    properties:
+      vd_code:
+        type: "int"
+        example: 10101
+      vd_scrum_id:
+        type: "int"
+        example: 130
+      is_deleted:
+        type: "boolean"
+        example: false
+      name:
+        type: "string"
+        example: "SCRUM SYSTEM PVT LTD"
+      id:
+        type: "int"
+        example: 1
+  FetchVendorsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Vendor updated successfully"
+  FetchVendorsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

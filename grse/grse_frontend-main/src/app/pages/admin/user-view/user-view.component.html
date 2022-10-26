@@ -1,0 +1,1438 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-body pt-9 pb-0">
+        <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
+            <div class="me-7 mb-4">
+                <ng-container *ngIf="['admin'].includes(fromPanel)">
+                    <button *ngIf="user_details?.alpeta_user_id;" data-bs-toggle="modal" data-bs-target="#profile-pic-modal" class="btn btn-primary btn-sm cam-icon"><i class="fa fa-camera"></i></button>
+                </ng-container>
+                <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                    <ng-container *ngIf="user_details?.profile_picture; else noProfPic">
+                        <img src="{{ 'data:image/png;base64,' + user_details.profile_picture }}" alt="image" class="bg-secondary" />
+                        <!-- <img src="{{ user_details.profile_picture }}" alt="image" class="bg-secondary" /> -->
+                    </ng-container>
+                    <ng-template #noProfPic>
+                        <img src="assets/images/user-default.png" alt="image" class="bg-secondary" />
+                    </ng-template>
+                </div>
+            </div>
+
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-gray-900 text-hover-primary fs-2 fw-bolder me-1">{{ user_details?.full_name }}</span>
+
+                            <div class="mx-2">
+                                <ng-container *ngIf="user_details?.status">
+                                    <ng-container [ngSwitch]="user_details?.status">
+                                        <span class="badge badge-success" *ngSwitchCase="'active'">Active</span>
+                                        <span class="badge badge-warning" *ngSwitchCase="'inactive'">Inactive</span>
+                                        <span class="badge badge-danger" *ngSwitchCase="'deleted'">Deleted</span>
+                                        <span class="badge badge-grey" *NgSwitchDefault>{{user_details?.status}}</span>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
+                            <span class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 text-capitalize">
+                            <i class="fa fa-user-circle"></i>&nbsp;
+                            <ng-container [ngSwitch]="user_details?.role_id">
+                            <span *ngSwitchCase="'2'">Contract Labour</span>
+                            <span *ngSwitchCase="'3'">Employee</span>
+                            <span *NgSwitchDefault>-</span>
+                            </ng-container>
+                            </span>
+
+                            <span *ngIf="['3'].includes(user_details?.role_id)" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+                                <i class="fa fa-phone"></i>&nbsp;{{ user_details?.phone ?? "N/A" }}
+                            </span>
+
+                            <span *ngIf="['3'].includes(user_details?.role_id)" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+                                <i class="fa fa-envelope"></i>&nbsp;{{ user_details?.email ?? "N/A" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <ng-container *ngIf="['admin'].includes(fromPanel)">
+                            <a *ngIf="user_details?.employee_id && !user_details?.alpeta_user_id" [routerLink]="['/' + fromPanel + '/' + this.PageType.slug + '/create']" [queryParams]="{employee_code: user_details?.employee_id}" class="float-right btn btn-primary btn-sm">Start Registration</a>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap flex-stack">
+                    <div class="d-flex flex-column flex-grow-1 pe-8">
+                        <div class="d-flex flex-wrap">
+
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="fs-2 fw-bolder">{{ user_details?.alpeta_user_id ?? "N/A" }}</div>
+                                </div>
+                                <div class="fw-bold fs-6 text-gray-400">ALPETA USER ID</div>
+                            </div>
+
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="fs-2 fw-bolder">{{ user_details?.employee_id ?? "N/A" }}</div>
+                                </div>
+                                <div class="fw-bold fs-6 text-gray-400">Employee ID</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder">
+            <li class="nav-item mt-2">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab" href="#overview-tab">Overview</a>
+            </li>
+            <li class="nav-item mt-2" *ngIf="user_details?.alpeta_user_id && alpeta_fingerprint_data && alpeta_fingerprint_data.length > 0">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#fingerprints-added">Fingerprints Added</a>
+            </li>
+            <li class="nav-item mt-2" *ngIf="user_details?.alpeta_user_id && alpeta_face_data">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#facedata-added">Facedata Added</a>
+            </li>
+            <li class="nav-item mt-2" *ngIf="user_details?.alpeta_user_id && alpeta_rfidcard_data">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#carddata-added">RFID Card Added</a>
+            </li>
+            <li class="nav-item mt-2" *ngIf="user_details?.alpeta_user_id">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#terminal-assigned">Assigned Group & Terminals</a>
+            </li>
+            <li class="nav-item mt-2" *ngIf="user_details?.alpeta_user_id">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#raw-auth-logs">Raw Auth Logs</a>
+            </li>
+            <li class="nav-item mt-2" *ngIf="user_details?.unique_id">
+                <a class="nav-link text-active-primary ms-0 me-10 py-5" target="_blank" routerLink="/{{fromPanel}}/cr-forms/{{user_details.unique_id}}/view">B2 Form</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="overview-tab" role="tabpanel">
+        <div class="card mb-5 mb-xl-10">
+            <div class="card-header">
+                <div class="card-title m-0">
+                    <h3 class="fw-bolder m-0">Profile Details</h3>
+                </div>
+
+                <div class="d-flex my-5">
+                    <ng-container *ngIf="['admin'].includes(fromPanel)">
+                        <button *ngIf="user_details?.alpeta_user_id" (click)="openAuthCombEditModal()" class="float-right btn btn-primary btn-sm mx-1"><i class="fa fa-fingerprint"></i> Change Auth Combination</button>
+
+                        <button *ngIf="user_details?.alpeta_user_id" (click)="openAlpetaPasswordEditModal()" class="float-right btn btn-primary btn-sm mx-1"><i class="fa fa-lock"></i> Change Alpeta Password</button>
+
+                        <button *ngIf="user_details?.alpeta_user_id" (click)="openDashboardPasswordEditModal()" class="float-right btn btn-primary btn-sm mx-1"><i class="fa fa-lock"></i> Change Dashboard Password</button>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                <div class="row">
+                    <ng-container *ngIf="[3].includes(this.PageType.role_id)">
+                        <div class="col-md-6">
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Full Name</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.full_name ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">ALPETA USER ID</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.alpeta_user_id ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employee Code</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.employee_id ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Phone Number</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.phone ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Email Address</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.email ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Contact Address</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.address ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Deapartment (Shop Name)</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.department.shop_name ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Cost Center</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.department.costcntr ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Designation</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.designation.name ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Shift</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.shift.name ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Unit</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.unit ?? "N/A" }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Date of Birth</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.dob ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employment Start Date</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.employment_start_date ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employment End Date</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.employment_end_date ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employment Seperation Date</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.employment_separation_date ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Seperation Reason</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.separation_reason ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Gender</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800 text-uppercase">{{ user_details?.gender ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Marital Status</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800 text-capiatalize">{{ user_details?.marital_status ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employment Type</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800 text-capiatalize">{{ user_details?.employment_type ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">PF Number</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.pf_no ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">ESI Number</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.esi_no ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Nationality</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.nationality ?? "N/A" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="[2].includes(this.PageType.role_id)">
+                        <div class="col-md-6">
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Full Name</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.full_name ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">ALPETA USER ID</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.alpeta_user_id ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employee Code</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.employee_id ?? "N/A" }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Aadhaar Number</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{ user_details?.costcntr ?? "N/A" }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Employment Type</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800 text-capiatalize">{{ user_details?.employment_type ?? "N/A" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+
+                    <div class="col-md-12 mt-7">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-7">
+                                    <label class="col-lg-4 fw-bold text-muted">User Created</label>
+                                    <div class="col-lg-8">
+                                        <span class="fw-bolder fs-6 text-gray-800">
+                                          <ng-container *ngIf="user_details?.created_at; else NATEXTBLOCK">
+                                            {{ Global.parseDate(user_details?.created_at) | date : 'medium' ?? "N/A" }}
+                                          </ng-container>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-7">
+                                    <label class="col-lg-4 fw-bold text-muted">User Last Updated</label>
+                                    <div class="col-lg-8">
+                                        <span class="fw-bolder fs-6 text-gray-800">
+                                          <ng-container *ngIf="user_details?.updated_at; else NATEXTBLOCK">
+                                            {{ Global.parseDate(user_details?.updated_at) | date : 'medium' ?? "N/A" }}
+                                          </ng-container>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-7">
+                                    <label class="col-lg-4 fw-bold text-muted">Alpeta Registration Date</label>
+                                    <div class="col-lg-8">
+                                        <span class="fw-bolder fs-6 text-gray-800">
+                                        <ng-container *ngIf="user_details?.alpeta_created_date; else NATEXTBLOCK">
+                                          {{ Global.parseDate(user_details?.alpeta_created_date) | date : 'mediumDate' ?? "N/A" }}
+                                        </ng-container>
+                                      </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-7">
+                                    <label class="col-lg-4 fw-bold text-muted">Alpeta Updated Date</label>
+                                    <div class="col-lg-8">
+                                        <span class="fw-bolder fs-6 text-gray-800">
+                                      <ng-container *ngIf="user_details?.alpeta_updated_date; else NATEXTBLOCK">
+                                        {{ Global.parseDate(user_details?.alpeta_updated_date) | date : 'mediumDate' ?? "N/A" }}
+                                      </ng-container>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="fingerprints-added" role="tabpanel">
+        <div class="card mb-5 mb-xl-10 ">
+            <div class="card-header">
+                <div class="card-title m-0">
+                    <h3 class="fw-bolder m-0">Fingerprints Added</h3>
+                </div>
+
+                <div class="d-flex my-5">
+                    <ng-container *ngIf="['admin'].includes(fromPanel)">
+                        <button (click)="startFingerPrintEdit()" class="float-right btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit</button>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                <div class="row mb-10">
+                    <div class="col-md-6 text-center">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src="assets/images/hand-image.png" class="w-100">
+
+                                <ng-container *ngFor="let item of ['1','2','3','4','5','6','7','8','9','10']">
+                                    <a (click)="fingerSelected(item)" class="finger-box item-{{item}}" [ngClass]="{ 'registered' : checkFingerCaptured(item), 'd-none' : !checkFingerCaptured(item) }">
+                                        <ng-container *ngIf="!checkFingerCaptured(item); else fingerRegisteredChecked">
+                                            {{item}}
+                                        </ng-container>
+
+                                        <ng-template #fingerRegisteredChecked>
+                                            <i class="fa fa-check-circle"></i>
+                                        </ng-template>
+                                    </a>
+                                </ng-container>
+                            </div>
+
+                            <div class="col-md-12">
+                                <h5 *ngIf="alpeta_fingerprint_data.length > 0 && alpeta_fingerprint_data[0]" class="mt-7 mb-0 text-muted">
+                                    Created At : <span class="">{{ Global.parseDate(alpeta_fingerprint_data[0].created_at) | date : 'MMM d, y h:mm a' }}</span>
+                                </h5>
+
+                                <h5 *ngIf="alpeta_fingerprint_data.length > 0 && alpeta_fingerprint_data[alpeta_fingerprint_data.length - 1]" class="mt-4 mb-0 text-muted">
+                                    Last Updated : <span class="">{{ Global.parseDate(alpeta_fingerprint_data[alpeta_fingerprint_data.length - 1].updated_at) | date : 'MMM d, y h:mm a' }}</span>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 fingerprint-col">
+                        <div class="row">
+                            <ng-container *ngIf="fingerprint_selected">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6" style="text-align: right;">
+                                            <img src="data:image/png;base64,{{fingerprint_selected?.convimage1}}">
+                                        </div>
+                                        <div class="col-md-6" style="text-align: left;">
+                                            <img src="data:image/png;base64,{{fingerprint_selected?.convimage2}}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 text-center mt-3 text-muted">
+                                    <p class="mb-0">Created At: <b class="">{{ Global.parseDate(fingerprint_selected.created_at) | date : 'MMM d, y h:mm a' }}</b></p>
+                                </div>
+
+                                <div class="col-md-12 text-center mt-1 text-muted">
+                                    <p class="mb-0">Updated At: <b class="">{{ Global.parseDate(fingerprint_selected.updated_at) | date : 'MMM d, y h:mm a' }}</b></p>
+                                </div>
+                            </ng-container>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="facedata-added" role="tabpanel">
+        <div class="card mb-5 mb-xl-10 ">
+            <div class="card-header">
+                <div class="card-title m-0">
+                    <h3 class="fw-bolder m-0">Facedata Added</h3>
+                </div>
+
+                <div class="d-flex my-5">
+                    <ng-container *ngIf="['admin'].includes(fromPanel)">
+                        <button (click)="startFaceDataEdit()" class="float-right btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit</button>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                <!-- <div class="row mb-10">
+                    <div class="col-md-12 text-center" *ngIf="alpeta_face_data">
+                        <img src="data:image/png;base64,{{alpeta_face_data?.templatedata}}" class="w-100">
+                    </div>
+                </div> -->
+
+                <div class="col-md-12 text-center" *ngIf="alpeta_face_data">
+                    <h2 class="text-success" *ngIf="alpeta_face_data?.templatedata; else noFaceDataAdded">
+                        Face Data Captured
+                        <br><small class="text-muted">Created At: <span class="">{{ Global.parseDate(alpeta_face_data.created_at) | date : 'MMM d, y h:mm a' }}</span></small>
+                        <br><small class="text-muted">Last Updated: <span class="">{{ Global.parseDate(alpeta_face_data.updated_at ?? alpeta_face_data.created_at) | date : 'MMM d, y h:mm a' }}</span></small>
+                    </h2>
+                    <ng-template #noFaceDataAdded>
+                        <h2 class="text-danger">Not Available</h2>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="carddata-added" role="tabpanel">
+        <div class="card mb-5 mb-xl-10 ">
+            <div class="card-header">
+                <div class="card-title m-0">
+                    <h3 class="fw-bolder m-0">RFID Card Added</h3>
+                </div>
+
+                <div class="d-flex my-5">
+                    <ng-container *ngIf="['admin'].includes(fromPanel)">
+                        <button (click)="startCardDataEdit()" class="float-right btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit</button>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                <div class="row">
+                    <div class="col-md-12 text-center" *ngIf="alpeta_rfidcard_data">
+                        <h2 class="text-success" *ngIf="alpeta_rfidcard_data?.cardnum; else noCardDataAdded">
+                            Card Data Captured
+                            <br><small class="text-muted">Created At: <span class="">{{ Global.parseDate(alpeta_rfidcard_data.created_at) | date : 'MMM d, y h:mm a' }}</span></small>
+                            <br><small class="text-muted">Last Updated: <span class="">{{ Global.parseDate(alpeta_rfidcard_data.updated_at ?? alpeta_rfidcard_data.created_at) | date : 'MMM d, y h:mm a' }}</span></small>
+                        </h2>
+                        <ng-template #noCardDataAdded>
+                            <h2 class="text-danger">Not Available</h2>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="terminal-assigned" role="tabpanel">
+        <div class="card mb-5 mb-xl-10 ">
+            <div class="card-header">
+                <div class="card-title m-0">
+                    <h3 class="fw-bolder m-0">Assigned Group & Terminals</h3>
+                </div>
+
+                <div class="card-toolbar">
+                    <ng-container *ngIf="['admin'].includes(fromPanel)">
+                        <button (click)="openAssignGroupModal()" style="margin-right: 5px;" class="btn btn-primary btn-sm align-self-center" *ngIf="user_details?.status == 'active'">
+                            <ng-container *ngIf="!this.user_details?.group_info"><i class="fa fa-plus"></i> Assign to Group</ng-container>
+                            <ng-container *ngIf="this.user_details?.group_info"><i class="fa fa-edit"></i> Change Group</ng-container>
+                        </button>
+
+                        <!-- <button style="margin-right: 5px;" class="btn btn-dark btn-sm align-self-center" disabled><i class="fa fa-list"></i> Action Logs</button> -->
+                        <!-- <button style="margin-right: 0px;" class="btn btn-dark btn-sm align-self-center" disabled><i class="fa fa-list"></i> Change Logs</button> -->
+                    </ng-container>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                <div class="row">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-7">
+                                        <label class="col-lg-4 fw-bold text-muted">Group Name</label>
+                                        <div class="col-lg-8">
+                                            <span class="fw-bolder fs-6 text-gray-800"><small>{{this.user_details?.group_info?.name ?? "N/A"}}</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-7">
+                                        <label class="col-lg-4 fw-bold text-muted">Group Description</label>
+                                        <div class="col-lg-8">
+                                            <span class="fw-bolder fs-6 text-gray-800"><small>{{this.user_details?.group_info?.description ?? "N/A"}}</small></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6" *ngIf="this.user_details?.group_info">
+                                    <div class="row mb-7">
+                                        <label class="col-lg-4 fw-bold text-muted">Assigned On</label>
+                                        <div class="col-lg-8">
+                                            <span class="fw-bolder fs-6 text-gray-800"><small>{{Global.parseDate(this.user_details?.group_assign_date) | date:'medium' ?? "N/A"}}</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-7">
+                                        <label class="col-lg-4 fw-bold text-muted">Last Updated</label>
+                                        <div class="col-lg-8">
+                                            <span class="fw-bolder fs-6 text-gray-800"><small>{{Global.parseDate(this.user_details?.group_updated_date) | date:'medium' ?? "N/A"}}</small></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7" style="border: 1px solid #eee;">
+                    <thead class="bg-dark text-white">
+                        <th>SL</th>
+                        <th>Terminal ID</th>
+                        <!-- <th>Group Name</th> -->
+                        <th>Terminal Name</th>
+                        <th>Terminal Short Code</th>
+                        <th>Terminal Type</th>
+                        <th class="text-center">Terminal Status</th>
+                        <th class="text-center">Assigned Date</th>
+                        <th class="text-center">Last Updated</th>
+                        <ng-container *ngIf="['admin'].includes(fromPanel)">
+                            <th class="text-center">Block Status</th>
+                        </ng-container>
+                        <!-- <th class="text-center">Action</th> -->
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="assignedTerminals.length > 0; else noDepartmentRecordsFound">
+                            <tr *ngFor="let item of assignedTerminals; let i = index">
+                                <td>{{(i + 1)}}</td>
+                                <td>{{item.alpeta_terminal_id}}</td>
+                                <!-- <td>{{item.Group_details?.name ?? "N/A"}}</td> -->
+                                <td>{{item.name}}</td>
+                                <td>{{item.short_code}}</td>
+                                <td class="text-uppercase">{{item.terminal_type}}</td>
+                                <td class="text-center text-uppercase" id="terminal-status-{{item.alpeta_terminal_id}}-id">
+                                    <ng-container [ngSwitch]="item.status">
+                                        <ng-container *ngSwitchCase="'active'"><span class="badge px-4 py-2 fs-fluid badge-success">Online</span></ng-container>
+                                        <ng-container *ngSwitchCase="'inactive'"><span class="badge px-4 py-2 fs-fluid badge-danger">Offline</span></ng-container>
+                                        <ng-container *ngSwitchDefault><span class="badge px-4 py-2 fs-fluid badge-secondary">{{item.status}}</span></ng-container>
+                                    </ng-container>
+                                </td>
+                                <!-- <td class="text-center">{{item.created_at | date:'medium'}}</td> -->
+                                <!-- <td class="text-center">{{this.user_details?.group_assign_date | date:'medium'}}</td> -->
+                                <td class="text-center">{{item.user_terminal_created_at ? (Global.parseDate(item.user_terminal_created_at) | date:'medium') : 'N/A'}}</td>
+                                <td class="text-center">{{item.user_terminal_updated_at ? (Global.parseDate(item.user_terminal_updated_at) | date:'medium') : 'N/A'}}</td>
+                                
+                                <ng-container *ngIf="['admin'].includes(fromPanel)">                                
+                                    <td class="text-center">
+                                        <ng-container *ngIf="isUserTerminalStatusEditable(item)">
+                                            <div class="form-check form-check-solid form-switch fv-row text-center" style="display: -webkit-inline-box">
+                                                <input (click)="changeUserTerminalStatus(item)" class="form-check-input w-45px h-30px" type="checkbox" [attr.checked]="item.is_block == 1 ? 'checked' : null" />
+                                                <label class="form-check-label" for="allowmarketing"></label>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="!isUserTerminalStatusEditable(item)">
+                                            <b>-</b>
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                                <!-- <td class="text-center">
+                                    <button (click)="removeUserFromTerminal(item)" class="btn btn-sm btn-danger mx-1"><i class="fa fa-trash"></i>&nbsp;Remove</button>
+                                </td> -->
+                            </tr>
+                        </ng-container>
+
+                        <ng-template #noDepartmentRecordsFound>
+                            <tr>
+                                <td colspan="9" class="text-center">No Records Found</td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="raw-auth-logs" role="tabpanel">
+        <div class="card mb-5 mb-xl-10 ">
+            <div class="card-header">
+                <div class="card-title m-0">
+                    <h3 class="fw-bolder m-0">Raw Auth Logs</h3>
+                </div>
+
+                <div class="card-toolbar">
+                    <button (click)="openUserRawAuthFilterModal()" class="btn btn-dark btn-sm align-self-center mx-1"><i class="fa fa-filter"></i> Filter</button>
+
+                    <button (click)="fetchUserRawAuthLogs({'xlx_export': true})" class="btn btn-dark btn-sm align-self-center mx-1" [disabled]="userRawAuthLogs.length < 1"><i class="fa fa-file-excel"></i> Export</button>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                <div class="table-processing" style="display: none;">
+                    <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-row-bordered gy-5 gs-7">
+                        <thead>
+                            <tr class="fw-bold fs-6 text-gray-800">
+                                <!-- <th>#</th> -->
+                                <th>Auth Result</th>
+                                <th>Auth Type</th>
+                                <th>PERNR</th>
+                                <th>TIMR6</th>
+                                <th>CHOIC</th>
+                                <th>LDATE</th>
+                                <th>LTIME</th>
+                                <th>SATZA</th>
+                                <th>TERMINAL ID</th>
+                                <th>SERVER TIME</th>
+                                <th>SAP Sync Status</th>
+                                <th>SAP Sync Time</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="userRawAuthLogs.length > 0; else noAUthLogRecordsFound">
+                                <tr *ngFor="let item of userRawAuthLogs; let i = index">
+                                    <!-- <td>{{item.IndexKey}}</td> -->
+                                    <td class="text-{{item.Auth_result}}"><b>{{item.Auth_result ? item.Auth_result : "-"}}</b></td>
+                                    <td>{{item.Auth_type ? item.Auth_type : "-"}}</td>
+                                    <td>{{item.PERNR ? item.PERNR : "-"}}</td>
+                                    <td>{{item.TIMR6 ? item.TIMR6 : "-"}}</td>
+                                    <td>{{item.CHOIC ? item.CHOIC : "-"}}</td>
+                                    <td>{{item.LDATE ? item.LDATE : "-"}}</td>
+                                    <td>{{item.LTIME ? item.LTIME : "-"}}</td>
+                                    <td>{{item.SATZA ? item.SATZA : "-"}}</td>
+                                    <td>{{item.TERMINAL_id ? item.TERMINAL_id : "-"}}</td>
+                                    <td>{{item.SERVER_TIME ? item.SERVER_TIME : "-"}}</td>
+                                    <td>{{item.SAP_sync_status ? item.SAP_sync_status : "-"}}</td>
+                                    <td>{{item.SAP_sync_date_time ? item.SAP_sync_date_time : "-"}}</td>
+                                    <td class="text-center">
+                                        <button (click)="fetchUserRawAuthDetails(item)" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> Details</button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+
+                            <ng-template #noAUthLogRecordsFound>
+                                <tr>
+                                    <td colspan="13" class="text-center">No Records Found</td>
+                                </tr>
+                            </ng-template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <app-pagination [rows]="userRawAuthLogs" [tableOptions]="userRawAuthLogsTableOptions" (onPrevPageClicked)="fetchUserRawAuthLogs({'page': userRawAuthLogsTableOptions.page - 1})" (onNextPageClicked)="fetchUserRawAuthLogs({'page': userRawAuthLogsTableOptions.page + 1})"></app-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#assign-terminal-modal" id="open-assign-terminal-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="assign-terminal-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign to Group</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <form [formGroup]="terminalAssignForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Group</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="group_id" [options]="groupMaster" class="form-control" [config]="{search: true, placeholder: 'Select One'}" [class.is-invalid]="( terminalAssignForm.controls.group_id.dirty || terminalAssignForm.controls.group_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="terminalAssignForm.controls.group_id.hasError('required') && ( terminalAssignForm.controls.group_id.dirty || terminalAssignForm.controls.group_id.touched )">
+                                <div>Please select the group from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" (click)="assignTerminal($event)" class="btn btn-primary">
+                        <span class="indicator-label">Submit</span>
+                        <span class="indicator-progress">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="profile-pic-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload User Image</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                  </span>
+                </div>
+            </div>
+
+            <form [formGroup]="profPicForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <div class="col-lg-12 fv-row">
+                            <input accept="image/*" type="file" class="form-control" formControlName="profile_picture" [class.error]="profPicForm.controls.profile_picture.dirty || profPicForm.controls.profile_picture.touched" (change)="onImageFileChanged($event, 'profile_picture', 'profile_picture_source', 'img-prev-prof-img')">
+
+                            <div class="me-7 mb-4">
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="profPicForm.controls.profile_picture.hasError('required') && ( profPicForm.controls.profile_picture.dirty || profPicForm.controls.profile_picture.touched )">
+                                    <div>Please select the image from your local system</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="me-7 mb-4 text-center">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" id="img-prev-prof-img" style="display: none;">
+                            <img src="" srcset="" alt="image" class="bg-secondary" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" (click)="uploadProfPic($event)" class="btn btn-primary">
+                      <span class="indicator-label">Submit</span>
+                      <span class="indicator-progress">Please wait...
+                      <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#editfingerprint-modal" id="open-editfingerprint-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="editfingerprint-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Fingerprint Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                  </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="scanFingerprintForm">
+                <div class="modal-body">
+                    <div class="row mb-10">
+                        <div class="col-md-12">
+                            <img src="assets/images/hand-image.png" class="w-100">
+                        </div>
+
+                        <ng-container *ngFor="let item of ['1','2','3','4','5','6','7','8','9','10']">
+                            <a (click)="fingerSelected(item, 'editing')" class="finger-box item-{{item}}" [ngClass]="{ 'selected': this.scanFingerprintForm.value.alpeta_figerprint_id?.alpeta_value == item, 'registered' : checkFingerCaptured(item, 'editing') }">
+                                <ng-container *ngIf="!checkFingerCaptured(item, 'editing'); else fingerRegisteredChecked">
+                                    {{item}}
+                                </ng-container>
+
+                                <ng-template #fingerRegisteredChecked>
+                                    <i class="fa fa-check-circle"></i>
+                                </ng-template>
+                            </a>
+                        </ng-container>
+                    </div>
+
+                    <div class="row mb-6 d-none">
+                        <!-- <hr> -->
+
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Finger</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="alpeta_figerprint_id" [options]="fingerMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" [class.is-invalid]="( scanFingerprintForm.controls.alpeta_figerprint_id.dirty || scanFingerprintForm.controls.alpeta_figerprint_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanFingerprintForm.controls.alpeta_figerprint_id.hasError('required') && ( scanFingerprintForm.controls.alpeta_figerprint_id.dirty || scanFingerprintForm.controls.alpeta_figerprint_id.touched )">
+                                <div>Please select the preferred finger from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="terminal_id" [options]="terminalMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" [class.is-invalid]="( scanFingerprintForm.controls.terminal_id.dirty || scanFingerprintForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanFingerprintForm.controls.terminal_id.hasError('required') && ( scanFingerprintForm.controls.terminal_id.dirty || scanFingerprintForm.controls.terminal_id.touched )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="alpeta_fingerprint_temp != null">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-6 text-center">
+                            <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="alpeta_fingerprint_temp?.ConvImage1">
+                                <img src="data:image/png;base64,{{alpeta_fingerprint_temp?.ConvImage1}}" alt="">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 text-center">
+                            <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="alpeta_fingerprint_temp?.ConvImage2">
+                                <img src="data:image/png;base64,{{alpeta_fingerprint_temp?.ConvImage2}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-block">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-success" (click)="updateUser($event, 'finger')">
+                                <span class="indicator-label">Save Fingeprint</span>
+                                <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+
+                        <div class="col-md-8 d-flex justify-content-end">
+                            <!-- <ng-container *ngIf="alpeta_fingerprint_data.length == 0; else fp_scanAgain"> -->
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin: 0 5px 0 0;">Cancel Edit</button>
+                            <button [disabled]="!scanFingerprintForm.valid" (click)="scanFingerPrintForEdit($event)" class="btn btn-primary">
+                                <span class="indicator-label">Scan Fingeprint</span>
+                                <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                            <!-- </ng-container> -->
+
+                            <ng-template #fp_scanAgain>
+                                <button (click)="scanFingerPrintForEdit($event)" [disabled]="!scanFingerprintForm.valid" class="btn btn-light">
+                                    <span class="indicator-label">Scan Fingerprint</span>
+                                    <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                </button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#editfacedata-modal" id="open-editfacedata-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="editfacedata-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Face Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                  </svg>
+                </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="scanFacedataForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="terminal_id" [options]="terminalMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" [class.is-invalid]="( scanFacedataForm.controls.terminal_id.dirty || scanFacedataForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanFacedataForm.controls.terminal_id.hasError('required') && ( scanFacedataForm.controls.terminal_id.dirty || scanFacedataForm.controls.terminal_id.touched )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="alpeta_face_editdata != null">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                            <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="alpeta_face_editdata[1]?.TemplateData">
+                                <img style="height: 250px;" src="data:image/png;base64,{{alpeta_face_editdata[1]?.TemplateData}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-block">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button [disabled]="!alpeta_face_editdata" type="button" class="btn btn-success" (click)="updateUser($event, 'face')">
+                                <span class="indicator-label">Save Facedata</span>
+                                <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+
+                        <div class="col-md-8 d-flex justify-content-end">
+                            <ng-container *ngIf="alpeta_face_editdata == null; else fc_scanAgain">
+                                <button style="margin: 0 5px 0 0;" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel Edit</button>
+                                <button type="submit" (click)="scanFaceDataForEdit($event)" class="btn btn-primary">
+                                    <span class="indicator-label">Scan Face</span>
+                                    <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                </button>
+                            </ng-container>
+
+                            <ng-template #fc_scanAgain>
+                                <button style="margin: 0 5px 0 0;" type="submit" (click)="scanFaceDataForEdit($event)" class="btn btn-light">
+                                    <span class="indicator-label">Scan Again</span>
+                                    <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                </button>
+
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel Edit</button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#editcarddata-modal" id="open-editcarddata-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="editcarddata-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Card Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="scanCardForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="terminal_id" [options]="terminalMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" [class.is-invalid]="( scanCardForm.controls.terminal_id.dirty || scanCardForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanCardForm.controls.terminal_id.hasError('required') && ( scanCardForm.controls.terminal_id.dirty || scanCardForm.controls.terminal_id.touched )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="apleta_card_editdata != null">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                            <!-- <h3>Card Number: <b>{{ apleta_card_editdata?.CardNum}}</b></h3> -->
+                            <h3 class="mb-0 text-success">Card Data Captured Succesfully</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-block">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button [disabled]="!apleta_card_editdata" type="button" class="btn btn-success" (click)="updateUser($event, 'card')">
+                                <span class="indicator-label">Save Card Data</span>
+                                <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+
+                        <div class="col-md-8 d-flex justify-content-end">
+                            <ng-container *ngIf="apleta_card_editdata == null; else crd_scanAgain">
+                                <button style="margin: 0 5px 0 0;" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel Edit</button>
+                                <button type="submit" (click)="scanCardForEdit($event)" class="btn btn-primary">
+                                    <span class="indicator-label">Scan Card</span>
+                                    <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                </button>
+                            </ng-container>
+
+                            <ng-template #crd_scanAgain>
+                                <button style="margin: 0 5px 0 0;" type="submit" (click)="scanCardForEdit($event)" class="btn btn-light">
+                                    <span class="indicator-label">Scan Again</span>
+                                    <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                </button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel Edit</button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#editalpetapassword-modal" id="open-editalpetapassword-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="editalpetapassword-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Alpeta Password</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="alpetaPasswordForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Alpeta Password</label>
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" class="form-control" formControlName="password" placeholder="Enter new Alpeta Password" [class.is-invalid]="( scanCardForm.controls.terminal_id.dirty || scanCardForm.controls.terminal_id.touched )">
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="alpetaPasswordForm.controls.password.hasError('required') && ( alpetaPasswordForm.controls.password.dirty || alpetaPasswordForm.controls.password.touched )">
+                                <div>The alpeta password field is required</div>
+                            </div>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="alpetaPasswordForm.controls.password.hasError('pattern') && ( alpetaPasswordForm.controls.password.dirty || alpetaPasswordForm.controls.password.touched )">
+                                <div>The alpeta password field should only contains numeric characters</div>
+                            </div>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="alpetaPasswordForm.controls.password.hasError('minlength') && ( alpetaPasswordForm.controls.password.dirty || alpetaPasswordForm.controls.password.touched )">
+                                <div>The alpeta password should be minimum 8 characters</div>
+                            </div>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="alpetaPasswordForm.controls.password.hasError('maxlength') && ( alpetaPasswordForm.controls.password.dirty || alpetaPasswordForm.controls.password.touched )">
+                                <div>The alpeta password should be maximum 10 characters</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-block">
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <button [disabled]="!alpetaPasswordForm.valid" type="button" class="btn btn-success" (click)="updateUser($event, 'password')">
+                                <span class="indicator-label">Save New Password</span>
+                                <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#editdashboardpassword-modal" id="open-editdashboardpassword-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="editdashboardpassword-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Dashboard Password</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="dashboardPasswordForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Dashboard Password</label>
+                        <div class="col-lg-8 fv-row">
+                            <input type="password" class="form-control" formControlName="password" placeholder="Enter new Dashboard Password" [class.is-invalid]="( scanCardForm.controls.terminal_id.dirty || scanCardForm.controls.terminal_id.touched )">
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="dashboardPasswordForm.controls.password.hasError('required') && ( dashboardPasswordForm.controls.password.dirty || dashboardPasswordForm.controls.password.touched )">
+                                <div>The dashboard password field is required</div>
+                            </div>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="dashboardPasswordForm.controls.password.hasError('pattern') && ( dashboardPasswordForm.controls.password.dirty || dashboardPasswordForm.controls.password.touched )">
+                                <div>The dashboard password field should only contains numeric characters</div>
+                            </div>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="dashboardPasswordForm.controls.password.hasError('minlength') && ( dashboardPasswordForm.controls.password.dirty || dashboardPasswordForm.controls.password.touched )">
+                                <div>The dashboard password should be minimum 8 characters</div>
+                            </div>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="dashboardPasswordForm.controls.password.hasError('maxlength') && ( dashboardPasswordForm.controls.password.dirty || dashboardPasswordForm.controls.password.touched )">
+                                <div>The dashboard password should be maximum 10 characters</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-block">
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <button [disabled]="!dashboardPasswordForm.valid" type="button" class="btn btn-success" (click)="updateUserDashboardPassword($event)">
+                                <span class="indicator-label">Save New Password</span>
+                                <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" data-bs-toggle="modal" data-bs-target="#editauthcombination-modal" id="open-editauthcombination-modal" class="d-none"></button>
+<div class="modal fade" tabindex="-1" id="editauthcombination-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Authentication Combination</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                  </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="authenticationCombinationForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Authentication Mode</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="authentication_mode" [options]="authenticationModeMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" [class.is-invalid]="( authenticationCombinationForm.controls.authentication_mode.dirty || authenticationCombinationForm.controls.authentication_mode.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="authenticationCombinationForm.controls.authentication_mode.hasError('required') && ( authenticationCombinationForm.controls.authentication_mode.dirty || authenticationCombinationForm.controls.authentication_mode.touched )">
+                                <div>Please select the mode from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-10">
+                        <div class="col-md-6">
+                            <div class="box-header bg-dark p-4">
+                                <h5 class="text-white mb-0 text-center">Available Method</h5>
+                            </div>
+                            <div class="box dragger-box" dragula="combination-master" [(dragulaModel)]="authenticationCombinationMaster">
+                                <ng-container *ngFor="let item of authenticationCombinationMaster">
+                                    <div class="card">
+                                        <h5 class="mb-0 text-white">{{item.description}}</h5>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="box-header bg-dark p-4">
+                                <h5 class="text-white mb-0 text-center">Final Combination</h5>
+                            </div>
+                            <div class="box dragger-box" dragula="combination-master" [(dragulaModel)]="userAuthenticationCombination">
+                                <ng-container *ngFor="let item of userAuthenticationCombination">
+                                    <div class="card">
+                                        <h5 class="mb-0 text-white">{{item.description}}</h5>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <p class="text-center text-danger mt-5 mb-0 d-none">Note - You can Drag & Drop to Alter Auth. Option and Priority of Final Combination.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel Edit</button>
+                    <button type="button" class="btn btn-primary" (click)="updateUser($event, 'auth_comb')">
+                      <span class="indicator-label">Update</span>
+                      <span class="indicator-progress">Please wait...
+                      <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#user-rawauth-filter-modal" id="open-user-rawauth-filter-modal"></button>
+<div class="modal fade" tabindex="-1" id="user-rawauth-filter-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Filter Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2 d-none" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <form [formGroup]="userRawAuthLogsFilterSearchForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6">Filter Date Range <span class="text-danger">*</span></label>
+                        <div class="col-lg-4 fv-row">
+                            <dp-date-picker readonly class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" [mode]="'daytime'" [config]="{'disableKeypress': true, 'format': 'DD-MM-YYYY hh:mm A'}" formControlName="start_date" theme="dp-material" attachTo=".mat-input-wrapper"
+                                [class.is-invalid]="( userRawAuthLogsFilterSearchForm.controls.start_date.dirty || userRawAuthLogsFilterSearchForm.controls.start_date.touched )"></dp-date-picker>
+                            <!-- <input type="datetime-local" formControlName="start_date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Start Date" [class.is-invalid]="( userRawAuthLogsFilterSearchForm.controls.start_date.dirty || userRawAuthLogsFilterSearchForm.controls.start_date.touched )"> -->
+                        </div>
+                        <div class="col-lg-4 fv-row">
+                            <dp-date-picker readonly class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" [mode]="'daytime'" [config]="{'disableKeypress': true, 'format': 'DD-MM-YYYY hh:mm A'}" formControlName="end_date" theme="dp-material" attachTo=".mat-input-wrapper"
+                                [class.is-invalid]="( userRawAuthLogsFilterSearchForm.controls.end_date.dirty || userRawAuthLogsFilterSearchForm.controls.end_date.touched )"></dp-date-picker>
+
+                            <!-- <input type="datetime-local" formControlName="end_date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="End Date" [class.is-invalid]="( userRawAuthLogsFilterSearchForm.controls.end_date.dirty || userRawAuthLogsFilterSearchForm.controls.end_date.touched )"> -->
+                        </div>
+                    </div>
+
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6">Filter Attendance</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="attendance" [multiple]="true" [options]="rawAuthLogAttendanceFilterMaster" class="form-control" [config]="{search: true, placeholder: 'Select from the dropdown'}" [class.is-invalid]="( userRawAuthLogsFilterSearchForm.controls.attendance.dirty || userRawAuthLogsFilterSearchForm.controls.attendance.touched )"></ngx-select-dropdown>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" (click)="resetUserRawAuthLogFilterForm()" class="btn btn-danger"><i class="fa fa-times"></i> Reset</button>
+                    <button type="button" [disabled]="!this.userRawAuthLogsFilterSearchForm.valid" (click)="fetchUserRawAuthLogs({page: 1})" class="btn btn-primary">
+                        <span class="indicator-label"><i class="fa fa-search"></i> Search</span>
+                        <span class="indicator-progress">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#user-rawauthlog-details-modal" id="open-user-rawauthlog-details-modal"></button>
+<div class="modal fade" tabindex="-1" id="user-rawauthlog-details-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Authentication Details</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                  </span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div [ngClass]="{'col-md-3': userRawAuthlogDetails?.details?.UserImage, 'col-md-4': !userRawAuthlogDetails?.details?.UserImage }">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="userRawAuthlogDetails?.details?.LogImage">
+                            <img style="width: 180px !important; height: 320px !important;" src="data:image/png;base64,{{userRawAuthlogDetails?.details?.LogImage}}" alt="">
+                            <p class="text-center text-uppercase mt-2">Captured Image</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3" *ngIf="userRawAuthlogDetails?.details?.UserImage">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="userRawAuthlogDetails?.details?.UserImage">
+                            <img style="width: 180px !important; height: 320px !important;" src="data:image/png;base64,{{userRawAuthlogDetails?.details?.UserImage}}" alt="">
+                            <p class="text-center text-uppercase mt-2">User Image</p>
+                        </div>
+                    </div>
+                    <div [ngClass]="{'col-md-6': userRawAuthlogDetails?.details?.UserImage, 'col-md-8': !userRawAuthlogDetails?.details?.UserImage }">
+                        <table class="table table-striped table-row-bordered">
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>#</b></th>
+                                <td class="py-4 text-primary"><b class="p-0">{{userRawAuthlogDetails?.IndexKey ? userRawAuthlogDetails?.IndexKey : '-'}}</b></td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>PERNR</b></th>
+                                <td class="py-4">{{userRawAuthlogDetails?.PERNR ? userRawAuthlogDetails?.PERNR : '-'}}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>TERMINAL ID</b></th>
+                                <td class="py-4">{{userRawAuthlogDetails?.TERMINAL_id ? userRawAuthlogDetails?.TERMINAL_id : '-'}}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>LDATE</b></th>
+                                <td class="py-4">{{userRawAuthlogDetails?.LDATE ? userRawAuthlogDetails?.LDATE : '-'}}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>LTIME</b></th>
+                                <td class="py-4">{{userRawAuthlogDetails?.LTIME ? userRawAuthlogDetails?.LTIME : '-'}}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>AUTH RESULT</b></th>
+                                <td class="py-4"><b class="text-{{userRawAuthlogDetails?.Auth_result}} p-0">{{userRawAuthlogDetails?.Auth_result ? userRawAuthlogDetails.Auth_result : "-"}}</b></td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>AUTH TYPE</b></th>
+                                <td class="py-4">{{userRawAuthlogDetails?.Auth_type ? userRawAuthlogDetails.Auth_type : "-"}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #NATEXTBLOCK>N/A</ng-template>

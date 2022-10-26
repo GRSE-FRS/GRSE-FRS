@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start">
+        <div>Showing {{(rows.length > 0) ? tableOptions.pagingCounter + 1 : 0}} to {{ (rows.length > 0) ? tableOptions.pagingCounter + (rows.length - 1) + 1 : 0}} of {{tableOptions.totalDocs}} records</div>
+    </div>
+    <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
+        <ul class="pagination">
+            <li class="page-item previous" [class.disabled]="tableOptions.hasPrevPage == false">
+                <a (click)="this.onPrevPageClicked.emit(tableOptions.page - 1)" href="javascript:;" class="page-link"><i class="previous"></i></a>
+            </li>
+
+            <li class="page-item active"><a href="javascript:;" class="page-link">{{tableOptions.page}}</a></li>
+
+            <li class="page-item next" [class.disabled]="tableOptions.hasNextPage == false">
+                <a (click)="this.onNextPageClicked.emit(tableOptions.page + 1)" href="javascript:;" class="page-link"><i class="next"></i></a>
+            </li>
+        </ul>
+    </div>
+</div>

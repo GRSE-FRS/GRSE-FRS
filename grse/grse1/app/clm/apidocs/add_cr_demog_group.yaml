@@ -1,0 +1,59 @@
+Add CR Demog Group
+---
+tags:
+  - "CR Demog Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRDemogSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRDemogSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRDemogError"
+definitions:
+  Authlog:
+    type: "object"
+  CRDemogSearch:
+    type: "object"
+    properties:
+      group_id:
+        type: "int"
+        example: 1
+      demog_id:
+        type: array"
+        example: [1,2,3,4,5]
+      type:
+        type: "string"
+        example: ""
+      status:
+        type: "string"
+        example: "active"
+  FetchAllCRDemogSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR demog group added successfully"
+  FetchAllCRDemogError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

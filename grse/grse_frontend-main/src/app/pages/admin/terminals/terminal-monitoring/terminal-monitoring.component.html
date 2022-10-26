@@ -1,0 +1,43 @@
+<div class="card mb-5 mb-xl-10" id="terminal-view-section">
+    <div class="card-header">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">
+                All Terminals
+            </h3>
+        </div>
+
+        <div class="card-toolbar">
+            <span class="mx-1 badge badge-online"><i class="fa fa-circle"></i> ONLINE</span>
+            <span class="mx-1 badge badge-offline" style="margin-right: 5em !important;"><i class="fa fa-circle"></i> OFFLINE</span>
+
+            <button (click)="fetchTerminals()" class="btn btn-dark btn-sm"><i class="fa fa-sync"></i>&nbsp;Refresh</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <ng-container *ngFor="let item of terminals">
+                <div class="col-2">
+                    <div class="terminal-item mb-4" id="monitoring-terminal-status-{{item.alpeta_terminal_id}}-id" [ngClass]="{ 'online' : ['active'].includes(item.status), 'offline' : ['inactive'].includes(item.status) }">
+                        <ng-container [ngSwitch]="item.status">
+                            <ng-container *ngSwitchCase="'active'"><img src="assets/images/icons/terminals-success.png"></ng-container>
+                            <ng-container *ngSwitchCase="'inactive'"><img src="assets/images/icons/terminals-danger.png"></ng-container>
+                            <ng-container *ngSwitchDefault><img src="assets/images/icons/terminals.png"></ng-container>
+                        </ng-container>
+
+                        <p>{{item.short_code}}</p>
+                        <p><small class="text-primary fw-bolder">#{{item.alpeta_terminal_id}}</small></p>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="terminals.length == 0">
+                <h5 class="text-primar text-center">No terminals found</h5>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- <div class="card-footer">
+        <span class="mx-1 badge badge-online"><i class="fa fa-circle"></i> ONLINE</span>
+        <span class="mx-1 badge badge-offline"><i class="fa fa-circle"></i> OFFLINE</span>
+    </div> -->
+</div>

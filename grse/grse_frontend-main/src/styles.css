@@ -1,0 +1,275 @@
+/*
+  -------------------------
+  CUSTOM CSS
+  -------------------------
+  -------------------------
+*/
+
+button.btn-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+button span {
+    pointer-events: none;
+}
+
+.btn-loading span.indicator-label {
+    display: none;
+}
+
+.btn-loading span.indicator-progress {
+    display: block;
+}
+
+button[type="submit"] span {
+    pointer-events: none;
+}
+
+.svg-icon img {
+    width: 28px;
+}
+
+a.menu-link.active .svg-icon img {
+    -webkit-filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1);
+}
+
+.table-processing {
+    padding: 10px !important;
+    background: #009ef7 !important;
+    color: #fff !important;
+    border: 2px solid #0080c8 !important;
+    height: auto !important;
+    border-radius: 30px;
+    width: 24% !important;
+    margin: 0;
+    text-align: center !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    margin-top: -26px !important;
+    z-index: 1 !important;
+}
+
+th,
+td {
+    vertical-align: middle;
+}
+
+th {
+    white-space: nowrap;
+}
+
+.form-control .ngx-dropdown-button {
+    padding: 0 !important;
+    border: none !important;
+    background-color: transparent !important
+}
+
+ngx-select-dropdown.form-control {
+    padding: .4rem 1rem;
+    background: #f5f8fa;
+}
+
+
+/* Dragula CSS */
+
+
+/* high-performance display:none; helper */
+
+.gu-hide {
+    left: -9999px !important;
+}
+
+
+/* added to mirrorContainer (default = body) while dragging */
+
+.gu-unselectable {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+
+/* added to the source element while its mirror is dragged */
+
+.gu-transit {
+    opacity: 0.2;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+    filter: alpha(opacity=20);
+}
+
+.table.bordered {
+    border: 1px solid #eee;
+}
+
+input.dp-picker-input {
+    background: transparent;
+    border: none;
+    font-size: inherit !important;
+    padding: 0 !important;
+    height: auto !important;
+}
+
+dp-date-picker.form-control {
+    padding: 0.75rem 1rem !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+    background-color: #fff !important;
+    border: 1px solid #e4e6ef !important;
+}
+
+ngx-select-dropdown.form-control {
+    background-color: #fff !important;
+    border: 1px solid #e4e6ef !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+}
+
+img.table-img {
+    max-width: 56px;
+    background: white;
+    border: 2px solid #009ef7;
+    border-radius: 40%;
+    padding: 7px;
+}
+
+#kt_aside_toggle {
+    display: none;
+}
+
+.float-right {
+    float: right !important;
+}
+
+/* arrows */
+
+select.classic {
+    background-image:
+        linear-gradient(45deg, transparent 50%, blue 50%),
+        linear-gradient(135deg, blue 50%, transparent 50%),
+        linear-gradient(to right, skyblue, skyblue);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px),
+        100% 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        2.5em 2.5em;
+    background-repeat: no-repeat;
+}
+
+select.classic:focus {
+    background-image:
+        linear-gradient(45deg, white 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, white 50%),
+        linear-gradient(to right, gray, gray);
+    background-position:
+        calc(100% - 15px) 1em,
+        calc(100% - 20px) 1em,
+        100% 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        2.5em 2.5em;
+    background-repeat: no-repeat;
+    /* border-color: grey; */
+    outline: 0;
+}
+
+select.round {
+    background-image:
+        linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%),
+        radial-gradient(#ddd 70%, transparent 72%);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px),
+        calc(100% - .5em) .5em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1.5em 1.5em;
+    background-repeat: no-repeat;
+}
+
+select.round:focus {
+    background-image:
+        linear-gradient(45deg, white 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, white 50%),
+        radial-gradient(gray 70%, transparent 72%);
+    background-position:
+        calc(100% - 15px) 1em,
+        calc(100% - 20px) 1em,
+        calc(100% - .5em) .5em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1.5em 1.5em;
+    background-repeat: no-repeat;
+    /* border-color: green; */
+    outline: 0;
+}
+
+select.minimal {
+    background-image:
+        linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px),
+        calc(100% - 2.5em) 0.5em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1px 1.5em;
+    background-repeat: no-repeat;
+}
+
+select.minimal:focus {
+    background-image:
+        linear-gradient(45deg, #808080 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, #808080 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 15px) 1em,
+        calc(100% - 20px) 1em,
+        calc(100% - 2.5em) 0.5em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1px 1.5em;
+    background-repeat: no-repeat;
+    /* border-color: green; */
+    outline: 0;
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+.system-docs-collapse {
+    width: 100%;
+    height: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: left
+}
+
+.system-docs-collapse a {
+    background-color: #fff;
+    padding-right: 10px;
+}
+
+.collapse-thead {
+    font-size: 12px;
+    text-transform: capitalize;
+    line-height: 21px;
+}

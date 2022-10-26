@@ -1,0 +1,4 @@
+2022-09-29 16:35 -- MsSql Authlog Saved to MongoDB
+2022-09-29 23:01 -- MsSql Authlog Saved to MongoDB
+2022-09-30 00:31 -- MsSql Authlog Saved to MongoDB
+2022-10-01 00:31 -- MsSql Authlog Saved to MongoDB

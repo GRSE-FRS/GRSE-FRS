@@ -1,0 +1,53 @@
+Update CR Group
+---
+tags:
+  - "CR Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRUpdateSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRUpdateError"
+definitions:
+  Authlog:
+    type: "object"
+  CRUpdateSearch:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      name:
+        type: "string"
+        example: "CT-01A-Labour License"
+  FetchAllCRUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR group updated successfully"
+  FetchAllCRUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

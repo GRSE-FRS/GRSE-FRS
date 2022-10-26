@@ -1,0 +1,43 @@
+Get Terminals
+---
+tags:
+  - "Admin"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/TerminalListSuccess"
+  error:
+    description: "success"
+    schema:
+      $ref: "#/definitions/TerminalListError"
+definitions:
+  TerminalListSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      treminals:
+        type: "Object"
+        example: {}
+  TerminalListError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: "Exception occured in alpetaServer"
+
+
+
+
+
+

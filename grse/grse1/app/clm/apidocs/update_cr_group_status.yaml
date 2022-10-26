@@ -1,0 +1,53 @@
+Update status CR Group
+---
+tags:
+  - "CR Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRgroupStatusSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchCRgroupStatusSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchCRgroupStatusError"
+definitions:
+  Authlog:
+    type: "object"
+  CRgroupStatusSearch:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "inactive"
+      id:
+        type: "int"
+        example: 1
+  FetchCRgroupStatusSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR group status updated successfully"
+  FetchCRgroupStatusError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

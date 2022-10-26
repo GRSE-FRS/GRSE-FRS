@@ -1,0 +1,205 @@
+<div class="card mb-5 mb-xl-10" id="bucket-forms">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Forms in Bucket</h3>
+        </div>
+        <div class="card-toolbar"></div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="row mb-5">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <form (submit)="init({'page' : 1})" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input type="text" class="form-control" placeholder="Search..." id="search-key">
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="table-processing" style="display: none;">
+                <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </div>
+
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-row-bordered gy-5 gs-7">
+                        <thead>
+                            <tr class="fw-bold fs-6 text-gray-800">
+                                <th>#</th>
+                                <th>For</th>
+                                <th class="text-center">Action</th>
+                                <th>State</th>
+                                <th>Submission Date</th>
+                                <th>Initiated By</th>
+                                <!-- <th>Current Status</th> -->
+                                <!-- <th>Current Department</th> -->
+                                <th>Last Updated By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of bucketForms; let i = index">
+                                <td class="fw-bolder text-primary">
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/view">{{item.unique_id}}</a>
+                                </td>
+                                <td><b class="text-info">{{item.form_heading}}</b></td>
+                                <td class="text-center">
+                                    <!-- <ng-container *ngIf="item.form_slug == 'FormB2'"> -->
+                                        <button (click)="initB2Transfer(item, 1, true)" class="btn btn-sm btn-dark mx-1"><i class="fa fa-list"></i> Transfer</button>
+                                    <!-- </ng-container> -->
+
+                                    <a routerLink="/user/cr-forms/{{item.unique_id}}/view" class="btn btn-sm btn-primary mx-1"><i class="fa fa-eye"></i> View</a>
+                                </td>
+                                <td class="fw-bolder text-uppercase">{{item.form_state_status}}</td>
+                                <td>{{ item.created_at | date }}</td>
+                                <td class="fw-bolder">{{item.init_by}}</td>
+                                <!-- <td>
+                                    <ng-container [ngSwitch]="item.form_status">
+                                        <span class="badge badge-sm badge-primary" *ngSwitchCase="'initiated'">Initiated</span>
+                                        <span class="badge badge-sm badge-warning" *ngSwitchCase="'inprogress'">In Progress</span>
+                                        <span class="badge badge-sm badge-warning" *ngSwitchCase="'pending'">Pending</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'completed'">Completed</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'complete'">Completed</span>
+                                        <span class="badge badge-sm badge-success" *ngSwitchCase="'onboard'">Onboared</span>
+                                        <span class="badge badge-sm badge-danger" *ngSwitchCase="'rejected'">Rejected</span>
+                                        <span class="badge badge-sm badge-info text-capitalize" *ngSwitchDefault>{{item.form_status}}</span>
+                                    </ng-container>
+                                </td> -->
+                                <!-- <td>{{item.current_dept}}</td> -->
+                                <td class="fw-bolder">{{item.last_updated_by}}</td>
+                            </tr>
+
+                            <tr *ngIf="bucketForms?.length == 0">
+                                <td class="text-center" colspan="100%">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12 text-center mt-5 mb-0">
+                <app-pagination [rows]="bucketForms" [tableOptions]="bucketFormsTableOptions" (onPrevPageClicked)="init({page: bucketFormsTableOptions.page - 1})" (onNextPageClicked)="init({page: bucketFormsTableOptions.page + 1})"></app-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#searchCrB1Code-modal" id="open-searchCrB1Code-modal"></button>
+<div class="modal fade" tabindex="-1" id="searchCrB1Code-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Available VD_B010_B1_CODE(s)</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="initB2Transfer('none', 1, false, 'table-search-vendorcode_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-vendorcode_search" type="text" class="form-control" placeholder="Search by Vendor Code">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="initB2Transfer('none', 1, false, 'table-search-vendorname_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-vendorname_search" type="text" class="form-control" placeholder="Search by Vendor Name">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="initB2Transfer('none', 1, false, 'table-search-po_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-po_search" type="text" class="form-control" placeholder="Search by PO Number">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="initB2Transfer('none', 1, false, 'table-search-uniqueid_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-uniqueid_search" type="text" class="form-control" placeholder="Search by Unique ID">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-row-bordered gy-5 gs-7" style="border: 1px solid #eee">
+                                <thead>
+                                    <tr class="fw-bold fs-6 text-white bg-primary">
+                                        <th>#</th>
+                                        <th>Vendor Name</th>
+                                        <th>Vendor Code</th>
+                                        <th>PO Number</th>
+                                        <th>Yard No</th>
+                                        <th>Unit</th>
+                                        <th>Labour Limit</th>
+                                        <th>Labour Onboarded</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of crB1CodeMaster; let i = index">
+                                        <td class="fw-bolder text-primary">{{item.unique_id}}</td>
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.vd_code}}</td>
+                                        <td>{{item.po_number}}</td>
+                                        <td>{{item.yard_no}}</td>
+                                        <td>{{item.unit}}</td>
+                                        <td>{{item.Labour_limit}}</td>
+                                        <td>{{item.Labour_onboarded}}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-info mx-1 text-uppercase" (click)="useCrB1Code(item)"><i class="fa fa-check-circle"></i> Use This</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="crB1CodeMaster?.length == 0">
+                                        <td class="text-center" colspan="100%">No records found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <ng-container *ngIf="(crB1CodeMaster?.length ?? []) > 0">
+                            <app-pagination [rows]="crB1CodeMaster" [tableOptions]="crB1CodetableOptions" (onPrevPageClicked)="initB2Transfer('none', crB1CodetableOptions.page - 1)" (onNextPageClicked)="initB2Transfer('none', crB1CodetableOptions.page + 1)"></app-pagination>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

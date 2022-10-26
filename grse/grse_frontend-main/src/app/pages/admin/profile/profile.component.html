@@ -1,0 +1,141 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Profile Details</h3>
+        </div>
+    </div>
+    <div class="collapse show">
+        <form class="form" [formGroup]="basicDetailsForm">
+            <div class="card-body border-top p-9">
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Full Name</label>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-6 fv-row">
+                                <input type="text" formControlName="first_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="First Name" [class.is-invalid]="( basicDetailsForm.controls.first_name.dirty || basicDetailsForm.controls.first_name.touched )">
+                            </div>
+                            <div class="col-lg-6 fv-row">
+                                <input type="text" formControlName="last_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Last Name" [class.is-invalid]="( basicDetailsForm.controls.last_name.dirty || basicDetailsForm.controls.last_name.touched )">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Phone Number</label>
+                    <div class="col-lg-8 fv-row">
+                        <input type="text" formControlName="phone_number" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Phone Number" [class.is-invalid]="( basicDetailsForm.controls.phone_number.dirty || basicDetailsForm.controls.phone_number.touched )">
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Email Address</label>
+                    <div class="col-lg-8 fv-row">
+                        <input type="text" formControlName="email" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Email Address" [class.is-invalid]="( basicDetailsForm.controls.email.dirty || basicDetailsForm.controls.email.touched )">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <button type="button" (click)="getAccountDetails()" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+                <button type="submit" (click)="updateBasicDetails($event)" class="btn btn-primary">
+                  <span class="indicator-label">Save Changes</span>
+                  <span class="indicator-progress">Please wait...
+                  <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+              </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Change Account Password</h3>
+        </div>
+    </div>
+    <div class="collapse show">
+        <form class="form" [formGroup]="passwordUpdateForm">
+            <div class="card-body border-top p-9">
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Current Password</label>
+                    <div class="col-lg-8 fv-row">
+                        <input type="password" formControlName="current_password" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Current Password" [class.is-invalid]="( passwordUpdateForm.controls.current_password.dirty || passwordUpdateForm.controls.current_password.touched )">
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.current_password.hasError('required') && ( passwordUpdateForm.controls.current_password.dirty || passwordUpdateForm.controls.current_password.touched )">
+                        <div>The password field is required</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.current_password.hasError('pattern') && ( passwordUpdateForm.controls.current_password.dirty || passwordUpdateForm.controls.current_password.touched )">
+                        <div>The password should only contains numeric value</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.current_password.hasError('minlength') && ( passwordUpdateForm.controls.current_password.dirty || passwordUpdateForm.controls.current_password.touched )">
+                        <div>The password should be of minimum 8 characters</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.current_password.hasError('maxlength') && ( passwordUpdateForm.controls.current_password.dirty || passwordUpdateForm.controls.current_password.touched )">
+                        <div>The password should be of maximum 20 characters</div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">New Password</label>
+                    <div class="col-lg-8 fv-row">
+                        <input type="password" formControlName="new_password" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter New Password" [class.is-invalid]="( passwordUpdateForm.controls.new_password.dirty || passwordUpdateForm.controls.new_password.touched )">
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password.hasError('required') && ( passwordUpdateForm.controls.new_password.dirty || passwordUpdateForm.controls.new_password.touched )">
+                        <div>The password field is required</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password.hasError('pattern') && ( passwordUpdateForm.controls.new_password.dirty || passwordUpdateForm.controls.new_password.touched )">
+                        <div>The password should only contains numeric value</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password.hasError('minlength') && ( passwordUpdateForm.controls.new_password.dirty || passwordUpdateForm.controls.new_password.touched )">
+                        <div>The password should be of minimum 8 characters</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password.hasError('maxlength') && ( passwordUpdateForm.controls.new_password.dirty || passwordUpdateForm.controls.new_password.touched )">
+                        <div>The password should be of maximum 20 characters</div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Confirm New Password</label>
+                    <div class="col-lg-8 fv-row">
+                        <input type="password" formControlName="new_password_confirmation" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Re-enter New Password" [class.is-invalid]="( passwordUpdateForm.controls.new_password_confirmation.dirty || passwordUpdateForm.controls.new_password_confirmation.touched )">
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password_confirmation.hasError('required') && ( passwordUpdateForm.controls.new_password_confirmation.dirty || passwordUpdateForm.controls.new_password_confirmation.touched )">
+                        <div>The password field is required</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password_confirmation.hasError('pattern') && ( passwordUpdateForm.controls.new_password_confirmation.dirty || passwordUpdateForm.controls.new_password_confirmation.touched )">
+                        <div>The password should only contains numeric value</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password_confirmation.hasError('minlength') && ( passwordUpdateForm.controls.new_password_confirmation.dirty || passwordUpdateForm.controls.new_password_confirmation.touched )">
+                        <div>The password should be of minimum 8 characters</div>
+                    </div>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="passwordUpdateForm.controls.new_password_confirmation.hasError('maxlength') && ( passwordUpdateForm.controls.new_password_confirmation.dirty || passwordUpdateForm.controls.new_password_confirmation.touched )">
+                        <div>The password should be of maximum 20 characters</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <button type="button" (click)="this.passwordUpdateForm.reset()" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+                <button type="submit" (click)="updateAccountPassword($event)" class="btn btn-primary">
+                <span class="indicator-label">Save Changes</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </button>
+            </div>
+        </form>
+    </div>
+</div>

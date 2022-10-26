@@ -1,0 +1,57 @@
+Create Designations
+----
+tags:
+  - "Designations"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CreteDesignations"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreteDesignationsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreteDesignationsSuccessError"
+definitions:
+  CreteDesignations:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "ab123"
+      name:
+        type: "string"
+        example: "test"
+      status:
+        type: "string"
+        example: "Active"
+  CreteDesignationsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Designation created successfully"
+      designation:
+        type: "object"
+        example : {}
+  CreteDesignationsSuccessError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

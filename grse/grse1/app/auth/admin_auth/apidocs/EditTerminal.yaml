@@ -1,0 +1,88 @@
+Update Terminal Details
+
+
+----
+
+
+tags:
+  - "Admin"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/upadte_ter"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/upadte_terSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/Cupadte_terError"
+definitions:
+  upadte_ter:
+    type: "object"
+    properties:
+      terminal_id:
+        type: "int"
+        example: 1
+      ID:
+        type: "int"
+        example: 1
+      Name:
+        type: "string"
+        example: "qw223"
+      GroupID:
+        type: "int"
+        example: 0
+      State:
+        type: "int"
+        example: 0
+      Type:
+        type: "int"
+        example: 36
+      FuncType:
+        type: "int"
+        example: 0
+      IPAddress:
+        type: 'string'
+        example: "string"
+      MacAddress:
+        type: "string"
+        example: "string"
+      Version:
+        type: "string"
+        example: string
+      RemoteDoor:
+        type: "int"
+        example: 0
+      Description:
+        type: 'string'
+        example: "string"
+      UTCIndex:
+        type: "int"
+        example: 0
+  upadte_terSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+  CreteDepartmentError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,53 @@
+Update status Vendors
+---
+tags:
+  - "Vendors"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/VendorsStatusSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchVendorsStatusSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchVendorsStatusError"
+definitions:
+  Authlog:
+    type: "object"
+  VendorsStatusSearch:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "inactive"
+      id:
+        type: "int"
+        example: 1
+  FetchVendorsStatusSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Vendors status updated successfully"
+  FetchVendorsStatusError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

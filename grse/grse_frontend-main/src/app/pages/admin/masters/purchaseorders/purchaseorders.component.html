@@ -1,0 +1,182 @@
+<div class="card mb-5 mb-xl-10" id="purchaseorder-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">All Purchase Orders</h3>
+        </div>
+        <div class="card-toolbar">
+            <!-- <input type="text" class="form-control" placeholder="Search..." id="table-search" (input)="fetch()"> -->
+
+            <div class="d-flex">
+                <form (submit)="fetch(1)" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input id="table-search" type="text" class="form-control" placeholder="Search...">
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+
+        <table class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="fw-bold fs-6 text-gray-800">
+                    <th>#</th>
+                    <th>PO Number</th>
+                    <th>PO Title</th>
+                    <th>Current Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="purchaseorders.length > 0; else noPurchaseOrderRecordsFound">
+                    <tr *ngFor="let item of purchaseorders; let i = index">
+                        <td>{{item.id}}</td>
+                        <td>{{item.po_number}}</td>
+                        <td>{{item.po_title}}</td>
+                        <td>
+                            <div class="form-check form-check-solid form-switch fv-row">
+                                <input (click)="changeStatus(item)" class="form-check-input w-45px h-30px" type="checkbox" [attr.checked]="item.status == 'active' ? 'checked' : null" />
+                                <label class="form-check-label" for="allowmarketing"></label>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <!-- <button class="btn btn-sm btn-dark mx-1" (click)="viewDetails(item)"><i class="fa fa-eye"></i>&nbsp;Details</button> -->
+                            <!-- <button class="btn btn-sm btn-dark mx-1"><i class="fa fa-users"></i>&nbsp;Users</button> -->
+                            <button class="btn btn-sm btn-info mx-1" (click)="getEdit(item)"><i class="fa fa-edit"></i>&nbsp;Edit</button>
+                            <!-- <button class="btn btn-sm btn-danger mx-1" (click)="deleteItem(item)"><i class="fa fa-trash"></i>&nbsp;Delete</button> -->
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <ng-template #noPurchaseOrderRecordsFound>
+                    <tr>
+                        <td colspan="5" class="text-center">No Records Found</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+
+        <app-pagination [rows]="purchaseorders" [tableOptions]="tableOptions" (onPrevPageClicked)="fetch(tableOptions.page - 1)" (onNextPageClicked)="fetch(tableOptions.page + 1)"></app-pagination>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10" id="purchaseorder-submit-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0" *ngIf="editActionId == ''; else editHeader">Add New Purchase Order</h3>
+            <ng-template #editHeader>
+                <h3 class="fw-bolder m-0">Edit Purchase Order</h3>
+            </ng-template>
+        </div>
+    </div>
+
+    <form class="form" [formGroup]="purchaseOrderForm">
+        <div class="card-body border-top p-9">
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">PO Number</label>
+                <div class="col-lg-8 fv-row">
+                    <!-- <input type="number" formControlName="po_number" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Purchase Order Number" [class.is-invalid]="( purchaseOrderForm.controls.po_number.dirty || purchaseOrderForm.controls.po_number.touched )"> -->
+
+                    <ngx-select-dropdown formControlName="po_number" [options]="poNumberMaster" (searchChange)="poNumberSearched($event)" class="form-control" [config]="{search: true, placeholder: 'Select PO', searchPlaceholder: 'Search by PO Number', height: '200px'}" [class.is-invalid]="( purchaseOrderForm.controls.po_number.dirty || purchaseOrderForm.controls.po_number.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.po_number.hasError('required') && ( purchaseOrderForm.controls.po_number.dirty || purchaseOrderForm.controls.po_number.touched )">
+                        <div>The purchase order number field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">PO Date</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="date" formControlName="po_date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Purchase Order Date" [class.is-invalid]="( purchaseOrderForm.controls.po_date.dirty || purchaseOrderForm.controls.po_date.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.po_date.hasError('required') && ( purchaseOrderForm.controls.po_date.dirty || purchaseOrderForm.controls.po_date.touched )">
+                        <div>The purchase order date field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">PO Title</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="po_title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Purchase Order Title" [class.is-invalid]="( purchaseOrderForm.controls.po_title.dirty || purchaseOrderForm.controls.po_title.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.po_title.hasError('required') && ( purchaseOrderForm.controls.po_title.dirty || purchaseOrderForm.controls.po_title.touched )">
+                        <div>The purchase order title field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-bold fs-6">PO Details</label>
+                <div class="col-lg-8 fv-row">
+                    <textarea formControlName="po_details" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Purchase Order Details" [class.is-invalid]="( purchaseOrderForm.controls.po_details.dirty || purchaseOrderForm.controls.po_details.touched )"></textarea>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.po_details.hasError('required') && ( purchaseOrderForm.controls.po_details.dirty || purchaseOrderForm.controls.po_details.touched )">
+                        <div>The purchase order details field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Vendor Code</label>
+                <div class="col-lg-8 fv-row">
+                    <!-- <ngx-select-dropdown formControlName="supplier_code" [options]="vendorMaster" class="form-control" [config]="{search: true, placeholder: 'Select Vendor', height: '200px', 'displayKey' : 'name'}" [class.is-invalid]="( purchaseOrderForm.controls.supplier_code.dirty || purchaseOrderForm.controls.supplier_code.touched )"></ngx-select-dropdown> -->
+
+                    <input type="number" formControlName="supplier_code" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Vendor Code" [class.is-invalid]="( purchaseOrderForm.controls.supplier_code.dirty || purchaseOrderForm.controls.supplier_code.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.supplier_code.hasError('required') && ( purchaseOrderForm.controls.supplier_code.dirty || purchaseOrderForm.controls.supplier_code.touched )">
+                        <div>The vendor code field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6 assign-expiry-fields">
+                <label class="col-lg-4 col-form-label fw-bold fs-6" [ngClass]="{'required': Global.isFormValidationAvailable(purchaseOrderForm, 'assign_date', 'required')}">Job Start Date</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="date" formControlName="assign_date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Assign Date" [class.is-invalid]="( purchaseOrderForm.controls.assign_date.dirty || purchaseOrderForm.controls.assign_date.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.assign_date.hasError('required') && ( purchaseOrderForm.controls.assign_date.dirty || purchaseOrderForm.controls.assign_date.touched )">
+                        <div>The job start date field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6 assign-expiry-fields">
+                <label class="col-lg-4 col-form-label fw-bold fs-6" [ngClass]="{'required': Global.isFormValidationAvailable(purchaseOrderForm, 'expiry', 'required')}">Job End Date</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="date" formControlName="expiry" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Expiry Date" [class.is-invalid]="( purchaseOrderForm.controls.expiry.dirty || purchaseOrderForm.controls.expiry.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="purchaseOrderForm.controls.expiry.hasError('required') && ( purchaseOrderForm.controls.expiry.dirty || purchaseOrderForm.controls.expiry.touched )">
+                        <div>The job end date field is required</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="button" (click)="this.cancelSubmit()" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+
+            <button type="submit" (click)="add($event)" class="btn btn-primary" *ngIf="editActionId == ''; else editButtonSection">
+              <span class="indicator-label">Add Purchase Order</span>
+              <span class="indicator-progress">Please wait...
+              <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+          </button>
+
+            <ng-template #editButtonSection>
+                <button type="submit" (click)="edit($event)" class="btn btn-primary">
+                  <span class="indicator-label">Save Changes</span>
+                  <span class="indicator-progress">Please wait...
+                  <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+              </button>
+            </ng-template>
+        </div>
+    </form>
+</div>

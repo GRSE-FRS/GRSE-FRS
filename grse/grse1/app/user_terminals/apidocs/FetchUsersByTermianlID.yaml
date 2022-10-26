@@ -1,0 +1,43 @@
+Fetch Terminal Details By GroupID
+---
+tags:
+  - "UserTerminals"
+produces:
+  - "application/json"
+parameters:
+  - name: "TerminalID"
+    in: path
+    required: true
+    description: "fetch users by terminal id"
+    type: "string"
+responses:
+  200:
+    description: "Success"
+    schema:
+      $ref: "#/definitions/Fetch_usebytermid_success"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/Fetch_usebytermid_Error"
+definitions:
+  Fetch_usebytermid_success:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      user_details:
+        type: "object"
+        example: {}
+  Fetch_usebytermid_Error:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,63 @@
+Search Userr with Roli_id,first_name,last_name,alpeta_user_id,employee_id
+----
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/searchusr"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/searchusrSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/searchusrError"
+definitions:
+  searchusr:
+    type: "object"
+    properties:
+      role_id:
+        type: "string"
+        example: "1"
+      first_name:
+        type: "string"
+        example: ""
+      last_name:
+        type: "string"
+        example: ""
+      alpeta_user_id:
+        type: "string"
+        example: ""
+      employee_id:
+        type: "string"
+        example: ""
+  searchusrSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      Users:
+        type: "object"
+        example : {}
+  searchusrError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

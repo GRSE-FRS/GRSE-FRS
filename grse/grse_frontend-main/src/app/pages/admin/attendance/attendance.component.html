@@ -1,0 +1,170 @@
+<div class="card mb-5 mb-xl-10" id="attendancelog-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">All Attendance Logs</h3>
+        </div>
+        <div class="card-toolbar">
+
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <form [formGroup]="searchForm" id="search-form">
+            <div class="row">
+                <div class="col-md-3">
+                    <input class="form-control form-control-solid" placeholder="Pick daterange" id="daterange-picker" />
+                </div>
+
+                <div class="col-md-3">
+                    <ngx-select-dropdown formControlName="search_category" [options]="searchCategoryMaster" class="form-control" [config]="{search:false, placeholder: 'Select Search Category'}"></ngx-select-dropdown>
+                </div>
+
+                <div class="col-md-2">
+                    <input type="text" class="form-control" formControlName="search_keyword" id="search-keyword" placeholder="Search...">
+                </div>
+
+                <div class="col-md-2 px-1">
+                    <button type="button" (click)="resetSearchForm()" class="btn btn-danger w-100"><i class="fa fa-times"></i> Reset</button>
+                </div>
+                <div class="col-md-2 px-1">
+                    <button type="button" (click)="submitSearchForm()" class="btn btn-primary w-100"><i class="fa fa-search"></i> Search</button>
+                </div>
+
+                <div class="col md-12">
+                    <hr>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+
+        <table class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="fw-bold fs-6 text-gray-800">
+                    <th>Index Key</th>
+                    <th>Event Time</th>
+                    <th>Alpeta User ID</th>
+                    <th>User Name</th>
+                    <th>Auth Result</th>
+                    <th>Auth Type</th>
+                    <th>Function</th>
+                    <th>Func Type</th>
+                    <th>Terminal</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="attendancelogs.length > 0; else noAttendanceLogRecordsFound">
+                    <tr *ngFor="let item of attendancelogs; let i = index">
+                        <td>{{item.IndexKey}}</td>
+                        <td>{{item.EventTime | date:'medium'}}</td>
+                        <td>{{item.UserID}}</td>
+                        <td>{{item.UserName}}</td>
+                        <td>{{item.AuthResult}}</td>
+                        <td>{{item.AuthType}}</td>
+                        <td>{{item.Func}}</td>
+                        <td>{{item.FuncType}}</td>
+                        <td>{{item.TerminalName}} <b>(#{{item.TerminalID}})</b></td>
+                        <td class="text-center">
+                            <button (click)="viewDetails(item)" class="btn btn-info btn-sm"><i class="fa fa-eye"></i>View</button>
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <ng-template #noAttendanceLogRecordsFound>
+                    <tr>
+                        <td colspan="10" class="text-center">No Records Found</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start">
+                <div>Showing {{(attendancelogs.length > 0) ? tableOptions.pagingCounter : 0}} to {{ (attendancelogs.length > 0) ? tableOptions.pagingCounter + (attendancelogs.length - 1) : 0}} of {{tableOptions.totalDocs}} records</div>
+            </div>
+            <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
+                <ul class="pagination">
+                    <li class="page-item previous" [class.disabled]="tableOptions.hasPrevPage == false">
+                        <a (click)="fetch( tableOptions.page - 1 )" href="javascript:;" class="page-link"><i class="previous"></i></a>
+                    </li>
+
+                    <li class="page-item active"><a href="javascript:;" class="page-link">{{tableOptions.page}}</a></li>
+
+                    <li class="page-item next" [class.disabled]="tableOptions.hasNextPage == false">
+                        <a (click)="fetch( tableOptions.page + 1 )" href="javascript:;" class="page-link"><i class="next"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#attendance-details-modal" id="open-attendance-details-modal"></button>
+<div class="modal fade" tabindex="-1" id="attendance-details-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Attendance Details</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                  </span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="attendancelogDetails?.LogImage">
+                            <img style="width: 180px !important; height: 320px !important;" src="data:image/png;base64,{{attendancelogDetails?.LogImage}}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table table-striped table-row-bordered">
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>Index Key</b></th>
+                                <td class="py-4 text-primary"><b class="p-0">{{attendancelogDetails?.IndexKey}}</b></td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>User Details</b></th>
+                                <td class="py-4">{{attendancelogDetails?.UserName ?? 'N/A'}} <b class="text-primary" *ngIf="attendancelogDetails?.UserID">(#{{attendancelogDetails?.UserID}})</b></td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>Terminal Details</b></th>
+                                <td class="py-4">{{attendancelogDetails?.TerminalName ?? 'N/A'}} <b class="text-primary" *ngIf="attendancelogDetails?.TerminalID">(#{{attendancelogDetails?.TerminalID}})</b></td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>Event Time</b></th>
+                                <td class="py-4">{{attendancelogDetails?.EventTime | date:'medium'}}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>Auth Result</b></th>
+                                <td class="py-4"><b class="p-0">{{attendancelogDetails?.AuthResult}}</b></td>
+                            </tr>
+
+                            <tr>
+                                <th class="py-4 min-w-200px"><b>Auth Type</b></th>
+                                <td class="py-4"><b class="p-0">{{attendancelogDetails?.AuthType}}</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

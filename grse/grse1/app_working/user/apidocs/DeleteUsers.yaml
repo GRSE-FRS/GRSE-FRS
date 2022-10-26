@@ -1,0 +1,51 @@
+Delete Users
+---
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DeleteUsers"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DeleteUsersSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DeleteUsersError"
+definitions:
+  DeleteUsers:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+  DeleteUsersSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "User Deleted successfully"
+      Users:
+        type: "object"
+        example : {}
+  DeleteUsersError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

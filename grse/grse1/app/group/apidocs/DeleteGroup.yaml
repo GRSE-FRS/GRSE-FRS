@@ -1,0 +1,53 @@
+Delete Group
+
+---
+
+tags:
+  - "Groups"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DeleteGroups"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DeleteGroupsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DeleteGroupsError"
+definitions:
+  DeleteGroups:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+  DeleteGroupsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Group Deleted successfully"
+      shift:
+        type: "object"
+        example : {}
+  DeleteGroupsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

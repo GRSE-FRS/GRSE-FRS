@@ -1,0 +1,56 @@
+User Terminal Status Update
+
+---
+
+tags:
+  - "UserTerminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/USerTerminalStatusUpdate"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/USerTerminalStatusUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/USerTerminalStatusUpdateError"
+definitions:
+  USerTerminalStatusUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "Active"
+  USerTerminalStatusUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "User Terminal  updated successfully"
+      user_terminals:
+        type: "object"
+        example : {}
+  USerTerminalStatusUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

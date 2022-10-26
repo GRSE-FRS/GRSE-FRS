@@ -1,0 +1,68 @@
+View ALL Users By RoleID And Search User By Search key
+---
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "role_id"
+    in: path
+    required: true
+    description: "Fetch all users by role_id"
+    type: "string"
+  - name: "page"
+    in: path
+    required: true
+    description: "page no"
+    type: "string"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/search"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/searchSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/searchError"
+definitions:
+  search:
+    type: "object"
+    properties:
+      search_status:
+        type: "Boolean"
+        example: True
+      search_key:
+        type: "string"
+        example: "ab123"
+  searchSuccess:
+#    "status": 'success', "message": "Success", "units": data
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      Users:
+        type: "object"
+        example : {}
+      SearchCount:
+        type: "int"
+        example: 10
+  searchError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

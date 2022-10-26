@@ -1,0 +1,62 @@
+View ALL Terminals
+---
+tags:
+  - "Terminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/search_data_terminam"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/TerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/Terminalserror"
+definitions:
+  search_data_terminam:
+    type: "object"
+    properties:
+      search_status:
+        type: "Boolean"
+        example: True
+      sort_code:
+        type: "string"
+        example: "ab123"
+      name:
+        type: "string"
+        example: "Soum"
+  TerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      terminals:
+        type: "object"
+        example : {}
+  Terminalserror:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

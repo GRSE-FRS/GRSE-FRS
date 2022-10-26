@@ -1,0 +1,68 @@
+Add CR Form
+---
+tags:
+  - "CR Form"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRFormAddSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormAddSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormAddError"
+definitions:
+  Authlog:
+    type: "object"
+  CRFormAddSearch:
+    type: "object"
+    properties:
+      form_name:
+        type: "string"
+        example: "Contractors' Workmen Detail"
+      form_shortcode:
+        type: "string"
+        example: "Form-B2"
+      form_description:
+        type: "string"
+        example: "Application for permit/pass for contractors' workmen"
+      form_heading:
+        type: "string"
+        example: "Form-B2:Contractors' Workmen Detail"
+      form_slug:
+        type: "string"
+        example: "Form B2"
+      form_sub_heading:
+        type: "string"
+        example: "Details of the contractors' workmen"
+      status:
+        type: "string"
+        example: "active"
+  FetchAllCRFormAddSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form created successfully"
+  FetchAllCRFormAddError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

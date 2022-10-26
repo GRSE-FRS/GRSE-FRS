@@ -1,0 +1,295 @@
+<ng-container *ngIf="vendorDetails; else vendorNotFound">
+    <div class="card mb-5 mb-xl-10">
+        <div class="card-body pt-9 pb-0">
+            <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
+                <div class="me-7 mb-4">
+                    <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                        <img src="assets/images/icon-logo.png" alt="image" class="bg-secondary" style="padding: 20px 15px;" />
+                    </div>
+                </div>
+
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="text-gray-900 text-hover-primary fs-2 fw-bolder me-1">{{vendorDetails?.name}}</span>
+
+                                <div class="mx-2">
+                                    <ng-container *ngIf="vendorDetails?.status">
+                                        <ng-container [ngSwitch]="vendorDetails?.status">
+                                            <span class="badge badge-success" *ngSwitchCase="'active'">Active</span>
+                                            <span class="badge badge-warning" *ngSwitchCase="'inactive'">Inactive</span>
+                                            <span class="badge badge-danger" *ngSwitchCase="'deleted'">Deleted</span>
+                                            <span class="badge badge-grey" *NgSwitchDefault>{{vendorDetails?.status}}</span>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
+                                <span class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 text-capitalize">
+                                    <i class="fa fa-user-circle"></i>&nbsp;
+                                    Contractor
+                                </span>
+
+                                <!-- <span class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 text-capitalize">
+                                    <i class="fa fa-phone"></i>&nbsp;8420549531
+                                </span> -->
+
+                                <!-- <span class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 text-capitalize">
+                                    <i class="fa fa-envelope"></i>&nbsp;pramit.ivan@gmail.com
+                                </span> -->
+                            </div>
+                        </div>
+
+                        <div class="d-flex">
+                            <!-- <a target="_blank" routerLink="/{{fromPanel}}/cr-forms/{{vendorDetails?.unique_id}}/view" class="float-right btn btn-primary btn-sm" *ngIf="vendorDetails?.unique_id"><i class="fa fa-file"></i>&nbsp;B1 Form</a> -->
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap flex-stack">
+                        <div class="d-flex flex-column flex-grow-1 pe-8">
+                            <div class="d-flex flex-wrap">
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fs-2 fw-bolder">{{vendorDetails?.vd_code}}</div>
+                                    </div>
+                                    <div class="fw-bold fs-6 text-gray-400 text-uppercase">Vendor Code</div>
+                                </div>
+
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fs-2 fw-bolder">{{vendorDetails?.created_at | date}}</div>
+                                    </div>
+                                    <div class="fw-bold fs-6 text-gray-400 text-uppercase">Onboarding Date</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder">
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab" href="#overview-tab">Overview</a>
+
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#purchaseorders-tab">Purchase Orders</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="overview-tab" role="tabpanel">
+            <div class="card mb-5 mb-xl-10">
+                <div class="card-header">
+                    <div class="card-title m-0">
+                        <h3 class="fw-bolder m-0">Contractor Overview</h3>
+                    </div>
+
+                    <div class="d-flex my-5">
+                    </div>
+                </div>
+
+                <div class="card-body p-9">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Contractor Name</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{vendorDetails?.name ?? "N/A"}}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Vendor Code</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{vendorDetails?.vd_code ?? "N/A"}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Labour Limit</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{vendorDetails?.labour_limit ?? "N/A"}}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-bold text-muted">Vendor Code</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-bolder fs-6 text-gray-800">{{vendorDetails?.created_at ? (vendorDetails.created_at | date: 'medium') : 'N/A'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="purchaseorders-tab" role="tabpanel">
+            <div class="card mb-5 mb-xl-10">
+                <div class="card-header">
+                    <div class="card-title m-0">
+                        <h3 class="fw-bolder m-0">Assigned Purchase Orders</h3>
+                    </div>
+
+                    <div class="d-flex my-5">
+                    </div>
+                </div>
+
+                <div class="card-body p-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="">
+                                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                                    <thead class="bg-dark text-white">
+                                        <tr class="fw-bold fs-6 text-white">
+                                            <th>SL</th>
+                                            <th>PO Number</th>
+                                            <th>CR Form ID</th>
+                                            <th>Onboarded At</th>
+                                            <th>Labour Limit</th>
+                                            <th>Labour Onboarded</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let purchaseOrder of vendorPurchaseOrders; let i = index;">
+                                            <td>{{ (i+1) }}</td>
+                                            <td>{{ purchaseOrder.po_number }}</td>
+                                            <td>{{ purchaseOrder.unique_id }}</td>
+                                            <td>{{ purchaseOrder.Onboarded_at | date: 'medium' }}</td>
+                                            <td>{{ purchaseOrder.Labour_limit }}</td>
+                                            <td>{{ purchaseOrder.Labour_onboarded }}</td>
+                                            <td class="text-center">
+                                                <a target="_blank" class="btn btn-sm btn-primary mx-1" routerLink="/{{fromPanel}}/cr-forms/{{purchaseOrder?.unique_id}}/view"><i class="fa fa-file"></i> B1 Form</a>
+                                                <button (click)="viewPoAssignedEmp({init: true, purchaseorder: purchaseOrder})" class="btn btn-sm btn-info mx-1" [disabled]="purchaseOrder.Labour_onboarded < 1"><i class="fa fa-users"></i> Users</button>
+                                            </td>
+                                        </tr>
+
+                                        <tr *ngIf="vendorPurchaseOrders?.length == 0">
+                                            <td colspan="100%" class="text-center">No records found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <app-pagination [rows]="vendorPurchaseOrders" [tableOptions]="vendorPurchaseOrderTableOptions" (onPrevPageClicked)="fetchVendorDetails({page: vendorPurchaseOrderTableOptions.page - 1, 'reset': false})" (onNextPageClicked)="fetchVendorDetails({page: vendorPurchaseOrderTableOptions.page + 1, 'reset': false})"></app-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #vendorNotFound>
+    <div class="card mb-5 mb-xl-10">
+        <div class="card-body pt-9 pb-0">
+            <div class="d-flex flex-column flex-root">
+                <div class="d-flex flex-column flex-center flex-column-fluid p-10">
+                    <img src="/assets/images/404-error.png" alt="" class="mw-100 mb-10 h-lg-450px" />
+
+                    <h1 class="fw-bold mb-10" style="color: #A3A3C7">Oops!! The contractor you are looking is not found</h1>
+
+                    <a routerLink="/{{fromPanel}}/master/contactors" class="btn btn-primary">View Contractors</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#po-employees-modal" id="open-po-employees-modal"></button>
+<div class="modal fade" id="po-employees-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Employees Assigned</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row mb-5">
+                    <div class="col-md-8"></div>
+                    <div class="col-md-4">
+                        <form (submit)="viewPoAssignedEmp({page: 1})">
+                            <div class="input-group mx-1">
+                                <input id="table-search" type="text" class="form-control" placeholder="Search...">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-processing" style="display: none;">
+                            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </div>
+
+                        <table class="table table-striped table-row-bordered gy-5 gs-7 mb-2" style="border: 1px solid #eee;">
+                            <thead class="bg-dark text-white">
+                                <tr class="fw-bold fs-6 text-white">
+                                    <th>Employee ID</th>
+                                    <th>Aadhaar Number</th>
+                                    <th>B2 Form</th>
+                                    <th>Full Name</th>
+                                    <th>Employment Type</th>
+                                    <th class="text-center">Alpeta Registration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of vendorPurchaseOrdersUsers; let i = index">
+                                    <td>{{ item.employee_id }}</td>
+                                    <td>{{ item.Addhar }}</td>
+                                    <td><b><a routerLink="/{{fromPanel}}/cr-forms/{{item?.B2form}}/view" target="_blank">{{ item.B2form }}</a></b></td>
+                                    <td>{{ item.full_name }}</td>
+                                    <td>
+                                        <ng-container [ngSwitch]="item.employment_type">
+                                            <ng-container *ngSwitchCase="'1'">Admin</ng-container>
+                                            <ng-container *ngSwitchCase="'2'">GRSE-CLMS</ng-container>
+                                            <ng-container *ngSwitchCase="'3'">GRSE-Permanent</ng-container>
+                                            <ng-container *ngSwitchDefault>{{item.employment_type}}</ng-container>
+                                        </ng-container>
+                                    </td>
+                                    <td class="text-center">
+                                        <ng-container *ngIf="(item.alpeta_user_id || item.Alpeta_registration == 'Y'); else AlpetRegPending">
+                                            <span class="badge badge-success">Completed</span>
+                                        </ng-container>
+
+                                        <ng-template #AlpetRegPending>
+                                            <span class="badge badge-danger">Pending</span>
+                                        </ng-template>
+                                    </td>
+                                </tr>
+
+                                <tr *ngIf="vendorPurchaseOrdersUsers?.length == 0">
+                                    <td colspan="100%" class="text-center">No records found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <app-pagination [rows]="vendorPurchaseOrdersUsers" [tableOptions]="purchaseOrderUsersTableOptions" (onPrevPageClicked)="viewPoAssignedEmp({page: purchaseOrderUsersTableOptions.page - 1})" (onNextPageClicked)="viewPoAssignedEmp({page: purchaseOrderUsersTableOptions.page + 1})"></app-pagination>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

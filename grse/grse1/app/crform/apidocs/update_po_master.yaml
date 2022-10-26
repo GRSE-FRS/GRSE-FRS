@@ -1,0 +1,68 @@
+Update PO Master
+---
+tags:
+  - "PO Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/POMasterSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchPOMasterSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchPOMasterError"
+definitions:
+  Authlog:
+    type: "object"
+  POMasterSearch:
+    type: "object"
+    properties:
+      po_number:
+        type: "int"
+        example: 7800000021
+      po_date:
+        type: "Date"
+        example: 2021-05-27
+      po_title:
+        type: "string"
+        example: "M/40701801"
+      supplier_code:
+        type: "int"
+        example: 50008581
+      assign_date:
+        type: "Date"
+        example: 2021-05-27
+      expiry:
+        type: "Date"
+        example: 2023-05-27
+      id:
+        type: "int"
+        example: 1
+  FetchPOMasterSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "PO Master updated successfully"
+  FetchPOMasterError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

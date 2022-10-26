@@ -1,0 +1,58 @@
+Create Group
+----
+tags:
+  - "Groups"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CreateGroups"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreateGroupsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreateGroupsError"
+definitions:
+#   name,code,shift_start_time,shift_end_time,status
+  CreateGroups:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Test_Name"
+      description:
+        type: "string"
+        example: "ab123"
+      status:
+        type: "time"
+        example: "active"
+  CreateGroupsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Group created successfully"
+      group:
+        type: "object"
+        example : {}
+  CreateGroupsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

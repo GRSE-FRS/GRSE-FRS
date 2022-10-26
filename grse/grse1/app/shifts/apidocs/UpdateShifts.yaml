@@ -1,0 +1,63 @@
+Update Shifts
+----
+tags:
+  - "Shifts"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateShifts"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UpdateShiftsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UpdateShiftsError"
+definitions:
+  UpdateShifts:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: "1"
+      name:
+        type: "string"
+        example: "Test_Name"
+      code:
+        type: "string"
+        example: "ab123"
+      shift_start_time:
+        type: "time"
+        example: "test"
+      shift_end_time:
+        type: "time"
+        example: "time"
+  UpdateShiftsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Shifts updated successfully"
+      designation:
+        type: "object"
+        example : {}
+  UpdateShiftsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

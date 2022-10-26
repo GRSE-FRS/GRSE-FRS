@@ -1,0 +1,59 @@
+Logs in a Admin
+---
+tags:
+  - "Admin"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    description: "The login details of the admin"
+    schema:
+      $ref: "#/definitions/admin_login"
+responses:
+  200:
+    description: "You have successfully logged In."
+    schema:
+      $ref: "#/definitions/login_successful"
+  error:
+    description: "Try checking Your Credentials and Try again"
+    schema:
+      $ref: "#/definitions/invalid_login"
+definitions:
+  admin_login:
+    type: "object"
+    required:
+      - "email"
+      - "password"
+    properties:
+      email:
+        type: "string"
+        example: "admin.ivan@yopmail.com"
+      password:
+        type: "string"
+        format: "password"
+        example: "12345678"
+  login_successful:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        default: "success"
+      message:
+        type: "string"
+        default: "You have successfully logged In"
+      access_token:
+        type: "string"
+        example: "xmxmxmmxmmxmxm.xmxmmxmxmxmxm.xmxmmxmxmxmx"
+      admin_details:
+        type: "object"
+        example : {}
+  invalid_login:
+    type: "object"
+    properties:
+      Message:
+        type: "string"
+        default: "Try checking Your Credentials and Try again"

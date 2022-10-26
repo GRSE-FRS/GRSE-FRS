@@ -1,0 +1,44 @@
+Get CR Form By Slug
+---
+tags:
+  - "CR Form"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "slug"
+    in: path
+    required: true
+    description: "Slug"
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchCRFormSlugGetSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchCRFormSlugGetError"
+definitions:
+  Authlog:
+    type: "object"
+  FetchCRFormSlugGetSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form  slug fetched successfully"
+  FetchCRFormSlugGetError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

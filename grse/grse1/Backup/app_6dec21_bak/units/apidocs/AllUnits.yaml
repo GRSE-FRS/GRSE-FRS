@@ -1,0 +1,40 @@
+View ALL Units
+---
+tags:
+  - "Units"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/ALLUnitsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/ALLUnitsError"
+definitions:
+  ALLUnitsSuccess:
+#    "status": 'success', "message": "Success", "units": data
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      units:
+        type: "object"
+        example : {}
+  ALLUnitsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

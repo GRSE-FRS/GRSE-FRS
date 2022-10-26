@@ -1,0 +1,53 @@
+Update CR Demog Group Status
+---
+tags:
+  - "CR Demog Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateCRDemogStatusSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchUpdateCRDemogStatusSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchUpdateCRDemogStatusError"
+definitions:
+  Authlog:
+    type: "object"
+  UpdateCRDemogStatusSearch:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "active"
+  FetchUpdateCRDemogStatusSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR demog group updated successfully"
+  FetchUpdateCRDemogStatusError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

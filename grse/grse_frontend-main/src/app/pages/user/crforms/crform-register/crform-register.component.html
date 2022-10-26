@@ -1,0 +1,374 @@
+<div class="card mb-5 mb-xl-10" id="authlog-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">
+                {{formDetails?.form_heading}} Registration
+                <br><span class="text-muted mt-1 fw-bold fs-7">{{formDetails?.form_description}}</span>
+            </h3>
+        </div>
+        <div class="card-toolbar">
+        </div>
+    </div>
+
+    <form [formGroup]="registerForm">
+        <div class="card-body border-top p-9">
+            <div class="row mb-5">
+                <div class="col-md-6 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'department', 'required')}">Department</label>
+                    <ngx-select-dropdown [options]="departmentMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select Department'}" formControlName="department" [class.is-invalid]="( registerForm.controls.department.dirty || registerForm.controls.department.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.department.hasError('required') && ( registerForm.controls.department.dirty || registerForm.controls.department.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'yard_no', 'required')}">Yard No</label>
+                    <ngx-select-dropdown [options]="yardMaster" formControlName="yard_no" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select Yard'}" [class.is-invalid]="( registerForm.controls.yard_no.dirty || registerForm.controls.yard_no.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.yard_no.hasError('required') && ( registerForm.controls.yard_no.dirty || registerForm.controls.yard_no.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'unit', 'required')}">Unit</label>
+                    <ngx-select-dropdown [options]="unitMaster" formControlName="unit" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select Unit'}" [class.is-invalid]="( registerForm.controls.unit.dirty || registerForm.controls.unit.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.unit.hasError('required') && ( registerForm.controls.unit.dirty || registerForm.controls.unit.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'po_number', 'required')}">P.O. No</label>
+                    <ngx-select-dropdown [options]="poMaster" formControlName="po_number" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select PO Number', searchPlaceholder: 'Search by PO Number'}" [class.is-invalid]="( registerForm.controls.po_number.dirty || registerForm.controls.po_number.touched )"
+                        (searchChange)="getPoMaster(this.formDetails?.form_slug, $event, false)"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.po_number.hasError('required') && ( registerForm.controls.po_number.dirty || registerForm.controls.po_number.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-10">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+
+            <ng-container formArrayName="dcode_details">
+                <div class="row" *ngIf="formGroups.length > 0">
+                    <div class="col-md-12">
+                        <ng-container *ngFor="let formGroup of formGroups; let i = index">
+                            <table class="table table-row-bordered gy-3 gx-5 mb-10" *ngIf="formGroup.demog_masters.length > 0">
+                                <thead>
+                                    <tr class="bg-secondary text-center text-primary text-uppercase font-weight-bold fs-5 fw-bolder">
+                                        <th colspan="100%">{{formGroup?.name ?? "N/A"}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let form of formGroup.demog_masters; let i = index" class="field-{{form.code}}">
+                                        <ng-container [formGroupName]="fetchIndexOfControl(registerForm, 'dcode_details', 'dm_code', form?.code)" *ngIf="!['vd_po'].includes(form?.code);">
+                                            <td class="w-50">
+                                                {{form.name}}
+                                                <span class="text-danger" *ngIf="form.is_required == true">*</span>
+                                            </td>
+                                            <td class="w-50">
+                                                <ng-container *ngIf="['text', 'number', 'date', 'datetime-local'].includes(form.type)">
+                                                    <ng-container *ngIf="['vd_b1'].includes(form?.code);">
+                                                        <div class="input-group mb-3 mb-lg-0">
+                                                            <input formControlName="dm_value" type="{{form.type}}" class="form-control form-control-lg form-control-solid" placeholder="{{form.placeholder ?? 'Click on the search button'}}" readonly>
+                                                            <div class="input-group-append">
+                                                                <button class="input-group-text form-control-lg btn-primary" type="button" (click)="searchCrB1Code(1, true)"><i class="fa fa-search text-white" style="padding: 4px;" ></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="['cl_dob'].includes(form?.code);">
+                                                        <div class="input-group mb-3 mb-lg-0">
+                                                            <input formControlName="dm_value" type="{{form.type}}" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="{{form.placeholder ?? 'Enter Value'}}" (change)="calculateDob()">
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="['cl_dealing_officer'].includes(form?.code);">
+                                                        <div class="input-group mb-3 mb-lg-0">
+                                                            <ngx-select-dropdown formControlName="dm_value" [options]="clDealingOfiicersMaster" (searchChange)="userListSearched('cl_dealing_officer', $event)" class="form-control" [config]="{search: true, placeholder: 'Select Employee', searchPlaceholder: 'Search by Employee ID', height: '200px'}"></ngx-select-dropdown>
+                                                            <!-- <input formControlName="dm_value" type="{{form.type}}" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="{{form.placeholder ?? 'Enter Value'}}" (change)="calculateDob()"> -->
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="!['vd_b1', 'vd_po', 'cl_dob', 'cl_dealing_officer'].includes(form?.code);">
+                                                        <input formControlName="dm_value" type="{{form.type}}" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="{{form.placeholder ?? 'Enter Value'}}">
+                                                    </ng-container>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="['yesno'].includes(form.type)">
+                                                    <div class="d-flex">
+                                                        <div class="form-check form-check-custom form-check-solid mx-3">
+                                                            <input [value]="'true'" class="form-check-input" type="radio" id="radio-{{form.code}}-yes-{{i}}" name="radio-{{form.code}}-{{i}}" />
+                                                            <label class="form-check-label" for="radio-{{form.code}}-yes-{{i}}">
+                                                                Yes
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check form-check-custom form-check-solid mx-3">
+                                                            <input [value]="'false'" class="form-check-input" type="radio" id="radio-{{form.code}}-no-{{i}}" name="radio-{{form.code}}-{{i}}" />
+                                                            <label class="form-check-label" for="radio-{{form.code}}-no-{{i}}">
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="['acknowledge-ck'].includes(form.type)">
+                                                    <div class="d-flex">
+                                                        <div class="form-check form-check-custom form-check-solid mx-3">
+                                                            <input [value]="'true'" class="form-check-input" type="checkbox" />
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="['select-options'].includes(form.type)">
+                                                    <ngx-select-dropdown [options]="form.lov_values" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" formControlName="dm_value"></ngx-select-dropdown>
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+
+                                    <tr *ngIf="!formGroup.demog_masters || formGroup.demog_masters.length == 0">
+                                        <td class="text-center">No fields found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div> -->
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container formArrayName="attachment_code">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <table class="table table-row-bordered gy-3 gx-5 mb-5">
+                            <thead class="bg-secondary text-primary fw-bolder text-center text-uppercase fs-5">
+                                <tr>
+                                    <th colspan="3">
+                                        Upload Documents / Files
+                                    </th>
+                                    <th>
+                                        <button type="button" class="btn btn-sm btn-primary mx-1" (click)="addFormRows('attachment_code')"><i class="fa fa-plus"></i> Add New</button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of Global.getFormGroupArray(registerForm, 'attachment_code'); let i = index" [formGroupName]="i">
+                                    <td>{{i+1}}</td>
+                                    <td>
+                                        <!-- <input type="text" class="form-control" placeholder="Enter File Name" formControlName="fl_details" [class.is-invalid]="( item.get('fl_details')!.dirty || item.get('fl_details')!.touched )"> -->
+
+                                        <ngx-select-dropdown [options]="flDetailsMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select File Details'}" formControlName="fl_details" [class.is-invalid]="( item.get('fl_details')!.dirty || item.get('fl_details')!.touched )"></ngx-select-dropdown>
+                                    </td>
+                                    <td>
+                                        <input type="file" class="form-control" formControlName="fl_file" [class.is-invalid]="( item.get('fl_file')!.dirty || item.get('fl_file')!.touched )" (change)="onFormArrayImageChanged($event, 'attachment_code', i, 'fl_filesource')">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-danger mx-1" (click)="removeFormRow('attachment_code', i)"><i class="fa fa-times"></i> Remove</button>
+                                    </td>
+                                </tr>
+
+                                <tr *ngIf="Global.getFormGroupArray(registerForm, 'attachment_code')?.length == 0" class="bg-light">
+                                    <td colspan="100%" class="text-center">Please click on the <b>"Add New"</b> button to add files</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <table class="table table-row-bordered gy-3 gx-5">
+                        <thead class="bg-secondary text-primary fw-bolder text-center text-uppercase fs-5">
+                            <tr>
+                                <th colspan="100%">
+                                    Submission Comment
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div class="col-lg-12 fv-row">
+                    <textarea class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Add Your Submission Comment" formControlName="submission_comment"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-10 d-none">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row mb-5 d-none">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5 text-center">
+                            <thead class="fw-bolder text-uppercase">
+                                <tr class="bg-warning fs-5">
+                                    <th colspan="100%">
+                                        Assign To (Assigned as Per System Settings)
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Current Designation</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>I0493</td>
+                                    <td>John Doe</td>
+                                    <td>Nodal Officer</td>
+                                    <td>CLMS Nodal AJS</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="button" (click)="cancelEntry()" class="btn btn-secondary me-2">Discard</button>
+
+            <button type="submit" (click)="submitForm($event)" class="btn btn-primary">
+                <span class="indicator-label">Submit</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#searchCrB1Code-modal" id="open-searchCrB1Code-modal"></button>
+<div class="modal fade" tabindex="-1" id="searchCrB1Code-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Available VD_B010_B1_CODE(s)</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="searchCrB1Code(1, false, 'table-search-vendorcode_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-vendorcode_search" type="text" class="form-control" placeholder="Search by Vendor Code">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="searchCrB1Code(1, false, 'table-search-vendorname_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-vendorname_search" type="text" class="form-control" placeholder="Search by Vendor Name">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="searchCrB1Code(1, false, 'table-search-po_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-po_search" type="text" class="form-control" placeholder="Search by PO Number">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+                        <form (submit)="searchCrB1Code(1, false, 'table-search-uniqueid_search')" class="">
+                            <div class="input-group mx-1">
+                                <input id="table-search-uniqueid_search" type="text" class="form-control" placeholder="Search by Unique ID">
+                                <div class="input-group-append">
+                                    <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-row-bordered gy-5 gs-7" style="border: 1px solid #eee">
+                                <thead>
+                                    <tr class="fw-bold fs-6 text-white bg-primary">
+                                        <th>#</th>
+                                        <th>Vendor Name</th>
+                                        <th>Vendor Code</th>
+                                        <th>PO Number</th>
+                                        <th>Yard No</th>
+                                        <th>Unit</th>
+                                        <th>Labour Limit</th>
+                                        <th>Labour Onboarded</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of crB1CodeMaster; let i = index">
+                                        <td class="fw-bolder text-primary">{{item.unique_id}}</td>
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.vd_code}}</td>
+                                        <td>{{item.po_number}}</td>
+                                        <td>{{item.yard_no}}</td>
+                                        <td>{{item.unit}}</td>
+                                        <td>{{item.Labour_limit}}</td>
+                                        <td>{{item.Labour_onboarded}}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-info mx-1" (click)="useCrB1Code(item)"><i class="fa fa-copy"></i> Clone</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="crB1CodeMaster?.length == 0">
+                                        <td class="text-center" colspan="100%">No records found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <ng-container *ngIf="(crB1CodeMaster?.length ?? []) > 0">
+                            <app-pagination [rows]="crB1CodeMaster" [tableOptions]="crB1CodetableOptions" (onPrevPageClicked)="searchCrB1Code(crB1CodetableOptions.page - 1)" (onNextPageClicked)="searchCrB1Code(crB1CodetableOptions.page + 1)"></app-pagination>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

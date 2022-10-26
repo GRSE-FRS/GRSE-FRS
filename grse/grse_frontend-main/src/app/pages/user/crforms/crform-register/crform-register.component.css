@@ -1,0 +1,34 @@
+.form-label {
+    margin-left: 3px;
+}
+
+button.input-group-text {
+    border-radius: 0 10px 10px 0;
+    padding: 0.9rem 1rem;
+}
+
+th,
+td {
+    white-space: nowrap;
+}
+
+.form-control.disabled {
+    pointer-events: none;
+}
+
+ngx-select-dropdown,
+.form-control {
+    background-color: #ffffff !important;
+    border-color: #002eff !important;
+}
+
+.form-control[readonly] {
+    background-color: #EFF2FC !important;
+    border-color: #e4e6ef !important;
+    opacity: 1;
+}
+
+ngx-select-dropdown.disabled {
+    background: #eff2fc !important;
+    border-color: #e4e6ef !important;
+}

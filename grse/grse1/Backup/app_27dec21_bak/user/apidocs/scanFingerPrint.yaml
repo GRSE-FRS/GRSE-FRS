@@ -1,0 +1,58 @@
+Scan Finger Print
+----
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/scanFinger"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/scanFingerSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/scanFingerError"
+definitions:
+  scanFinger:
+    type: "object"
+    properties:
+      terminal_id:
+        type: "int"
+        example: 2
+      alpeta_user_id:
+        type: "int"
+        example: "00000012"
+      alpeta_figerprint_id:
+        type: "int"
+        example: ""
+  scanFingerSuccess:
+#    "status": "success", "message": "Fingerprint captured successfully.","dmFPImage": content['dmFPIm
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Fingerprint captured successfully."
+      dmFPImage:
+        type: "object"
+        example : {}
+  scanFingerError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

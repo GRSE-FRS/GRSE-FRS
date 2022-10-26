@@ -1,0 +1,53 @@
+Update status PO Master
+---
+tags:
+  - "PO Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/POMasterStatusSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchPOMasterStatusSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchPOMasterStatusError"
+definitions:
+  Authlog:
+    type: "object"
+  POMasterStatusSearch:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "inactive"
+      id:
+        type: "int"
+        example: 1
+  FetchPOMasterStatusSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "PO Master status updated successfully"
+  FetchPOMasterStatusError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

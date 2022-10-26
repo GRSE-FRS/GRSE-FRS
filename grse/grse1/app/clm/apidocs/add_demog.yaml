@@ -1,0 +1,59 @@
+Add Demog
+---
+tags:
+  - "Demog Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DemogSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllDemogSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllDemogError"
+definitions:
+  Authlog:
+    type: "object"
+  DemogSearch:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "ct_lab_lic"
+      name:
+        type: "string"
+        example: "CT-01A-Labour License"
+      is_required:
+        type: "boolean"
+        example: True
+      type:
+        type: "string"
+        example: ""
+  FetchAllDemogSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Demong master created successfully"
+  FetchAllDemogError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,54 @@
+Designation Status Update
+---
+tags:
+  - "Designations"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DesignationStatusUpdate"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DesignationStatusUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DesignationStatusUpdateError"
+definitions:
+  DesignationStatusUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "Active"
+  DesignationStatusUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Designation Status updated successfully"
+      designation:
+        type: "object"
+        example : {}
+  DesignationStatusUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

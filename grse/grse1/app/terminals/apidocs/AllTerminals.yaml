@@ -1,0 +1,39 @@
+View ALL Terminals
+---
+tags:
+  - "Terminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/TerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/Terminalserror"
+definitions:
+  TerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      terminals:
+        type: "object"
+        example : {}
+  Terminalserror:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

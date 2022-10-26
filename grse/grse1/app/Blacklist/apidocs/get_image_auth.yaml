@@ -1,0 +1,55 @@
+Authlog
+---
+tags:
+  - "Authlog"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/AuthImageSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/GETIMAGEAuthSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/GETIMAGEAuthError"
+definitions:
+  AuthImageSearch:
+    type: "object"
+    properties:
+      IndexKey:
+        type: "string"
+        example: "10"
+      UniqueID:
+        type: "string"
+        example: "18.02.2022"
+
+  GETIMAGEAuthSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "Success"
+      message:
+        type: "string"
+        example: "Search Complete"
+      Search:
+        type: "list"
+        example: []
+  GETIMAGEAuthError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

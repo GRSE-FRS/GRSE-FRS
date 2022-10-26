@@ -1,0 +1,51 @@
+Scan Face
+----
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/scanFace"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/scanFaceSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/scanFaceError"
+definitions:
+  scanFace:
+    type: "object"
+    properties:
+      terminal_id:
+        type: "int"
+        example: 2
+  scanFaceSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Face data captured successfully."
+      UserFaceWTInfo:
+        type: "object"
+        example : {}
+  scanFaceError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

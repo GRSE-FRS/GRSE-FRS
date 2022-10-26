@@ -1,0 +1,66 @@
+Create Blacklist
+----
+tags:
+  - "Blacklist"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/BlacklistUser"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/BlacklistUserSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/BlacklistUserError"
+definitions:
+  BlacklistUser:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      user_id:
+        type: "string"
+        example: "0010"
+      terminal_id:
+        type: "string"
+        example: "2"
+      block_from:
+        type: "Datetime"
+        example: "2021-12-06 00:00:00"
+      block_to:
+        type: "Datetime"
+        example: "2021-12-06 00:00:00"
+      alpeta_id:
+        type: "int"
+        example: 1
+  BlacklistUserSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "User Inactivated/Blacklisted, downloaded to a specific terminal and updated back to Alp-eta"
+      user_update_details:
+        type: "object"
+        example: { }
+  BlacklistUserError:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+          example: "error"
+        message:
+          type: "string"
+          example: "User activated/Blacklisted unsuccessfully"

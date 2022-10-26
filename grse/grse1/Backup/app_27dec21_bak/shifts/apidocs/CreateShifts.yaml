@@ -1,0 +1,64 @@
+Create Shifts
+----
+tags:
+  - "Shifts"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CreateShifts"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreateShiftsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreateShiftsError"
+definitions:
+#   name,code,shift_start_time,shift_end_time,status
+  CreateShifts:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Test_Name"
+      code:
+        type: "string"
+        example: "ab123"
+      shift_start_time:
+        type: "time"
+        example: "test"
+      shift_end_time:
+        type: "time"
+        example: ""
+      status:
+        type: "time"
+        example: "Active"
+  CreateShiftsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Shifts created successfully"
+      shift:
+        type: "object"
+        example : {}
+  CreateShiftsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

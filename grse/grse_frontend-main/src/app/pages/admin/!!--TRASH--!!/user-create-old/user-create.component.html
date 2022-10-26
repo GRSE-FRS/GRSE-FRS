@@ -1,0 +1,494 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0 text-capitalize">Create New {{PageType.name}}</h3>
+        </div>
+    </div>
+    <div class="collapse show">
+        <form class="form" [formGroup]="userForm">
+            <div class="card-body border-top p-9">
+                <div class="row">
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label required fw-bold fs-6">ALPETA USER ID</label>
+                        <div class="fv-row">
+                            <input type="text" [value]="alpeta_user_id" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="ALPETA USER ID" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label required fw-bold fs-6">Employee Code</label>
+                        <div class="fv-row">
+                            <input type="text" (change)="employeeCodeChanged()" formControlName="employee_code" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Employee Code" [class.is-invalid]="( userForm.controls.employee_code.dirty || userForm.controls.employee_code.touched )">
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.employee_code.hasError('required') && ( userForm.controls.employee_code.dirty || userForm.controls.employee_code.touched )">
+                                <div>The employee code field is required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label required fw-bold fs-6">Department</label>
+                        <div class="fv-row">
+                            <ngx-select-dropdown formControlName="department_id" [options]="departmentMaster" class="form-control" [config]="{search: true, placeholder: 'Select Department'}" [class.is-invalid]="( userForm.controls.department_id.dirty || userForm.controls.department_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.department_id.hasError('required') && ( userForm.controls.department_id.dirty || userForm.controls.department_id.touched )">
+                                <div>Please select a department to continue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label required fw-bold fs-6">Designation</label>
+                        <div class="fv-row">
+                            <ngx-select-dropdown formControlName="designation_id" [options]="designationMaster" class="form-control" [config]="{search: true, placeholder: 'Select Designation'}" [class.is-invalid]="( userForm.controls.designation_id.dirty || userForm.controls.designation_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.designation_id.hasError('required') && ( userForm.controls.designation_id.dirty || userForm.controls.designation_id.touched )">
+                                <div>Please select a designation to continue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label required fw-bold fs-6">Work Shift</label>
+                        <div class="fv-row">
+                            <ngx-select-dropdown formControlName="shift_id" [options]="shiftMaster" class="form-control" [config]="{search: true, placeholder: 'Select Shift'}" [class.is-invalid]="( userForm.controls.shift_id.dirty || userForm.controls.shift_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.shift_id.hasError('required') && ( userForm.controls.shift_id.dirty || userForm.controls.shift_id.touched )">
+                                <div>Please select a shift to continue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-6" *ngIf="PageType.slug == 'vendor-employees'">
+                        <label class="col-form-label required fw-bold fs-6">Vendor</label>
+                        <div class="fv-row">
+                            <ngx-select-dropdown formControlName="vendor_id" [options]="vendorMaster" class="form-control" [config]="{search: true, placeholder: 'Select Vendor'}" [class.is-invalid]="( userForm.controls.vendor_id.dirty || userForm.controls.vendor_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.vendor_id.hasError('required') && ( userForm.controls.vendor_id.dirty || userForm.controls.vendor_id.touched )">
+                                <div>Please select a vendor to continue</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body border-top p-9">
+                <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label required fw-bold fs-6">Full Name</label>
+                    <div class="col-lg-9">
+                        <div class="row">
+                            <div class="col-lg-4 fv-row">
+                                <input type="text" formControlName="first_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="First Name" [class.is-invalid]="( userForm.controls.first_name.dirty || userForm.controls.first_name.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.first_name.hasError('required') && ( userForm.controls.first_name.dirty || userForm.controls.first_name.touched )">
+                                    <div>The first name field is required</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 fv-row">
+                                <input type="text" formControlName="middle_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Middle Name (Optional)" [class.is-invalid]="( userForm.controls.middle_name.dirty || userForm.controls.middle_name.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.middle_name.hasError('required') && ( userForm.controls.middle_name.dirty || userForm.controls.middle_name.touched )">
+                                    <div>The middle name field is required</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 fv-row">
+                                <input type="text" formControlName="last_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Last Name" [class.is-invalid]="( userForm.controls.last_name.dirty || userForm.controls.last_name.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.last_name.hasError('required') && ( userForm.controls.last_name.dirty || userForm.controls.last_name.touched )">
+                                    <div>The last name field is required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label required fw-bold fs-6">Contact Information</label>
+
+                    <div class="col-lg-9 fv-row">
+                        <div class="row">
+                            <div class="col-lg-6 fv-row">
+                                <input type="text" formControlName="phone" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Phone Number" [class.is-invalid]="( userForm.controls.phone.dirty || userForm.controls.phone.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.phone.hasError('required') && ( userForm.controls.phone.dirty || userForm.controls.phone.touched )">
+                                    <div>The phone number field is required</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="(userForm.controls.phone.hasError('pattern') || userForm.controls.phone.hasError('minlength') || userForm.controls.phone.hasError('maxlength')) && ( userForm.controls.phone.dirty || userForm.controls.phone.touched )">
+                                    <div>Please enter a valid phone number</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 fv-row">
+                                <input type="text" formControlName="email" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Email Address" [class.is-invalid]="( userForm.controls.email.dirty || userForm.controls.email.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.email.hasError('required') && ( userForm.controls.email.dirty || userForm.controls.email.touched )">
+                                    <div>The email field is required</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.email.hasError('email') && ( userForm.controls.email.dirty || userForm.controls.email.touched )">
+                                    <div>Please enter a valid email address</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label required fw-bold fs-6">Password</label>
+                    <div class="col-lg-9">
+                        <div class="row">
+                            <div class="col-lg-4 fv-row">
+                                <input type="password" formControlName="password" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Account Password" [class.is-invalid]="( userForm.controls.password.dirty || userForm.controls.password.touched )" autocomplete="new-password">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password.hasError('required') && ( userForm.controls.password.dirty || userForm.controls.password.touched )">
+                                    <div>The password field is required</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password.hasError('pattern') && ( userForm.controls.password.dirty || userForm.controls.password.touched )">
+                                    <div>The password field should only contains numeric characters</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password.hasError('minlength') && ( userForm.controls.password.dirty || userForm.controls.password.touched )">
+                                    <div>The password should be minimum 8 characters</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password.hasError('maxlength') && ( userForm.controls.password.dirty || userForm.controls.password.touched )">
+                                    <div>The password should be maximum 20 characters</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 fv-row">
+                                <input type="password" formControlName="password_confirmation" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Re-enter Account Password" [class.is-invalid]="( userForm.controls.password_confirmation.dirty || userForm.controls.password_confirmation.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password_confirmation.hasError('required') && ( userForm.controls.password_confirmation.dirty || userForm.controls.password_confirmation.touched )">
+                                    <div>The password confirmation field is required</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password_confirmation.hasError('pattern') && ( userForm.controls.password_confirmation.dirty || userForm.controls.password_confirmation.touched )">
+                                    <div>The password confirmation field should only contains numeric characters</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password_confirmation.hasError('minlength') && ( userForm.controls.password_confirmation.dirty || userForm.controls.password_confirmation.touched )">
+                                    <div>The password confirmation should be minimum 8 characters</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.password_confirmation.hasError('maxlength') && ( userForm.controls.password_confirmation.dirty || userForm.controls.password_confirmation.touched )">
+                                    <div>The password confirmation should be maximum 20 characters</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 fv-row">
+                                <input type="text" formControlName="alpeta_password" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Biometric Password" [class.is-invalid]="( userForm.controls.alpeta_password.dirty || userForm.controls.alpeta_password.touched )">
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.alpeta_password.hasError('required') && ( userForm.controls.alpeta_password.dirty || userForm.controls.alpeta_password.touched )">
+                                    <div>The alpeta password field is required</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.alpeta_password.hasError('pattern') && ( userForm.controls.alpeta_password.dirty || userForm.controls.alpeta_password.touched )">
+                                    <div>The alpeta password field should only contains numeric characters</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.alpeta_password.hasError('minlength') && ( userForm.controls.alpeta_password.dirty || userForm.controls.alpeta_password.touched )">
+                                    <div>The alpeta password should be minimum 8 characters</div>
+                                </div>
+
+                                <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.alpeta_password.hasError('maxlength') && ( userForm.controls.alpeta_password.dirty || userForm.controls.alpeta_password.touched )">
+                                    <div>The alpeta password should be maximum 10 characters</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="card-body border-top p-9">
+                <div class="row">
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label fw-bold fs-6">PF Number</label>
+                        <div class="fv-row">
+                            <input type="text" formControlName="pf_no" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="PF Number (Optional)" [class.is-invalid]="( userForm.controls.pf_no.dirty || userForm.controls.pf_no.touched )">
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.pf_no.hasError('required') && ( userForm.controls.pf_no.dirty || userForm.controls.pf_no.touched )">
+                                <div>The PF number field is required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-6">
+                        <label class="col-form-label fw-bold fs-6">ESI Number</label>
+                        <div class="fv-row">
+                            <input type="text" formControlName="esi_no" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="ESI Number (Optional)" [class.is-invalid]="( userForm.controls.esi_no.dirty || userForm.controls.esi_no.touched )">
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="userForm.controls.esi_no.hasError('required') && ( userForm.controls.esi_no.dirty || userForm.controls.esi_no.touched )">
+                                <div>The ESI number field is required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer py-6 px-9">
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#fingerprint-modal" id="open-fingerprint-modal" class="btn w-100 btn-success me-2 float-left">
+                          <ng-container *ngIf="alpeta_fingerprint_data == null; else fp_capturedText">
+                            Scan Fingerprint
+                          </ng-container>
+                          <ng-template #fp_capturedText>
+                            Finger Captured
+                          </ng-template>
+                        </button>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#facedata-modal" id="open-facedata-modal" class="btn w-100 btn-success me-2 float-left">
+                          <ng-container *ngIf="alpeta_face_data == null; else fc_capturedText">
+                            Scan Facedata
+                          </ng-container>
+                          <ng-template #fc_capturedText>
+                            Face Captured
+                          </ng-template>
+                        </button>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#card-modal" id="open-card-modal" class="btn w-100 btn-success me-2 float-left">
+                        <ng-container *ngIf="apleta_card_data == null; else crd_capturedText">
+                          Scan Card
+                        </ng-container>
+                        <ng-template #crd_capturedText>
+                          Card Captured
+                        </ng-template>
+                      </button>
+                    </div>
+
+                    <div class="d-flex justify-content-end col-md-6">
+                        <button type="button" routerLink="/admin/{{PageType.slug}}/list" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+                        <button type="submit" (click)="createUser($event)" class="btn btn-primary">
+                            <span class="indicator-label">Create User</span>
+                            <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="fingerprint-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Fingerprint Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="scanFingerprintForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Finger</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="alpeta_figerprint_id" [options]="fingerMaster" class="form-control" [config]="{search: true, placeholder: 'Select One'}" [class.is-invalid]="( scanFingerprintForm.controls.alpeta_figerprint_id.dirty || scanFingerprintForm.controls.alpeta_figerprint_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanFingerprintForm.controls.alpeta_figerprint_id.hasError('required') && ( scanFingerprintForm.controls.alpeta_figerprint_id.dirty || scanFingerprintForm.controls.alpeta_figerprint_id.touched )">
+                                <div>Please select the preferred finger from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="terminal_id" [options]="terminalMaster" class="form-control" [config]="{search: true, placeholder: 'Select One'}" [class.is-invalid]="( scanFingerprintForm.controls.terminal_id.dirty || scanFingerprintForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanFingerprintForm.controls.terminal_id.hasError('required') && ( scanFingerprintForm.controls.terminal_id.dirty || scanFingerprintForm.controls.terminal_id.touched )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="alpeta_fingerprint_data != null">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-6 text-center">
+                            <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="alpeta_fingerprint_data?.ConvImage1">
+                                <img src="data:image/png;base64,{{alpeta_fingerprint_data?.ConvImage1}}" alt="">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 text-center">
+                            <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="alpeta_fingerprint_data?.ConvImage2">
+                                <img src="data:image/png;base64,{{alpeta_fingerprint_data?.ConvImage2}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <ng-container *ngIf="alpeta_fingerprint_data == null; else fp_scanAgain">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" (click)="scanFingerPrint($event)" class="btn btn-primary">
+                            <span class="indicator-label">Scan Fingeprint</span>
+                            <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </ng-container>
+
+                    <ng-template #fp_scanAgain>
+                        <button type="submit" (click)="scanFingerPrint($event)" class="btn btn-light">
+                            <span class="indicator-label">Scan Again</span>
+                            <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    </ng-template>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="facedata-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Face Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                  </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="scanFacedataForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="terminal_id" [options]="terminalMaster" class="form-control" [config]="{search: true, placeholder: 'Select One'}" [class.is-invalid]="( scanFacedataForm.controls.terminal_id.dirty || scanFacedataForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanFacedataForm.controls.terminal_id.hasError('required') && ( scanFacedataForm.controls.terminal_id.dirty || scanFacedataForm.controls.terminal_id.touched )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="alpeta_face_data != null">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                            <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative" *ngIf="alpeta_face_data[1]?.TemplateData">
+                                <img style="height: 250px;" src="data:image/png;base64,{{alpeta_face_data[1]?.TemplateData}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <ng-container *ngIf="alpeta_face_data == null; else fc_scanAgain">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" (click)="scanFaceData($event)" class="btn btn-primary">
+                            <span class="indicator-label">Scan Face</span>
+                            <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </ng-container>
+
+                    <ng-template #fc_scanAgain>
+                        <button type="submit" (click)="scanFaceData($event)" class="btn btn-light">
+                            <span class="indicator-label">Scan Again</span>
+                            <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    </ng-template>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="card-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Card Data</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                  </svg>
+                </span>
+                </div>
+            </div>
+
+            <form class="form" [formGroup]="scanCardForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown formControlName="terminal_id" [options]="terminalMaster" class="form-control" [config]="{search: true, placeholder: 'Select One'}" [class.is-invalid]="( scanCardForm.controls.terminal_id.dirty || scanCardForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="scanCardForm.controls.terminal_id.hasError('required') && ( scanCardForm.controls.terminal_id.dirty || scanCardForm.controls.terminal_id.touched )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="apleta_card_data != null">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                            <h3>Card Number: <b>{{ apleta_card_data?.CardNum}}</b></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <ng-container *ngIf="apleta_card_data == null; else crd_scanAgain">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" (click)="scanCard($event)" class="btn btn-primary">
+                          <span class="indicator-label">Scan Card</span>
+                          <span class="indicator-progress">Please wait...
+                          <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                      </button>
+                    </ng-container>
+
+                    <ng-template #crd_scanAgain>
+                        <button type="submit" (click)="scanCard($event)" class="btn btn-light">
+                          <span class="indicator-label">Scan Again</span>
+                          <span class="indicator-progress">Please wait...
+                          <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                      </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    </ng-template>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

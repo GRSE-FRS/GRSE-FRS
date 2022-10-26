@@ -1,0 +1,69 @@
+Update Terminals
+
+----
+
+tags:
+  - "Terminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateTerminals"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UpdateTerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UpdateTerminalsError"
+definitions:
+            # _id, name, alpeta_terminal_id, short_code, terminal_type, description,
+  UpdateTerminals:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      name:
+        type: "string"
+        example: 1
+      alpeta_terminal_id:
+        type: "int"
+        example: 1
+      short_code:
+        type: "string"
+        example: ""
+      terminal_type:
+        type: "string"
+        example: ""
+      description:
+        type: "string"
+        example: ""
+  UpdateTerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Terminal updated successfully"
+      terminals:
+        type: "object"
+        example : {}
+  UpdateTerminalsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

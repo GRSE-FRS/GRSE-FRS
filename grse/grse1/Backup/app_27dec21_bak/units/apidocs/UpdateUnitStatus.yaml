@@ -1,0 +1,54 @@
+Units Status Update
+---
+tags:
+  - "Units"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UnitsStatusUpdate"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UnitsStatusUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UnitsStatusUpdateError"
+definitions:
+  UnitsStatusUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "Active"
+  UnitsStatusUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Units Status updated successfully"
+      units:
+        type: "object"
+        example : {}
+  UnitsStatusUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,59 @@
+Add CR Form Group
+---
+tags:
+  - "CR Form Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRFormGroupSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormGroupSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormGroupError"
+definitions:
+  Authlog:
+    type: "object"
+  CRFormGroupSearch:
+    type: "object"
+    properties:
+      form_id:
+        type: "int"
+        example: 1
+      group_id:
+        type: array"
+        example: [1,2,3,4,5]
+      type:
+        type: "string"
+        example: ""
+      status:
+        type: "string"
+        example: "active"
+  FetchAllCRFormGroupSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form group added successfully"
+  FetchAllCRFormGroupError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

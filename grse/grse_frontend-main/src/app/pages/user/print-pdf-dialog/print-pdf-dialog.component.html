@@ -1,0 +1,58 @@
+<div class="card">
+  <div id="employee-table" class="card-header">
+    <div class="card-title m-0">
+      <h3 class="fw-bolder p-3">
+        Employee Details
+      </h3>
+    </div>
+
+    <table class="table table-dark table-bordered ">
+      <tbody>
+        <tr>
+          <th class="pl-2"><strong>EMP ID.</strong></th>
+          <td>{{userData.user_data.user_data.employee_id}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>FULL NAME</strong></th>
+          <td>{{userData.user_data.user_data.full_name}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>AADHAAR NO.</strong></th>
+          <td>{{userData.user_data.user_data.aadhar}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>EMAIL</strong></th>
+          <td>{{userData.user_data.user_data.email}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>GENDER</strong></th>
+          <td>{{userData.user_data.user_data.gender}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>DATE OF BIRTH</strong></th>
+          <td>{{userData.user_data.user_data.dob}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>UNIT</strong></th>
+          <td>{{userData.user_data.user_data.unit}}</td>
+        </tr>
+
+        <tr>
+          <th class="pl-2"><strong>EMPLOYEE TYPE</strong></th>
+          <td>{{userData.user_data.user_data.employee_type}}</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+
+  <button class="btn btn-success" [useExistingCss]="true" printSectionId="employee-table" ngxPrint> Print PDF</button>
+
+</div>

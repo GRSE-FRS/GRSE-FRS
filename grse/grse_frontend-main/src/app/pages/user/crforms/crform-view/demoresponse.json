@@ -1,0 +1,230 @@
+{
+    "id": 2,
+    "cr_code": "CR_B1_1000001",
+    "costcenter": "90000001",
+    "yardno": "4",
+    "unit": "shop",
+    "po_number": "98465441",
+    "po_date": "2022-04-01 07:00:00",
+    "form_type": {
+        "created_at": "2022-04-01 07:00:00",
+        "form_description": "Application for permit/pass for contractors' workmen",
+        "form_heading": "Form-B2 : Contractors' Workmen Detail",
+        "form_name": "Contractors' Workmen Detail",
+        "form_shortcode": "Form-B2",
+        "form_slug": "FormB2",
+        "form_sub_heading": "Details of the contractors' workmen",
+        "id": 1,
+        "status": "active",
+        "updated_at": null
+    },
+    "last_submitted": {
+        "employee_id": "600229",
+        "full_name": "Rajendra Banerjee",
+        "designation_during_submission": "ERP Head",
+        "current_designation": "ERP Manager",
+        "role": "CLMS Nodal User",
+        "submit_date": "2022-04-01 07:00:00",
+        "submit_revised": "2"
+    },
+    "next_assigne": {
+        "employee_id": "I0493",
+        "full_name": "John Doe",
+        "current_designation": "ERP Head",
+        "role": "CLMS Nodal User"
+    },
+    "form_log": [{
+            "label": "Initiated",
+            "status": "completed",
+            "date": "2022-04-01 07:00:00"
+        },
+        {
+            "label": "CLMS User Dept.",
+            "status": "completed",
+            "date": "2022-04-01 07:00:00"
+        },
+        {
+            "label": "CLMS User Dept.",
+            "status": "current",
+            "date": null
+        },
+        {
+            "label": "CLMS HR Dept.",
+            "status": "pending",
+            "date": null
+        },
+        {
+            "label": "CLMS Security Dept.",
+            "status": "pending",
+            "date": null
+        },
+        {
+            "label": "Completed",
+            "status": "pending",
+            "date": null
+        }
+    ],
+    "form_details": [{
+            "group_name": "CONTRACTORS' INFORMATION",
+            "questions": [{
+                    "label": "GRSE SAP Vendor Code",
+                    "value": "68445874784",
+                    "verified": true,
+                    "logs": [{
+                            "date": "2022-04-01 07:00:00",
+                            "value": "68445874784",
+                            "label": "GRSE SAP Vendor Code",
+                            "user_details": {
+                                "full_name": "John Doe",
+                                "employee_id": "0920656",
+                                "designation": "ERP Manager"
+                            }
+                        },
+                        {
+                            "date": "2022-04-01 07:00:00",
+                            "value": "68445874783",
+                            "label": "GRSE SAP Vendor Code",
+                            "verified": true,
+                            "user_details": {
+                                "full_name": "John Doe",
+                                "employee_id": "0920656",
+                                "designation": "ERP Manager"
+                            }
+                        },
+                        {
+                            "date": "2022-04-01 07:00:00",
+                            "value": "68445874783",
+                            "label": "GRSE SAP Vendor Code",
+                            "user_details": {
+                                "full_name": "John Doe",
+                                "employee_id": "0920656",
+                                "designation": "ERP Manager"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Name of the Company / Firm / Agency",
+                    "value": "TCS",
+                    "logs": [{
+                        "date": "2022-04-01 07:00:00",
+                        "label": "Labour License No.",
+                        "value": "TCS",
+                        "user_details": {
+                            "full_name": "John Doe",
+                            "employee_id": "0920656",
+                            "designation": "ERP Manager"
+                        }
+                    }]
+                },
+                {
+                    "label": "Labour License No.",
+                    "value": "GL-661561-22A",
+                    "logs": [{
+                        "date": "2022-04-01 07:00:00",
+                        "label": "Labour License No.",
+                        "value": "GL-661561-22A",
+                        "user_details": {
+                            "full_name": "John Doe",
+                            "employee_id": "0920656",
+                            "designation": "ERP Manager"
+                        }
+                    }]
+                }
+            ]
+        },
+        {
+            "group_name": "GRSE PO INFORMATION",
+            "questions": [{
+                    "label": "GRSE PO Number & Date",
+                    "value": "98465114, 24/03/2022",
+                    "verified": true,
+                    "logs": [{
+                            "date": "2022-04-01 07:00:00",
+                            "value": "98465114, 24/03/2022",
+                            "label": "GRSE PO Number & Date",
+                            "user_details": {
+                                "full_name": "John Doe",
+                                "employee_id": "0920656",
+                                "designation": "ERP Manager"
+                            }
+                        },
+                        {
+                            "date": "2022-04-01 07:00:00",
+                            "value": "98465115, 24/03/2022",
+                            "label": "GRSE PO Number & Date",
+                            "verified": true,
+                            "user_details": {
+                                "full_name": "John Doe",
+                                "employee_id": "0920656",
+                                "designation": "ERP Manager"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Contractual Start Date",
+                    "value": "03/04/2022",
+                    "verified": false,
+                    "logs": [{
+                        "date": "2022-04-01 07:00:00",
+                        "value": "98465114, 24/03/2022",
+                        "label": "Contractual Start Date",
+                        "user_details": {
+                            "full_name": "John Doe",
+                            "employee_id": "0920656",
+                            "designation": "ERP Manager"
+                        }
+                    }]
+                }
+            ]
+        }
+    ],
+    "doc_details": [{
+            "document_code": "A1",
+            "document_details": "Contractor ID Proof",
+            "document_filename": "ABC.pdf",
+            "verified": false,
+            "logs": [{
+                    "date": "2022-04-01 07:00:00",
+                    "document_details": "Contractor ID Proof",
+                    "document_filename": "ABC.pdf",
+                    "verified": false,
+                    "user_details": {
+                        "full_name": "John Doe",
+                        "employee_id": "0920656",
+                        "designation": "ERP Manager"
+                    }
+                },
+                {
+                    "date": "2022-04-02 07:00:00",
+                    "document_details": "Contractor ID Proof",
+                    "document_filename": "XYZ.pdf",
+                    "verified": true,
+                    "user_details": {
+                        "full_name": "John Doe",
+                        "employee_id": "0920656",
+                        "designation": "ERP Manager"
+                    }
+                }
+            ]
+        },
+        {
+            "document_code": "A2",
+            "document_details": "GSTIN Details",
+            "document_filename": "GSTIN.png",
+            "verified": true,
+            "logs": [{
+                "date": "2022-04-01 07:00:00",
+                "document_details": "GSTIN Details",
+                "document_filename": "GSTIN.png",
+                "verified": false,
+                "user_details": {
+                    "full_name": "John Doe",
+                    "employee_id": "0920656",
+                    "designation": "ERP Manager"
+                }
+            }]
+        }
+    ]
+}

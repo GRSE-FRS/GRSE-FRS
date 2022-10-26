@@ -1,0 +1,85 @@
+<div class="card mb-5 mb-xl-10" id="terminalGroup-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Assign Terminals to Group <small>{{groupDetails?.name}}</small></h3>
+        </div>
+        <div class="card-toolbar">
+            <button class="btn btn-primary btn-sm" (click)="openAddModal()"><i class="fa fa-plus"></i> Add New</button>
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <table class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="bg-dark text-white text-uppercase">
+                    <th><b>Alpeta ID</b></th>
+                    <th><b>Name</b></th>
+                    <th><b>Short Code</b></th>
+                    <th><b>Description</b></th>
+                    <th><b>Type</b></th>
+                    <th class="text-center"><b>Action</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of groupTerminals">
+                    <td>{{item.alpeta_terminal_id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.short_code}}</td>
+                    <td>{{item.description}}</td>
+                    <td class="text-uppercase">{{item.terminal_type}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-danger mx-1" (click)="deleteItem(item)"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                    </td>
+                </tr>
+
+                <tr *ngIf="groupTerminals.length < 1">
+                    <td colspan="5" class="text-center">No Terminals Found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<button style="display:none;" type="button" data-bs-toggle="modal" data-bs-target="#terminalassign-modal" id="open-terminalassign-modal" class="btn w-100 btn-success me-2 float-left"></button>
+<div class="modal fade" tabindex="-1" id="terminalassign-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Terminal</h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                      </svg>
+                    </span>
+                </div>
+            </div>
+            <form class="form" [formGroup]="groupTerminalForm">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Select Terminal</label>
+                        <div class="col-lg-8 fv-row">
+                            <ngx-select-dropdown [multiple]="true" formControlName="terminal_id" [options]="terminalsMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select One'}" [class.is-invalid]="( groupTerminalForm.controls.terminal_id.dirty || groupTerminalForm.controls.terminal_id.touched )"></ngx-select-dropdown>
+
+                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="groupTerminalForm.controls.terminal_id.hasError( 'required') && ( groupTerminalForm.controls.terminal_id.dirty || groupTerminalForm.controls.terminal_id.touched
+                                )">
+                                <div>Please select the terminal from the dropdown</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" (click)="assignTerminalToGroup($event)" class="btn btn-primary">
+                        <span class="indicator-label">Submit</span>
+                        <span class="indicator-progress">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

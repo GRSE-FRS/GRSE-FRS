@@ -1,0 +1,294 @@
+<div class="card ">
+    <div class="card-header card-header-stretch">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Batch Process Logs</h3>
+        </div>
+        <div class="card-toolbar">
+            <ul class="nav nav-tabs nav-line-tabs nav-stretch fs-6 border-0">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#group-terminals">Groups Terminals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#user-groups">User to Group</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="group-terminals" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <form [formGroup]="filterForm">
+                            <ngx-select-dropdown formControlName="gr_filter" (change)="fetchAssignTerminalToGroupJobs()" [options]="statusFilterMaster" class="form-control" [config]="{search: false, height: '300px', placeholder: 'Select Status'}" [class.is-invalid]="( filterForm.controls.gr_filter.dirty || filterForm.controls.gr_filter.touched )"></ngx-select-dropdown>
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                    <thead>
+                        <tr class="bg-primary text-white text-uppercase">
+                            <!-- <th><b>#</b></th> -->
+                            <th><b>Process Started</b></th>
+                            <th><b>Group</b></th>
+                            <th><b>Terminal Name</b></th>
+                            <th><b>Alpeta Terminal ID</b></th>
+                            <th class="text-center"><b>Status</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let item of groupRunningJobs">
+                            <ng-container *ngFor="let terminal of item?.terminal_list">
+                                <tr>
+                                    <!-- <td>{{item.id}}</td> -->
+                                    <td>{{item.created_at | date: 'medium'}}</td>
+                                    <td>{{item.group_id?.name}} <b>(#{{item.group_id?.id}})</b></td>
+                                    <td>{{terminal.name}}</td>
+                                    <td><b>{{terminal?.alpeta_terminal_id}}</b></td>
+                                    <td class="text-center">
+                                        <ng-container [ngSwitch]="item.execution_status">
+                                            <span class="badge badge-warning" *ngSwitchCase="'pending'">Pending</span>
+                                            <span class="badge badge-success" *ngSwitchCase="'success'">Success</span>
+                                            <span class="badge badge-danger" *ngSwitchCase="'error'">Error</span>
+                                            <span class="badge badge-danger" *ngSwitchCase="'failed'">Failed</span>
+                                            <span class="badge badge-primary text-capitalize" *ngSwitchDefault>{{item.execution_status}}</span>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+
+                        <tr *ngIf="groupRunningJobs.length == 0">
+                            <td colspan="100%" class="text-center">No records found</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Assigned Failed -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                    <thead>
+                        <tr class="text-uppercase text-center bg-primary text-white fw-bolder">
+                            <th colspan="100%">Assigned Failed</th>
+                        </tr>
+                        <tr class="bg-dark text-white text-uppercase">
+                            <th><b>SL</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Alpeta Terminal</b></th>
+                            <th><b>Terminal Shortcode</b></th>
+                            <th><b>Employee ID</b></th>
+                            <th><b>Employee Name</b></th>
+                            <th><b>Employment Type</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="(AFgroupTerminalFailedRequest ?? []).length > 0; else noRecordsFound">
+                            <ng-container *ngFor="let req of (AFgroupTerminalFailedRequest ?? []) | paginate: { id:'AFGT-pagination', itemsPerPage: 10, currentPage: AFgroupTerminalFailedRequest_PageNumber }; let reqi = index">
+                                <tr>
+                                    <td>{{ (reqi + 1) }}</td>
+                                    <td>{{ req.status }}</td>
+                                    <td>{{ req?.terminals?.alpeta_terminal_id ?? "-" }}</td>
+                                    <td>{{ req?.terminals?.short_code ?? "-" }}</td>
+                                    <td>{{ req?.users?.employee_id ?? "-" }}</td>
+                                    <td>{{ req?.users?.full_name ?? "-" }}</td>
+                                    <td>{{ req?.users?.employment_type ?? "-" }}</td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </tbody>
+                </table>
+
+                <div class="col-md-12 text-center" *ngIf="(AFgroupTerminalFailedRequest ?? []).length > 0">
+                    <pagination-controls id="AFGT-pagination" (pageChange)="AFgroupTerminalFailedRequest_PageNumber = $event"></pagination-controls>
+                </div>
+
+                <!-- Delete Failed -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                    <thead>
+                        <tr class="text-uppercase text-center bg-primary text-white fw-bolder">
+                            <th colspan="100%">Delete Failed</th>
+                        </tr>
+                        <tr class="bg-dark text-white text-uppercase">
+                            <th><b>SL</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Alpeta Terminal</b></th>
+                            <th><b>Terminal Shortcode</b></th>
+                            <th><b>Employee ID</b></th>
+                            <th><b>Employee Name</b></th>
+                            <th><b>Employment Type</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="(DFgroupTerminalFailedRequest ?? []).length > 0; else noRecordsFound">
+                            <ng-container *ngFor="let req of (DFgroupTerminalFailedRequest ?? []) | paginate: { id: 'DFGT-pagination', itemsPerPage: 10, currentPage: DFgroupTerminalFailedRequest_PageNumber }; let reqi = index">
+                                <tr>
+                                    <td>{{ (reqi + 1) }}</td>
+                                    <td>{{ req.status }}</td>
+                                    <td>{{ req?.terminals?.alpeta_terminal_id ?? "-" }}</td>
+                                    <td>{{ req?.terminals?.short_code ?? "-" }}</td>
+                                    <td>{{ req?.users?.employee_id ?? "-" }}</td>
+                                    <td>{{ req?.users?.full_name ?? "-" }}</td>
+                                    <td>{{ req?.users?.employment_type ?? "-" }}</td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </tbody>
+                </table>
+
+                <div class="col-md-12 text-center" *ngIf="(DFgroupTerminalFailedRequest ?? []).length > 0">
+                    <pagination-controls id="DFGT-pagination" (pageChange)="DFgroupTerminalFailedRequest_PageNumber = $event"></pagination-controls>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="user-groups" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <form [formGroup]="filterForm">
+                            <ngx-select-dropdown formControlName="ut_filter" (change)="fetchAssignUserToGroupJobs()" [options]="statusFilterMaster" class="form-control" [config]="{search: false, height: '300px', placeholder: 'Select Status'}" [class.is-invalid]="( filterForm.controls.ut_filter.dirty || filterForm.controls.ut_filter.touched )"></ngx-select-dropdown>
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                    <thead>
+                        <tr class="bg-dark text-white text-uppercase">
+                            <th><b>Process Started</b></th>
+                            <th><b>Group</b></th>
+                            <th><b>User</b></th>
+                            <th class="text-center"><b>Status</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="userTerminalRunningJobs.length > 0; else noRecordsFound">
+                            <tr *ngFor="let item of userTerminalRunningJobs | paginate: { id:'UTRJ-pagination', itemsPerPage: 10, currentPage: userTerminalRunningJobs_PageNumber }">
+                                <td>{{item.created_at | date: 'medium'}}</td>
+                                <td>{{item.group_id?.name}} <b>(#{{item.group_id?.id}})</b></td>
+                                <td>{{item.user_data.full_name}} <b>(#{{item.user_data.employee_id}})</b></td>
+                                <td class="text-center">
+                                    <ng-container [ngSwitch]="item.execution_status">
+                                        <span class="badge badge-warning" *ngSwitchCase="'pending'">Pending</span>
+                                        <span class="badge badge-success" *ngSwitchCase="'success'">Success</span>
+                                        <span class="badge badge-danger" *ngSwitchCase="'error'">Error</span>
+                                        <span class="badge badge-danger" *ngSwitchCase="'failed'">Failed</span>
+                                        <span class="badge badge-primary text-capitalize" *ngSwitchDefault>{{item.execution_status}}</span>
+                                    </ng-container>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+
+                <div class="col-md-12 text-center" *ngIf="(userTerminalRunningJobs ?? []).length > 0">
+                    <pagination-controls id="UTRJ-pagination" (pageChange)="userTerminalRunningJobs_PageNumber = $event"></pagination-controls>
+                </div>
+
+                <!-- Assigned Failed -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                    <thead>
+                        <tr class="text-uppercase text-center bg-primary text-white fw-bolder">
+                            <th colspan="100%">Assigned Failed</th>
+                        </tr>
+                        <tr class="bg-dark text-white text-uppercase">
+                            <th><b>SL</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Alpeta Terminal</b></th>
+                            <th><b>Terminal Shortcode</b></th>
+                            <th><b>Employee ID</b></th>
+                            <th><b>Employee Name</b></th>
+                            <th><b>Employment Type</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="(AFuserTerminalFailedRequest ?? []).length > 0; else noRecordsFound">
+                            <ng-container *ngFor="let req of (AFuserTerminalFailedRequest ?? []) | paginate: { id:'AFUT-pagination', itemsPerPage: 10, currentPage: AFuserTerminalFailedRequest_PageNumber }; let reqi = index">
+                                <tr>
+                                    <td>{{ (reqi + 1) }}</td>
+                                    <td>{{ req.status }}</td>
+                                    <td>{{ req?.terminals?.alpeta_terminal_id ?? "-" }}</td>
+                                    <td>{{ req?.terminals?.short_code ?? "-" }}</td>
+                                    <td>{{ req?.users?.employee_id ?? "-" }}</td>
+                                    <td>{{ req?.users?.full_name ?? "-" }}</td>
+                                    <td>{{ req?.users?.employment_type ?? "-" }}</td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </tbody>
+                </table>
+
+                <div class="col-md-12 text-center" *ngIf="(AFuserTerminalFailedRequest ?? []).length > 0">
+                    <pagination-controls id="AFUT-pagination" (pageChange)="AFuserTerminalFailedRequest_PageNumber = $event"></pagination-controls>
+                </div>
+
+                <!-- Delete Failed -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-row-bordered gy-5 gs-7">
+                    <thead>
+                        <tr class="text-uppercase text-center bg-primary text-white fw-bolder">
+                            <th colspan="100%">Delete Failed</th>
+                        </tr>
+                        <tr class="bg-dark text-white text-uppercase">
+                            <th><b>SL</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Alpeta Terminal</b></th>
+                            <th><b>Terminal Shortcode</b></th>
+                            <th><b>Employee ID</b></th>
+                            <th><b>Employee Name</b></th>
+                            <th><b>Employment Type</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="(DFuserTerminalFailedRequest ?? []).length > 0; else noRecordsFound">
+                            <ng-container *ngFor="let req of (DFuserTerminalFailedRequest ?? []) | paginate: { id: 'DFUT-pagination', itemsPerPage: 10, currentPage: DFuserTerminalFailedRequest_PageNumber }; let reqi = index">
+                                <tr>
+                                    <td>{{ (reqi + 1) }}</td>
+                                    <td>{{ req.status }}</td>
+                                    <td>{{ req?.terminals?.short_code ?? "-" }}</td>
+                                    <td>{{ req?.terminals?.alpeta_terminal_id ?? "-" }}</td>
+                                    <td>{{ req?.users?.employee_id ?? "-" }}</td>
+                                    <td>{{ req?.users?.full_name ?? "-" }}</td>
+                                    <td>{{ req?.users?.employment_type ?? "-" }}</td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </tbody>
+                </table>
+
+                <div class="col-md-12 text-center" *ngIf="(DFuserTerminalFailedRequest ?? []).length > 0">
+                    <pagination-controls id="DFUT-pagination" (pageChange)="DFuserTerminalFailedRequest_PageNumber = $event"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #noRecordsFound>
+    <tr>
+        <td colspan="100%" class="text-center">No records found</td>
+    </tr>
+</ng-template>

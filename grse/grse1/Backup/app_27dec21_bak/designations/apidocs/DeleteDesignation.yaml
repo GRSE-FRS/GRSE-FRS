@@ -1,0 +1,51 @@
+Delete Designation
+---
+tags:
+  - "Designations"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DeleteDesignation"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DeleteDesignationSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DeleteDesignationError"
+definitions:
+  DeleteDesignation:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+  DeleteDesignationSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Designation Deleted successfully"
+      designation:
+        type: "object"
+        example : {}
+  DeleteDesignationError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

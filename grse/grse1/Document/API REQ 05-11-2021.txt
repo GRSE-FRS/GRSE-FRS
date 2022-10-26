@@ -1,0 +1,35 @@
+Employee Create Form
+
+1. Fetch Master API 
+	a) Apleta User ID
+	b) Available Terminal List
+	c) subarea_masters
+	d) shift_masters
+	e) designation_masters
+	f) fingerprint_master [DB]
+
+2. Fetch Units by SubAreaID (subarea_id)
+	
+3. Fetch Departments by UnitId (unit_id)
+
+4. Fetch Employee Details by Employee Code from SAP (employee_code)
+
+5. Fingerprint Scan, Scan Facedata, Scan Card
+
+6. User Submit
+
+=======================================================================
+
+Master API 
+
+1. SubArea (List, Add, Edit, Delete, Change Status)
+2. Units (List, Add, Edit, Delete, Change Status)
+3. Departments (List, Add, Edit, Delete, Change Status)
+4. Designations (List, Add, Edit, Delete, Change Status)
+5. Shift  (List, Add, Edit, Delete, Change Status)
+
+========================================================================
+
+Employee List
+
+Employee Details

@@ -1,0 +1,51 @@
+Authlog
+---
+tags:
+  - "Authlog"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "Date"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAuthSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAuthError"
+definitions:
+  Authlog:
+    type: "object"
+    properties:
+      Date:
+        type: "Datetime"
+        example: "2021-12-06 00:00:00"
+  FetchAuthSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      Authlog:
+        type: "object"
+        example : {}
+  FetchAuthError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,11 @@
+.header .btn-custom i.success {
+    color: #50cd89 !important;
+}
+
+.header .btn-custom i.danger {
+    color: #cd5050 !important;
+}
+
+th {
+    font-weight: bold;
+}

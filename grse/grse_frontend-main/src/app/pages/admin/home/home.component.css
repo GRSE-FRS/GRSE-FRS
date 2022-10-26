@@ -1,0 +1,7 @@
+a.btn .svg-icon img {
+    filter: brightness(0) invert(0) !important;
+}
+
+a.btn:hover .svg-icon img {
+    filter: none !important;
+}

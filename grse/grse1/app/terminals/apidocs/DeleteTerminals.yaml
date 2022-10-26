@@ -1,0 +1,53 @@
+Delete Terminals
+
+---
+
+tags:
+  - "Terminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DeleteTerminals"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DeleteTerminalsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DeleteTerminalsrerror"
+definitions:
+  DeleteTerminals:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+  DeleteTerminalsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Terminal Deleted successfully"
+      terminals:
+        type: "object"
+        example : {}
+  DeleteTerminalsrerror:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,60 @@
+Update Subarea
+----
+tags:
+  - "Subarea"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateSubarea"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UpdateSubareaSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UpdateSubareaError"
+definitions:
+  UpdateSubarea:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      code:
+        type: "string"
+        example: "ab123"
+      name:
+        type: "string"
+        example: "Test_Name"
+      description:
+        type: "string"
+        example: "test"
+  UpdateSubareaSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Subarea updated successfully"
+      subarea:
+        type: "object"
+        example : {}
+  UpdateSubareaError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

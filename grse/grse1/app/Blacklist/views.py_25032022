@@ -1,0 +1,799 @@
+import traceback
+from pymongo.errors import DuplicateKeyError, BulkWriteError
+from helpers import *
+from app import *
+from app.Models import *
+from flask.views import MethodView
+from flask import Blueprint, send_file, url_for
+import copy
+from app.m_models import *
+from datetime import datetime
+from bson import json_util
+Blacklist_view = Blueprint('blacklist_view', __name__)
+
+
+class CreateBlacklist(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/CreateBlacklist.yaml', methods=['POST'])
+    def post(self):
+        try:
+            current_timestamp = datetime.now()
+            request_data = request.get_json(force=True)
+            _id = request_data['id']
+            user_id = request_data['user_id']
+            user_id_alpeta = request_data['alpeta_id']
+            terminal_id = request_data['terminal_id']
+            block_from = request_data['block_from']
+            block_to = request_data['block_to']
+
+            is_block = 1  # Inactive
+            user_ = Users.FetchUSerDetails_By_ID(user_id)  # get user details from database
+            user_["profile_picture"] = user_images.FetchProfileImage(_user_id=user_id).get("profile_picture", "")
+            user_finger = User_fingerprints.FetchUserFingerPrintDetails_By_ID(user_id)  # get user finger from database
+            user_finger = convert_database_to_alpeta_formate(user_finger, user_id)  # convert to Alp-eta structure
+            user_face = User_facedatas.FetchUserfacedatas_By_ID(user_id)  # get user face from database
+            if user_:
+                user_details_alpeta = get_user_details(user_id_alpeta)  # get user details Alp-eta
+                user_finger_alpeta = get_user_finger(user_id_alpeta)  # get user finger details Alp-eta
+                user_face_alpeta = get_user_face(user_id_alpeta)  # get user face details Alp-eta
+                Alpeta_terminal =  Terminals.FetchTerminals_By_AlpetaID(terminal_id)["id"]
+                if user_details_alpeta['status'] == 'success':
+                    user_info = user_details_alpeta['user_details']
+                    user_info['UserInfo']['AuthInfo'] = list_auth_info(user_["auth_comb"]) if user_["auth_comb"] else [
+                        9, 2, 0, 0, 0, 0, 0, 2]
+                    user_info['UserInfo']["Picture"] = user_["profile_picture"]
+                    card_info = user_info.get('UserCardInfo', [])
+                    if card_info:
+                        user_info['UserCardInfo'][0]['UserID'] = user_id
+                    user_info['UserFPInfo'] = user_finger_alpeta['user_finger'].get('UserFPInfo', user_finger)
+                    user_info["UserFaceWTInfo"] = user_face_alpeta['user_face'].get("UserFaceWTInfo", [{
+                        "UserID": user_face.get("user_id", ""),
+                        "TemplateSize": user_face.get("templatesize", ""),
+                        "TemplateData": user_face.get("templatedata", ""),
+                        "TemplateType": user_face.get("templatetype", "")
+                    }])
+                    # Memory copy of the object
+                    user_info_copy = copy.deepcopy(user_info)
+                    user_info_copy['UserInfo']["BlackList"] = is_block
+                    user_info_copy['UserInfo']['CreateDate'] = block_from if block_from \
+                        else str(current_timestamp)
+                    user_info_copy['UserInfo']["ExpireDate"] = block_to if block_to \
+                        else str(datetime.strptime("2099-12-06 10:33:06", "%Y-%m-%d %H:%M:%S"))
+                    user_info_copy['UserInfo']["UsePeriodFlag"] = 1
+                    update_user_details = put_user_details(user_id_alpeta, user_info_copy)
+                    if update_user_details['status'] == 'success':
+                        # download User to a specific terminal
+                        assign_user = Assign_userToTerMiNaLs(terminal_id, user_id_alpeta)
+                        if assign_user['status'] == 'success':
+                            # update user back to the Alpeta
+                            update_user_details_back = put_user_details(user_id_alpeta, user_info)
+                            try:
+                                data = User_terminals.Update_User_terminals(_id,
+                                                                            user_id,
+                                                                            Alpeta_terminal,
+                                                                            is_block,
+                                                                            datetime.strptime(block_from,
+                                                                                              "%Y-%m-%d %H:%M:%S"),
+                                                                            datetime.strptime(block_to,
+                                                                                              "%Y-%m-%d %H:%M:%S"),
+                                                                            current_timestamp)
+                                respone = {"status": 'success',
+                                           "message": "User Terminal database updated successfully &"
+                                                      " User Inactivated/Blacklisted and "
+                                                      "downloaded ",
+                                           "user_terminals": {
+                                               "Database status": "Database updated successfully" if data is None else data,
+                                               "User details": update_user_details_back}}
+                                return make_response(jsonify(respone)), 200
+                            except Exception as e:
+                                response = {"status": 'error', "message": f'{str(e)}'}
+                                return make_response(jsonify(response)), 200
+                        else:
+                            respone = {"status": 'success', "message": "User Inactivated/Blacklisted successfully but "
+                                                                       "failed to download to a specific terminal ",
+                                       "user_update_details": update_user_details}
+                            return make_response(jsonify(respone)), 200
+                    else:
+                        respone = {"status": 'error', "message": "User Inactivated/Blacklisted unsuccessfully ",
+                                   "user_details_alpeta": "Error while Blacklisting user " + str(update_user_details)}
+                        return make_response(jsonify(respone)), 200
+                else:
+                    respone = {"status": 'error', "message": "Error fetching user details or user not registered in "
+                                                             "server",
+                               "user_details_alpeta": user_details_alpeta}
+                    return make_response(jsonify(respone)), 200
+
+            else:
+                respone = {"status": 'error', "message": "Error fetching user details or user not registered in DB",
+                           "user_details_alpeta": user_}
+                return make_response(jsonify(respone)), 200
+
+        except Exception as e:
+            traceback.print_exc()
+            response = {"status": 'error', "message": f'{str(e)}'}
+            return make_response(jsonify(response)), 200
+
+
+class RevertBlacklist(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/RevertBlacklist.yaml', methods=['POST'])
+    def post(self):
+        try:
+            current_timestamp = datetime.now()
+            request_data = request.get_json(force=True)
+            _id = request_data['id']
+            user_id = request_data['user_id']
+            terminal_id = request_data['terminal_id']
+            block_from = request_data['block_from']
+            block_to = request_data['block_to']
+            user_id_alpeta = request_data['alpeta_id']
+            is_block = 0  # Active
+            user_ = Users.FetchUSerDetails_By_ID(user_id)  # get user details from database
+            user_["profile_picture"] = user_images.FetchProfileImage(_user_id=user_id).get("profile_picture", "")
+            user_finger = User_fingerprints.FetchUserFingerPrintDetails_By_ID(user_id)  # get user finger from database
+            user_finger = convert_database_to_alpeta_formate(user_finger, user_id)  # convert to Alp-eta structure
+            user_face = User_facedatas.FetchUserfacedatas_By_ID(user_id)  # get user face from database
+            if user_:
+                user_details_alpeta = get_user_details(user_id_alpeta)  # get user details Alp-eta
+                user_finger_alpeta = get_user_finger(user_id_alpeta)  # get user finger details Alp-eta
+                user_face_alpeta = get_user_face(user_id_alpeta)  # get user face details Alp-eta
+                Alpeta_terminal =  Terminals.FetchTerminals_By_AlpetaID(terminal_id)["id"]
+                if user_details_alpeta['status'] == 'success':
+                    user_info = user_details_alpeta['user_details']
+                    user_info['UserInfo']['AuthInfo'] = list_auth_info(user_["auth_comb"]) if user_["auth_comb"] else [
+                        9, 2, 0, 0, 0, 0, 0, 2]
+                    user_info['UserInfo']["Picture"] = user_["profile_picture"]
+                    card_info = user_info.get('UserCardInfo', [])
+                    if card_info:
+                        user_info['UserCardInfo'][0]['UserID'] = user_id
+                    user_info['UserFPInfo'] = user_finger_alpeta['user_finger'].get('UserFPInfo', user_finger)
+                    user_info["UserFaceWTInfo"] = user_face_alpeta['user_face'].get("UserFaceWTInfo", [{
+                        "UserID": user_face.get("user_id", ""),
+                        "TemplateSize": user_face.get("templatesize", ""),
+                        "TemplateData": user_face.get("templatedata", ""),
+                        "TemplateType": user_face.get("templatetype", "")
+                    }])
+                    user_info_copy = copy.deepcopy(user_info)
+                    user_info_copy['UserInfo']["BlackList"] = is_block
+                    user_info_copy['UserInfo']['CreateDate'] = block_from if block_from \
+                        else str(current_timestamp)
+                    user_info_copy['UserInfo']["ExpireDate"] = block_to if block_to \
+                        else str(datetime.strptime("2099-12-06 10:33:06", "%Y-%m-%d %H:%M:%S"))
+                    user_info_copy['UserInfo']["UsePeriodFlag"] = 0
+                    update_user_details = put_user_details(user_id_alpeta, user_info_copy)
+                    if user_ and user_["alpeta_user_id"]:
+                        if update_user_details['status'] == 'success':
+                            assign_user = Assign_userToTerMiNaLs(terminal_id, user_id_alpeta)
+                            if assign_user['status'] == 'success':
+                                try:
+                                    data = User_terminals.Update_User_terminals(_id,
+                                                                                user_id,
+                                                                                Alpeta_terminal,
+                                                                                is_block,
+                                                                                datetime.strptime(block_from,
+                                                                                                  "%Y-%m-%d %H:%M:%S"),
+                                                                                datetime.strptime(block_to,
+                                                                                                  "%Y-%m-%d %H:%M:%S"),
+                                                                                current_timestamp)
+                                    respone = {"status": 'success',
+                                               "message": "User Terminal database updated successfully &"
+                                                          " User activated/undo Blacklisting and "
+                                                          "downloaded ",
+                                               "user_terminals":
+                                                   {
+                                                       "Database status": "Database updated successfully" if data is None else data,
+                                                       "User details": update_user_details}}
+                                    return make_response(jsonify(respone)), 200
+                                except Exception as e:
+                                    response = {"status": 'error', "message": f'{str(e)}'}
+                                    return make_response(jsonify(response)), 200
+
+
+                            else:
+                                respone = {"status": 'success',
+                                           "message": "User activated/undo Blacklisting successfully but "
+                                                      "failed to download to a specific terminal ",
+                                           "user_update_details": update_user_details}
+                                return make_response(jsonify(respone)), 200
+                        else:
+                            respone = {"status": 'success', "message": "User activated unsuccessfully ",
+                                       "user_details_alpeta": "Error while activating user from Blacklist " + str(
+                                           update_user_details)}
+                            return make_response(jsonify(respone)), 200
+                    else:
+                        respone = {"status": 'error',
+                                   "message": "Error fetching user details or user not registered in "
+                                              "server",
+                                   "user_details_alpeta": user_details_alpeta}
+                        return make_response(jsonify(respone)), 200
+            else:
+                respone = {"status": 'error', "message": "Error fetching user details or user not registered in DB",
+                           "user_details_alpeta": user_}
+                return make_response(jsonify(respone)), 200
+
+        except TypeError as e:
+            respone = {"TypeError": f'{str(e)}'}
+            return make_response(jsonify(respone)), 200
+        except Exception as e:
+            response = {"status": 'error', "message": f'{str(e)}'}
+            return make_response(jsonify(response)), 200
+
+
+def terminal_type(type, time):
+    if type == "auto":
+        if str(time) < "12:00:00":
+            return "P10"
+        else:
+            return "P20"
+    elif type == "in":
+        return "P10"
+    else:
+        return "P20"
+
+
+class Get_Auth_log(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/Authlog.yaml', methods=['GET'])
+    def get(self, Date):
+        try:
+            current_timestamp = datetime.now()
+            end_date_time = Date + "23:59:59"
+            start_date_time = Date + "00:00:00"
+            print(start_date_time, end_date_time, "eikhane", datetime.now())
+            Get_auth = get_auth(str(start_date_time), str(end_date_time))
+            print(Get_auth)
+            user_in = list()
+            user_out = list()
+            auth_list = list()
+            if Get_auth['Authlog']['AuthLogList']:
+                for each in Get_auth['Authlog']['AuthLogList']:
+                    if each["AuthResult"] == 0 and Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"]) and \
+                            Users.FetchUSerDetails_By_alpeta_ID(each['UniqueID']):
+
+                        terminal_info = str(Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"])["terminal_type"])
+                        if each['UniqueID'] not in user_in and terminal_type(terminal_info,
+                                                                             each['EventTime'].split(" ")[1]) \
+                                == "P10":
+                            terminal_infor = str(
+                                Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"])["terminal_type"])
+                            user_in.append(each['UniqueID'])
+                            event_time = min([(each_['EventTime'].split(" ")[1], each_["TerminalID"],
+                                               each_['ServerRecordTime']) for each_ in
+                                              Get_auth['Authlog']['AuthLogList']
+                                              if each_['UniqueID'] == each['UniqueID'] and each_["AuthResult"] == 0 and
+                                              terminal_type(terminal_info, each['EventTime'].split(" ")[1]) \
+                                              == "P10"]) if terminal_type(terminal_info,
+                                                                          each['EventTime'].split(
+                                                                              " ")[1]) == "P10" else 0
+                            print(event_time, "min time")
+                            event_date = datetime.strptime(each['EventTime'].split(" ")[0], '%Y-%m-%d')
+                            server_time = datetime.strptime(event_time[2], '%Y-%m-%d %H:%M:%S')
+                            auth_list.append({'PERNR': each['UniqueID'], 'TIMR6': 'X', "CHOIC": "2011",
+                                              "LDATE": event_date.strftime("%d.%m.%Y"),
+                                              "LTIME": event_time[0],
+                                              "SATZA": terminal_type(terminal_infor,
+                                                                     each['EventTime'].split(" ")[1]),
+                                              "TERMINAL_id": Terminals.FetchTerminals_By_AlpetaID(event_time[1])[
+                                                  "short_code"],
+                                              "SERVER_TIME": server_time.strftime("%d.%m.%Y %H:%M:%S")})
+
+                        elif each['UniqueID'] not in user_out and terminal_type(terminal_info,
+                                                                                each['EventTime'].split(" ")[1]) \
+                                == "P20":
+                            user_out.append(each['UniqueID'])
+                            terminal_infor = str(
+                                Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"])["terminal_type"])
+                            event_time = max([(each_['EventTime'].split(" ")[1], each_["TerminalID"],
+                                               each_['ServerRecordTime']) for each_ in
+                                              Get_auth['Authlog']['AuthLogList']
+                                              if each_['UniqueID'] == each['UniqueID'] and each_["AuthResult"] == 0 and
+                                              terminal_type(terminal_info, each['EventTime'].split(" ")[1])
+                                              == "P20"]) if terminal_type(terminal_info,
+                                                                          each['EventTime'].split(" ")[
+                                                                              1]) == "P20" else 0
+                            print(event_time, "max time")
+                            event_date = datetime.strptime(each['EventTime'].split(" ")[0], '%Y-%m-%d')
+                            server_time = datetime.strptime(event_time[2], '%Y-%m-%d %H:%M:%S')
+                            auth_list.append({'PERNR': each['UniqueID'], 'TIMR6': 'X', "CHOIC": "2011",
+                                              "LDATE": event_date.strftime("%d.%m.%Y"),
+                                              "LTIME": event_time[0],
+                                              "SATZA": terminal_type(terminal_infor,
+                                                                     each['EventTime'].split(" ")[1]),
+                                              "TERMINAL_id": Terminals.FetchTerminals_By_AlpetaID(event_time[1])[
+                                                  "short_code"],
+                                              "SERVER_TIME": server_time.strftime("%d.%m.%Y %H:%M:%S")})
+                if auth_list:
+                    respone = {"status": 'Success', "message": "Authlog exported", "Auth_list": auth_list}
+                    print(respone)
+                    return make_response(jsonify(respone)), 200
+                else:
+                    respone = {"status": 'Error', "message": "Authlog not found for the following date",
+                               "Authlog": "Authlog not exported", "Auth_list": auth_list}
+                    print(respone)
+                    return make_response(jsonify(respone)), 200
+
+            else:
+                respone = {"status": 'Error', "message": "Authlog not found for the following date",
+                           "Authlog": "Authlog not exported", "Auth_list": auth_list}
+                print(respone)
+                return make_response(jsonify(respone)), 200
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+auth_type = {
+    "1": "FP 1:N",
+    "2": "FP 1:1",
+    "3": "Password",
+    "4": "RFCard",
+    "5": "FA 1:N",
+    "6": "FA 1:1",
+    "7": "Mobilekey",
+    "8": "QR"
+}
+
+auth_result = {
+    "0": "Success",
+    "1": "Failed",
+    "2": "Blocked",
+    "3": "Timeout",
+    "4": "Capture Timeout",
+    "5": "1:1 Timeout",
+    "6": "Anti Passback",
+    "9": "Threat",
+    "10": "Invalid User"
+}
+
+
+class Get_All_Auth_log(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/AllAuthlog.yaml', methods=['GET'])
+    def get(self):
+        try:
+            CurrentDatetime = datetime.now()
+            yesterday = CurrentDatetime - timedelta(days=7)
+            Date = yesterday.strftime("%Y-%m-%d")
+            Datenew = CurrentDatetime.strftime("%Y-%m-%d")
+            end_date_time = Datenew + CurrentDatetime.strftime("%H:%M:%S")
+            start_date_time = Date + "00:00:00"
+            Get_auth = get_auth(str(start_date_time), str(end_date_time))
+            auth_list = list()
+            db = database_connect_mongo()
+            db = db["all_attendance"]
+            db.create_index('IndexKey', unique=True)
+            if Get_auth['Authlog']['AuthLogList']:
+                for each in Get_auth['Authlog']['AuthLogList']:
+                    server_time = each['ServerRecordTime']
+                    server_time = datetime.strptime(server_time, '%Y-%m-%d %H:%M:%S')
+                    event_date = datetime.strptime(each['EventTime'].split(" ")[0], '%Y-%m-%d')
+                    # image = get_auth_image(str(each["IndexKey"]), str(each["UniqueID"]))
+                    if Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"]):
+                        terminal_info = str(Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"])["terminal_type"])
+                        if each["UserID"] and each["UniqueID"]:
+                            # print(image["Authlog_image"]["AuthLogDetail"])
+                            # each["LogImage"] = image["Authlog_image"]["AuthLogDetail"]["LogImage"]
+                            try:
+                                db.insert({'PERNR': each['UniqueID'], 'TIMR6': 'X', "CHOIC": "2011",
+                                           "LDATE": event_date.strftime("%d.%m.%Y"),
+                                           "LTIME": each['EventTime'].split(" ")[1],
+                                           "SATZA": "",
+                                           "TERMINAL_id": Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"])[
+                                               "short_code"],
+                                           "SERVER_TIME": server_time.strftime("%d.%m.%Y %H:%M:%S"),
+                                           # "LogImage": image["Authlog_image"]["AuthLogDetail"]["LogImage"],
+                                           "Reference": terminal_type(terminal_info,
+                                                                      each['EventTime'].split(" ")[1]),
+                                           "SAP_sync_status": "",
+                                           "SAP_sync_date_time": "",
+                                           "Auth_result": auth_result.get(str(each["AuthResult"]), "Unknown"),
+                                           "Auth_type": auth_type.get(str(each["AuthType"]), "Unknown"),
+                                           "IndexKey": each["IndexKey"],
+                                           "Raw": each})
+                            except (DuplicateKeyError, BulkWriteError) as err:
+                                continue
+
+                        else:
+                            # print(image["Authlog_image"]["AuthLogDetail"])
+                            # each["LogImage"] = image["Authlog_image"]["AuthLogDetail"]["LogImage"]
+                            try:
+                                db.insert({'PERNR': each['UniqueID'], 'TIMR6': 'X', "CHOIC": "2011",
+                                           "LDATE": event_date.strftime("%d.%m.%Y"),
+                                           "LTIME": each['EventTime'].split(" ")[1],
+                                           "SATZA": "",
+                                           "TERMINAL_id": Terminals.FetchTerminals_By_AlpetaID(each["TerminalID"])[
+                                               "short_code"],
+                                           "SERVER_TIME": server_time.strftime("%d.%m.%Y %H:%M:%S"),
+                                           # "LogImage": image["Authlog_image"]["AuthLogDetail"]["LogImage"],
+                                           "Reference": terminal_type(terminal_info,
+                                                                      each['EventTime'].split(" ")[1]),
+                                           "SAP_sync_status": "",
+                                           "SAP_sync_date_time": "",
+                                           "Auth_result": auth_result.get(str(each["AuthResult"]), "Unknown"),
+                                           "Auth_type": auth_type.get(str(each["AuthType"]), "Unknown"),
+                                           "IndexKey": each["IndexKey"],
+                                           "Raw": each})
+                            except (DuplicateKeyError, BulkWriteError):
+                                continue
+                        auth_list.append(each)
+                    else:
+                        print("pass")
+                        pass
+                respone = {"status": 'Success', "message": "Authlog Saved to Database"}
+                return make_response(jsonify(respone)), 200
+
+            else:
+                respone = {"status": 'Error', "message": "Authlog not found for the following date",
+                           "Authlog": "Authlog was not Saved to Database"}
+                print(respone)
+                return make_response(jsonify(respone)), 200
+
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class Get_All_Auth_log_pg(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/AllAuthlogPG.yaml', methods=['GET'])
+    def get(self):
+        try:
+            CurrentDatetime = datetime.now()
+            yesterday = CurrentDatetime - timedelta(days=1)
+            yesterday = yesterday.strftime("%Y-%m-%d")
+            Date = CurrentDatetime.strftime("%Y-%m-%d")
+            end_date_time = Date
+            start_date_time = yesterday
+            print( yesterday + ' 09:31:00', Date + ' 09:30:59')
+            Filter = {
+                'Raw.ServerRecordTime': {
+                    '$gte': yesterday + ' 09:31:00',
+                    '$lt': Date + ' 09:30:59'
+                },
+                'Auth_result': 'Success'
+            }
+            print(Filter)
+            nrdb = database_connect_mongo()
+            nrdb = nrdb["all_attendance"]
+            data = nrdb.find(filter=Filter)
+            for each in data:
+                t_attn_raw.Add_attn_raw(each["PERNR"], each["TIMR6"], each["CHOIC"], datetime.strptime(each["LDATE"], '%d.%m.%Y'),
+                                        each["LTIME"], "", each["TERMINAL_id"],
+                                        datetime.strptime(each["SERVER_TIME"], '%d.%m.%Y %H:%M:%S'),
+                                        "", "")
+            respone = {"status": 'Success', "message": "Authlog Saved to PG Database"}
+            return make_response(jsonify(respone)), 200
+
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+class Get_Attendance(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/Attendance.yaml', methods=['GET'])
+    def get(self):
+        try:
+            nrdb = database_connect_mongo()
+            nrdb = nrdb["all_attendance"]
+            CurrentDatetime = datetime.now()
+            Date = CurrentDatetime.strftime("%d.%m.%Y")
+            Filter = {
+                'SERVER_TIME': {
+                    '$gte': Date + " 00:00:00"
+                },
+                'Auth_result': 'Success'
+            }
+            data = nrdb.find(filter=Filter)
+            user_ = list()
+            auth_list = list()
+            for each in data:
+                if each["PERNR"] not in user_ and each["SERVER_TIME"] > Date + " 00:00:00" and \
+                        Terminals.FetchTerminals_By_AlpetaID(each["Raw"]["TerminalID"]) \
+                        and Users.FetchUSerDetails_By_alpeta_ID(each["Raw"]['UniqueID']):
+                    old_index_max = [each["IndexKey"] for each in
+                                     nrdb.find({'SATZA': "P20", "PERNR": each["PERNR"],
+                                                "SERVER_TIME": {'$gte': Date + " 00:00:00"}})]
+                    old_index_min = [each["IndexKey"] for each in
+                                     nrdb.find({'SATZA': "P10", "PERNR": each["PERNR"],
+                                                "SERVER_TIME": {'$gte': Date + " 00:00:00"}})]
+                    user_.append(each["PERNR"])
+                    user_id = each["PERNR"]
+                    try:
+                        maxi = max((each["PERNR"], each["TIMR6"], each["CHOIC"], each["LDATE"],
+                                    each["LTIME"], each["SATZA"], each["TERMINAL_id"], each["SERVER_TIME"],
+                                    each["IndexKey"], each["Reference"], each["SAP_sync_status"],
+                                    each["SAP_sync_date_time"])
+                                   for each in nrdb.find(filter=Filter) if each["Reference"] == "P20" and
+                                   each["SERVER_TIME"] > Date + " 00:00:00" and each["PERNR"] == user_id)
+                        print(old_index_max, maxi)
+                        if len(old_index_max) != 0:
+                            if old_index_max[0] != maxi[8]:
+                                nrdb.update_one({'IndexKey': old_index_max[0]}, {"$set": {'SATZA': ""}}, upsert=True)
+                                nrdb.update_one({'IndexKey': maxi[8]}, {"$set": {'SATZA': maxi[9]}}, upsert=True)
+                            else:
+                                print("pass")
+                        else:
+                            nrdb.update_one({'IndexKey': maxi[8]}, {"$set": {'SATZA': maxi[9]}}, upsert=True)
+                        print({'IndexKey': maxi[8]}, {"$set": {'SATZA': maxi[9]}}, "DB updated")
+
+                        auth_list.append({'PERNR': maxi[0], 'TIMR6': maxi[1], "CHOIC": maxi[2],
+                                          "LDATE": maxi[3],
+                                          "LTIME": maxi[4],
+                                          "SATZA": maxi[9],
+                                          "TERMINAL_id": maxi[6],
+                                          "SERVER_TIME": maxi[7]
+                                          })
+                    except (ValueError, TypeError):
+                        print('empty list or invalid input P20')
+                    try:
+                        mini = min((each["PERNR"], each["TIMR6"], each["CHOIC"], each["LDATE"],
+                                    each["LTIME"], each["SATZA"], each["TERMINAL_id"], each["SERVER_TIME"],
+                                    each["IndexKey"], each["Reference"], each["SAP_sync_status"],
+                                    each["SAP_sync_date_time"])
+                                   for each in nrdb.find(filter=Filter) if each["Reference"] == "P10" and
+                                   each["SERVER_TIME"] > Date + " 00:00:00" and each["PERNR"] == user_id)
+                        print({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}})
+                        if len(old_index_min) != 0:
+                            if old_index_min[0] != mini[8]:
+                                nrdb.update_one({'IndexKey': old_index_min[0]}, {"$set": {'SATZA': ""}}, upsert=True)
+                                nrdb.update_one({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}}, upsert=True)
+                            else:
+                                print("pass")
+                        else:
+                            nrdb.update_one({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}}, upsert=True)
+                        print({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}}, "DB updated")
+                        auth_list.append({'PERNR': mini[0], 'TIMR6': mini[1], "CHOIC": mini[2],
+                                          "LDATE": mini[3],
+                                          "LTIME": mini[4],
+                                          "SATZA": mini[9],
+                                          "TERMINAL_id": mini[6],
+                                          "SERVER_TIME": mini[7]
+                                          })
+                    except (ValueError, TypeError):
+                        print('empty list or invalid input P10')
+            respone = {"status": 'Success', "message": "Authlog Exported", "Auth_list": auth_list}
+            return make_response(jsonify(respone)), 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class Get_All_Attendance(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/All_Attendance.yaml', methods=['GET'])
+    def get(self):
+        try:
+            nrdb = database_connect_mongo()
+            nrdb = nrdb["all_attendance"]
+            CurrentDatetime = datetime.now()
+            yesterday = CurrentDatetime - timedelta(days=1)
+            Date = yesterday.strftime("%d.%m.%Y")
+            Filter = {
+                'SERVER_TIME': {
+                    '$gte': Date + " 00:00:00",
+                    '$lt': Date + " 23:59:59"
+                },
+                'Auth_result': 'Success'
+            }
+            data = nrdb.find(filter=Filter)
+            user_ = list()
+            auth_list = list()
+            for each in data:
+                if each["PERNR"] not in user_ and Date + " 00:00:00" < each["SERVER_TIME"] < Date + " 23:59:59" and \
+                        Terminals.FetchTerminals_By_AlpetaID(each["Raw"]["TerminalID"]) \
+                        and Users.FetchUSerDetails_By_alpeta_ID(each["Raw"]['UniqueID']):
+                    old_index_max = [each["IndexKey"] for each in
+                                     nrdb.find({'SATZA': "P20", "PERNR": each["PERNR"],
+                                                "SERVER_TIME": {'$gte': Date + " 00:00:00", '$lt': Date + " 23:59:59"}})]
+                    old_index_min = [each["IndexKey"] for each in
+                                     nrdb.find({'SATZA': "P10", "PERNR": each["PERNR"],
+                                                "SERVER_TIME": {'$gte': Date + " 00:00:00", '$lt': Date + " 23:59:59"}})]
+                    user_.append(each["PERNR"])
+                    user_id = each["PERNR"]
+                    try:
+                        maxi = max((each["PERNR"], each["TIMR6"], each["CHOIC"], each["LDATE"],
+                                    each["LTIME"], each["SATZA"], each["TERMINAL_id"], each["SERVER_TIME"],
+                                    each["IndexKey"], each["Reference"], each["SAP_sync_status"],
+                                    each["SAP_sync_date_time"])
+                                   for each in nrdb.find(filter=Filter) if each["Reference"] == "P20" and
+                                   Date + " 00:00:00" < each["SERVER_TIME"] < Date + " 23:59:59"
+                                   and each["PERNR"] == user_id)
+                        print(old_index_max, maxi)
+                        if len(old_index_max) != 0:
+                            if old_index_max[0] != maxi[8]:
+                                nrdb.update_one({'IndexKey': old_index_max[0]}, {"$set": {'SATZA': ""}}, upsert=True)
+                                nrdb.update_one({'IndexKey': maxi[8]}, {"$set": {'SATZA': maxi[9]}}, upsert=True)
+                            else:
+                                print("pass")
+                        else:
+                            nrdb.update_one({'IndexKey': maxi[8]}, {"$set": {'SATZA': maxi[9]}}, upsert=True)
+                        print({'IndexKey': maxi[8]}, {"$set": {'SATZA': maxi[9]}}, "DB updated")
+
+                        auth_list.append({'PERNR': maxi[0], 'TIMR6': maxi[1], "CHOIC": maxi[2],
+                                          "LDATE": maxi[3],
+                                          "LTIME": maxi[4],
+                                          "SATZA": maxi[9],
+                                          "TERMINAL_id": maxi[6],
+                                          "SERVER_TIME": maxi[7]
+                                          })
+                    except (ValueError, TypeError):
+                        print('empty list or invalid input P20')
+                    try:
+                        mini = min((each["PERNR"], each["TIMR6"], each["CHOIC"], each["LDATE"],
+                                    each["LTIME"], each["SATZA"], each["TERMINAL_id"], each["SERVER_TIME"],
+                                    each["IndexKey"], each["Reference"], each["SAP_sync_status"],
+                                    each["SAP_sync_date_time"])
+                                   for each in nrdb.find(filter=Filter) if each["Reference"] == "P10" and
+                                   Date + " 00:00:00" < each["SERVER_TIME"] < Date + " 23:59:59"
+                                   and each["PERNR"] == user_id)
+                        print({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}})
+                        if len(old_index_min) != 0:
+                            if old_index_min[0] != mini[8]:
+                                nrdb.update_one({'IndexKey': old_index_min[0]}, {"$set": {'SATZA': ""}}, upsert=True)
+                                nrdb.update_one({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}}, upsert=True)
+                            else:
+                                print("pass")
+                        else:
+                            nrdb.update_one({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}}, upsert=True)
+                        print({'IndexKey': mini[8]}, {"$set": {'SATZA': mini[9]}}, "DB updated")
+                        auth_list.append({'PERNR': mini[0], 'TIMR6': mini[1], "CHOIC": mini[2],
+                                          "LDATE": mini[3],
+                                          "LTIME": mini[4],
+                                          "SATZA": mini[9],
+                                          "TERMINAL_id": mini[6],
+                                          "SERVER_TIME": mini[7]
+                                          })
+                    except (ValueError, TypeError):
+                        print('empty list or invalid input P10')
+            respone = {"status": 'Success', "message": "Authlog Exported", "Auth_list": auth_list}
+            return make_response(jsonify(respone)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class Search_Attendance(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/SearchAttendance.yaml', methods=['POST'])
+    def post(self, page):
+        try:
+            nrdb = database_connect_mongo()
+            nrdb = nrdb["all_attendance"]
+            request_data = request.get_json(force=True)
+            employee_id = request_data['employee_id']  # Man number
+            start_date = request_data['start_date']  # dd.mm.yyyy HH:MM:SS
+            end_date = request_data['end_date']  # dd.mm.yyyy HH:MM:SS
+            attendance_type = request_data['attendance']  # list ["P10","P20"]
+            search_status = request_data['search_status']  # True or False
+            page_no = request_data['pageno']  # Page No
+            result = list()
+            all_result = list()
+            sort = list({'LDATE': -1}.items())
+            if employee_id and start_date != end_date:
+                Filter = {
+                    'SATZA': {
+                        '$in': attendance_type
+                    },
+                    'Raw.EventTime': {
+                        '$gte': start_date,
+                        '$lt': end_date
+                    },
+
+                    'PERNR': employee_id
+                }
+            elif employee_id and start_date == end_date:
+                Filter = {
+                    'SATZA': {
+                        '$in': attendance_type
+                    },
+                    'Raw.EventTime': {
+                        '$gte': start_date,
+                    },
+
+                    'PERNR': employee_id
+                }
+            elif start_date != end_date and not employee_id:
+                Filter = {
+                    'SATZA': {
+                        '$in': attendance_type
+                    },
+                    'Raw.EventTime': {
+                        '$gte': start_date,
+                        '$lt': end_date
+                    }
+                }
+            else:
+                Filter = {
+                    'SATZA': {
+                        '$in': attendance_type
+                    },
+                    'Raw.EventTime': {
+                        '$gte': start_date,
+                    }
+                }
+            print(Filter)
+            all_data = nrdb.find(filter=Filter)
+            for each in json.loads(json_util.dumps(all_data)):
+                all_result.append(each)
+
+            if search_status and request_data['export'] is False:
+                data = nrdb.find(filter=Filter).limit(10).skip(10 * (page_no - 1))
+                for each in json.loads(json_util.dumps(data)):
+                    result.append(each)
+
+            elif search_status is False and request_data['export']:
+                data = nrdb.find(filter=Filter).limit(10).skip(10 * (page_no - 1))
+                for each in json.loads(json_util.dumps(data)):
+                    result.append(each)
+
+            elif search_status and request_data['export']:
+                data = nrdb.find(filter=Filter).limit(10).skip(10 * (page_no - 1))
+                for each in json.loads(json_util.dumps(data)):
+                    result.append(each)
+
+            response = {"status": 'Success', "message": "Search Complete", "Search_count": len(result),
+                        "All_Search_count": len(all_result),
+                        "Search": result if len(result) != 0 else "Authlog not found for the "
+                                                                  "following date",
+                        "Total_search": all_result if request_data['export'] else []}
+            return make_response(jsonify(response)), 200
+
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+class get_image_auth(MethodView):
+    @cross_origin(supports_credentials=True)
+    @swag_from('apidocs/get_image_auth.yaml', methods=['POST'])
+    def post(self):
+        try:
+            request_data = request.get_json(force=True)
+            IndexKey = request_data['IndexKey']
+            UniqueID = request_data['UniqueID']
+            image = get_auth_image(str(IndexKey), str(UniqueID))
+            print(image)
+            if image["status"] == "success":
+                response = {"status": 'Success', "message": "Authlog Image",
+                            "Auth_list": image["Authlog_image"]["AuthLogDetail"]}
+            else:
+                response = {"status": 'Error', "message": "Authlog Image not found", "Auth_list": {}}
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"status": 'Error', "message": f'{str(e)}'}
+            print(response)
+            return make_response(jsonify(response)), 200
+
+
+# # # Creating View Function/Resources
+CreateBlacklist = CreateBlacklist.as_view("CreateBlacklist")
+RevertBlacklist = RevertBlacklist.as_view("RevertBlacklist")
+Get_Auth_log = Get_Auth_log.as_view("Authlog")
+Get_All_Auth_log_pg = Get_All_Auth_log_pg.as_view("AuthlogPG")
+Get_All_Auth_log = Get_All_Auth_log.as_view("Get_All_Auth_log")
+Get_Attendance = Get_Attendance.as_view("Get_Attendance")
+Get_All_Attendance = Get_All_Attendance.as_view("Get_All_Attendance")
+Search_Attendance = Search_Attendance.as_view("Search_Attendance")
+Get_Image = get_image_auth.as_view("Get_Image_Auth")
+
+# # # adding routes to the Views we just created
+Blacklist_view.add_url_rule('/blacklist', view_func=CreateBlacklist, methods=['POST'])
+Blacklist_view.add_url_rule('/revert_blacklist', view_func=RevertBlacklist, methods=['POST'])
+Blacklist_view.add_url_rule('/auth_log/<Date>', view_func=Get_Auth_log, methods=['GET'])
+Blacklist_view.add_url_rule('/auth_log_pg', view_func=Get_All_Auth_log_pg, methods=['GET'])
+Blacklist_view.add_url_rule('/all_auth_log', view_func=Get_All_Auth_log, methods=['GET'])
+Blacklist_view.add_url_rule('/attendance', view_func=Get_Attendance, methods=['GET'])
+Blacklist_view.add_url_rule('/attendance_all', view_func=Get_All_Attendance, methods=['GET'])
+Blacklist_view.add_url_rule('/search_attendance/<page>', view_func=Search_Attendance, methods=['POST'])
+Blacklist_view.add_url_rule('/auth_image', view_func=Get_Image, methods=['POST'])

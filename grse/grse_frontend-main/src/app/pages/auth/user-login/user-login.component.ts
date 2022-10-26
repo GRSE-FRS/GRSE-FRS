@@ -1,0 +1,100 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import * as Global from 'src/app/globals';
+
+@Component({
+  selector: 'app-user-login',
+  templateUrl: './user-login.component.html',
+  styleUrls: ['./user-login.component.css']
+})
+export class UserLoginComponent implements OnInit {
+  loginForm: FormGroup;
+
+  constructor(
+    public formBuilder: FormBuilder,
+    public authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService,
+  ) {
+    this.loginForm = formBuilder.group({
+      employee_id: [null, Validators.compose([Validators.required])],
+      password: [null, Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(20)])],
+    });
+  }
+
+  ngOnInit(): void {
+  }
+
+  login(event: any) {
+
+    console.log("Here in component to call service");
+
+    this.loginForm.markAllAsTouched();
+    Global.scrollToQuery(".form-control.is-invalid.ng-invalid");
+
+    if (this.loginForm.valid) {
+      event.target.classList.add('btn-loading');
+
+      this.authService.userLogin({
+        'employee_id': this.loginForm.value.employee_id,
+        'password': this.loginForm.value.password,
+      }).subscribe(res => {
+        if (res.status == 'success') {
+          if (res.user_details) {
+            this.toastr.success(res.message);
+            localStorage.setItem('grse-user-token', res.token);
+            localStorage.setItem('grse-user-user', JSON.stringify(res.user_details));
+            this.router.navigate(['/user']);
+          } else {
+            this.toastr.error("Unquthorized Access");
+          }
+        } else if (res.status == 'val_error') {
+          this.toastr.error(Global.showValidationMessage(res.errors));
+        } else {
+          this.toastr.error(res.Message);
+        }
+
+        event.target.classList.remove('btn-loading');
+      }, (err) => {
+        event.target.classList.remove('btn-loading');
+        this.toastr.error(Global.showServerErrorMessage(err));
+      });
+    }
+  }
+
+  // fakeLogin(event: any) {
+  //   this.loginForm.markAllAsTouched();
+  //   setTimeout(function () {
+  //     let $_errFormControl = document.querySelectorAll(".form-control.is-invalid.ng-invalid");
+  //     if ($_errFormControl.length > 0) {
+  //       const firstErr: Element = $_errFormControl[0];
+  //       firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //     }
+  //   }, 100);
+
+  //   if (this.loginForm.valid) {
+  //     event.target.classList.add('btn-loading');
+
+  //     const _this = this;
+  //     setTimeout(function () {
+  //       if (_this.loginForm.value.employee_id != "I0493" || _this.loginForm.value.password != "12345678") {
+  //         _this.toastr.error("Try checking Your Credentials and Try again");
+  //         event.target.classList.remove('btn-loading');
+
+  //         return;
+  //       }
+
+  //       _this.toastr.success("Logged In Successfully");
+  //       localStorage.setItem('grse-user-token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzgwODQ3NDAsImVtYWlsIjoiYWRtaW4uaXZhbkB5b3BtYWlsLmNvbSJ9.euEqHeuH9FZHOn5uNSer4SJrmZ-yqHuRl3AWLwCVA5k');
+  //       localStorage.setItem('grse-user-user', JSON.stringify({ "address": null, "alpeta_password": null, "alpeta_user_id": null, "created_at": "2021-11-26T10:19:48.933544-05:00", "department_id": null, "designation_id": null, "dob": null, "email": "user.ivan@yopmail.com", "employee_id": null, "employment_end_date": null, "employment_start_date": null, "esi_no": null, "first_name": "GRSE", "gender": null, "id": 1, "is_deleted": 0, "last_name": "ADMIN", "last_update_date": null, "last_updated_by": null, "marital_status": null, "middle_name": null, "nationality": null, "password": "$2a$10$zl5zyYOtSDLeyNa5J/mPwevmvlCuCXpeY6JbS96Gqss1/3Uy4vmje", "pf_no": null, "phone": "9876543210", "profile_picture": null, "role_id": 1, "shift_id": null, "status": "active", "updated_at": null, "vendor_id": null }));
+  //       _this.router.navigate(['/user']);
+
+  //       event.target.classList.remove('btn-loading');
+  //     }, 1500);
+  //   }
+  // }
+}
+

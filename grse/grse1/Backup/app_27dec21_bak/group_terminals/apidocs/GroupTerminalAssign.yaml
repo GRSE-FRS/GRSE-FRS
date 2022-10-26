@@ -1,0 +1,55 @@
+Assign Terminals to Group
+----
+tags:
+  - "Terminal Grouping"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/TermGrouping"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/TermGroupingSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/TermGroupingError"
+definitions:
+#   name,code,shift_start_time,shift_end_time,status
+  TermGrouping:
+    type: "object"
+    properties:
+      group_id:
+        type: "int"
+        example: 1
+      terminal_id:
+        type: "array"
+        example: [1,2,3,4,5]
+      status:
+        type: "time"
+        example: "active"
+  TermGroupingSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Terminal Added successfully"
+  TermGroupingError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

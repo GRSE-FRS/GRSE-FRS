@@ -1,0 +1,224 @@
+.cam-icon {
+    position: absolute;
+    z-index: 1;
+    border-radius: 100%;
+    padding: 8px 10px !important;
+    top: 15px;
+    left: 24px;
+}
+
+.badge i {
+    color: white;
+    font-size: .85rem;
+    margin-right: 2px;
+}
+
+
+/*** START OF VIEW FINGERPRINT SECTION */
+
+#fingerprints-added .finger-box {
+    text-align: center;
+    border: 1px solid;
+    padding: 6px;
+    width: 35px;
+    position: absolute;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 30%;
+}
+
+#fingerprints-added .finger-box.registered {
+    /* cursor: not-allowed; */
+    /* cursor: url('../../../../assets/images/icons/remove.png'), auto; */
+    color: white;
+    background: #50cd89;
+    border-color: #50cd89;
+}
+
+#fingerprints-added .finger-box.registered i {
+    color: white;
+}
+
+#fingerprints-added .finger-box.selected {
+    background: #009ef7;
+    color: white;
+    border-color: #009ef7;
+}
+
+#fingerprints-added .finger-box.item-1 {
+    left: 328px;
+    top: 225px;
+}
+
+#fingerprints-added .finger-box.item-2 {
+    left: 435px;
+    top: 98px;
+}
+
+#fingerprints-added .finger-box.item-3 {
+    left: 510px;
+    top: 80px;
+}
+
+#fingerprints-added .finger-box.item-4 {
+    left: 560px;
+    top: 115px;
+}
+
+#fingerprints-added .finger-box.item-5 {
+    left: 598px;
+    top: 175px;
+}
+
+#fingerprints-added .finger-box.item-6 {
+    left: 282px;
+    top: 225px;
+}
+
+#fingerprints-added .finger-box.item-7 {
+    left: 176px;
+    top: 98px;
+}
+
+#fingerprints-added .finger-box.item-8 {
+    left: 100px;
+    top: 80px;
+}
+
+#fingerprints-added .finger-box.item-9 {
+    left: 53px;
+    top: 120px;
+}
+
+#fingerprints-added .finger-box.item-10 {
+    left: 18px;
+    top: 174px;
+}
+
+#fingerprints-added .fingerprint-col img {
+    width: 140px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+#fingerprints-added .fingerprint-col {
+    padding: 100px 0;
+    text-align: center;
+}
+
+
+/*** END OF VIEW FINGERPRINT SECTION */
+
+
+/*** START OF EDIT FINGERPRINT SECTION */
+
+#editfingerprint-modal .finger-box {
+    text-align: center;
+    border: 1px solid;
+    padding: 10px;
+    width: 45px;
+    position: absolute;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 30%;
+}
+
+#editfingerprint-modal .finger-box.registered {
+    /* cursor: not-allowed; */
+    cursor: url('../../../../assets/images/icons/remove.png'), auto;
+    color: white;
+    background: #50cd89;
+    border-color: #50cd89;
+}
+
+#editfingerprint-modal .finger-box.registered i {
+    color: white;
+}
+
+#editfingerprint-modal .finger-box.selected {
+    background: #009ef7;
+    color: white;
+    border-color: #009ef7;
+}
+
+#editfingerprint-modal .finger-box.item-1 {
+    right: 350px;
+    top: 182px;
+}
+
+#editfingerprint-modal .finger-box.item-2 {
+    right: 215px;
+}
+
+#editfingerprint-modal .finger-box.item-3 {
+    right: 115px;
+    top: 5px;
+}
+
+#editfingerprint-modal .finger-box.item-4 {
+    right: 50px;
+    top: 50px;
+}
+
+#editfingerprint-modal .finger-box.item-5 {
+    right: 10px;
+    top: 130px;
+}
+
+#editfingerprint-modal .finger-box.item-6 {
+    left: 345px;
+    top: 182px;
+}
+
+#editfingerprint-modal .finger-box.item-7 {
+    left: 215px;
+}
+
+#editfingerprint-modal .finger-box.item-8 {
+    left: 115px;
+    top: 5px;
+}
+
+#editfingerprint-modal .finger-box.item-9 {
+    left: 50px;
+    top: 50px;
+}
+
+#editfingerprint-modal .finger-box.item-10 {
+    left: 10px;
+    top: 130px;
+}
+
+
+/*** END OF EDIT FINGERPRINT SECTION */
+
+.box.dragger-box {
+    border: 1px solid #c8c8c8;
+    border-radius: 5px;
+    /* padding: 20px; */
+    min-height: 250px;
+    background: #f6f6f6;
+}
+
+.box.dragger-box .card {
+    background: #2c9dff;
+    border-radius: 0;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+    border: 1px solid #000000;
+    cursor: move;
+}
+
+td,
+th {
+    white-space: nowrap;
+}
+
+.text-Failed {
+    color: #f1416c!important;
+}
+
+.text-Success {
+    color: #50cd89!important;
+}

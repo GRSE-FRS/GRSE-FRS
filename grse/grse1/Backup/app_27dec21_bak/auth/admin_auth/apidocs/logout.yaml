@@ -1,0 +1,43 @@
+Logs out current admin
+---
+tags:
+  - "Admin"
+produces:
+  - "application/json"
+parameters:
+  - name: "token"
+    in: "query"
+    required: true
+    description: "The Json Web Token to be Destroyed"
+    type: "string"
+responses:
+  200:
+    description: "You have successfully Logged Out"
+    schema:
+      $ref: "#/definitions/logout_ok"
+  error:
+    description: "LogOut attempt failed try againt"
+    schema:
+      $ref: "#/definitions/log_out_failed"
+definitions:
+  logout_ok:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      Message:
+        type: "string"
+        example: "You have successfully Logged Out"
+      Access_Token:
+        type: "string"
+        example: "Access Token has been Destroyed"
+  log_out_failed:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: "LogOut attempt failed try again"

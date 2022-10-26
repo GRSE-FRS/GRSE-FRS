@@ -1,0 +1,45 @@
+View Terminal Details By Terminal Id
+
+---
+
+tags:
+  - "Admin"
+produces:
+  - "application/json"
+parameters:
+  - name: "terminal_id"
+    in: path
+    required: true
+    description: "fetch terminal details"
+    type: "string"
+responses:
+  200:
+    description: "Success"
+    schema:
+      $ref: "#/definitions/terminaFetch_success"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/terminalFetch_Error"
+definitions:
+  terminaFetch_success:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      details:
+        type: "object"
+        example: {}
+  terminalFetch_Error:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

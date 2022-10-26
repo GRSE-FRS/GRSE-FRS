@@ -1,0 +1,233 @@
+<div class="card mb-5 mb-xl-10" id="authlog-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">
+                {{formDetails?.form_heading}} Registration
+                <br><span class="text-muted mt-1 fw-bold fs-7">{{formDetails?.form_description}}</span>
+            </h3>
+        </div>
+        <div class="card-toolbar">
+        </div>
+    </div>
+
+    <form [formGroup]="registerForm">
+        <div class="card-body border-top p-9">
+            <div class="row mb-5">
+                <div class="col-md-3 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'department', 'required')}">Department</label>
+                    <ngx-select-dropdown [options]="departmentMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select Department'}" formControlName="department" [class.is-invalid]="( registerForm.controls.department.dirty || registerForm.controls.department.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.department.hasError('required') && ( registerForm.controls.department.dirty || registerForm.controls.department.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'yard_no', 'required')}">Yard No</label>
+                    <input type="text" formControlName="yard_no" class="form-control" placeholder="Enter Yard No" [class.is-invalid]="( registerForm.controls.yard_no.dirty || registerForm.controls.yard_no.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.yard_no.hasError('required') && ( registerForm.controls.yard_no.dirty || registerForm.controls.yard_no.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'unit', 'required')}">Unit</label>
+                    <input type="text" formControlName="unit" class="form-control" placeholder="Enter Unit" [class.is-invalid]="( registerForm.controls.unit.dirty || registerForm.controls.unit.touched )">
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.unit.hasError('required') && ( registerForm.controls.unit.dirty || registerForm.controls.unit.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-5">
+                    <label class="form-label" [ngClass]="{'required': Global.isFormValidationAvailable(registerForm, 'po_number', 'required')}">P.O. No</label>
+                    <ngx-select-dropdown [options]="poMaster" formControlName="po_number" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select PO Number'}" [class.is-invalid]="( registerForm.controls.po_number.dirty || registerForm.controls.po_number.touched )"></ngx-select-dropdown>
+
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="registerForm.controls.po_number.hasError('required') && ( registerForm.controls.po_number.dirty || registerForm.controls.po_number.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+
+                <!-- <div class="col-md-3 mb-5">
+                    <label class="form-label">Company Logo</label>
+                    <input type="file" class="form-control" placeholder="Upload Company Logo">
+                </div> -->
+            </div>
+
+            <div class="row mb-10">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+
+            <ng-container formArrayName="dcode_details">
+                <div class="row" *ngIf="formGroups.length > 0">
+                    <div class="col-md-12">
+                        <ng-container *ngFor="let formGroup of formGroups; let i = index">
+                            <table class="table table-row-bordered gy-3 gx-5 mb-10" *ngIf="formGroup.demog_masters.length > 0">
+                                <thead>
+                                    <tr class="bg-secondary text-center text-primary text-uppercase font-weight-bold fs-5 fw-bolder">
+                                        <th colspan="100%">{{formGroup?.name ?? "N/A"}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let form of formGroup.demog_masters; let i = index" class="field-{{form.code}}">
+                                        <ng-container [formGroupName]="fetchIndexOfControl(registerForm, 'dcode_details', 'dm_code', form?.code)">
+                                            <td class="w-50">
+                                                {{form.name}}
+                                                <span class="text-danger" *ngIf="form.is_required == true">*</span>
+                                            </td>
+                                            <td class="w-50">
+                                                <ng-container *ngIf="['text', 'number', 'date', 'datetime-local'].includes(form.type)">
+                                                    <input formControlName="dm_value" type="{{form.type}}" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="{{form.placeholder ?? 'Enter Value'}}">
+                                                </ng-container>
+
+                                                <ng-container *ngIf="['yesno'].includes(form.type)">
+                                                    <div class="d-flex">
+                                                        <div class="form-check form-check-custom form-check-solid mx-3">
+                                                            <input [value]="'true'" class="form-check-input" type="radio" id="radio-{{form.code}}-yes-{{i}}" name="radio-{{form.code}}-{{i}}" />
+                                                            <label class="form-check-label" for="radio-{{form.code}}-yes-{{i}}">
+                                                        Yes
+                                                    </label>
+                                                        </div>
+
+                                                        <div class="form-check form-check-custom form-check-solid mx-3">
+                                                            <input [value]="'false'" class="form-check-input" type="radio" id="radio-{{form.code}}-no-{{i}}" name="radio-{{form.code}}-{{i}}" />
+                                                            <label class="form-check-label" for="radio-{{form.code}}-no-{{i}}">
+                                                        No
+                                                    </label>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="['acknowledge-ck'].includes(form.type)">
+                                                    <div class="d-flex">
+                                                        <div class="form-check form-check-custom form-check-solid mx-3">
+                                                            <input [value]="'true'" class="form-check-input" type="checkbox" />
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+
+                                    <tr *ngIf="!formGroup.demog_masters || formGroup.demog_masters.length == 0">
+                                        <td class="text-center">No fields found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div> -->
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container formArrayName="attachment_code">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <table class="table table-row-bordered gy-3 gx-5 mb-5">
+                            <thead class="bg-secondary text-primary fw-bolder text-center text-uppercase fs-5">
+                                <tr>
+                                    <th colspan="3">
+                                        Upload Documents / Files
+                                    </th>
+                                    <th>
+                                        <button type="button" class="btn btn-sm btn-primary mx-1" (click)="addFormRows('attachment_code')"><i class="fa fa-plus"></i> Add New</button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of Global.getFormGroupArray(registerForm, 'attachment_code'); let i = index" [formGroupName]="i">
+                                    <td>{{i+1}}</td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Enter File Name" formControlName="fl_details" [class.is-invalid]="( item.get('fl_details')!.dirty || item.get('fl_details')!.touched )">
+                                    </td>
+                                    <td>
+                                        <input type="file" class="form-control" formControlName="fl_file" [class.is-invalid]="( item.get('fl_file')!.dirty || item.get('fl_file')!.touched )" (change)="onFormArrayImageChanged($event, 'attachment_code', i, 'fl_filesource')">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-danger mx-1" (click)="removeFormRow('attachment_code', i)"><i class="fa fa-times"></i> Remove</button>
+                                    </td>
+                                </tr>
+
+                                <tr *ngIf="Global.getFormGroupArray(registerForm, 'attachment_code')?.length == 0" class="bg-light">
+                                    <td colspan="100%" class="text-center">Please click on the <b>"Add New"</b> button to add files</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <table class="table table-row-bordered gy-3 gx-5">
+                        <thead class="bg-secondary text-primary fw-bolder text-center text-uppercase fs-5">
+                            <tr>
+                                <th colspan="100%">
+                                    Submission Comment
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div class="col-lg-12 fv-row">
+                    <textarea class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Add Your Submission Comment" formControlName="submission_comment"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-10">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5 text-center">
+                            <thead class="fw-bolder text-uppercase">
+                                <tr class="bg-warning fs-5">
+                                    <th colspan="100%">
+                                        Assign To (Assigned as Per System Settings)
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Current Designation</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>I0493</td>
+                                    <td>John Doe</td>
+                                    <td>Nodal Officer</td>
+                                    <td>CLMS Nodal AJS</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="button" (click)="cancelEntry()" class="btn btn-secondary me-2">Discard</button>
+
+            <button type="submit" (click)="submitForm($event)" class="btn btn-primary">
+                <span class="indicator-label">Submit</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </button>
+        </div>
+    </form>
+</div>

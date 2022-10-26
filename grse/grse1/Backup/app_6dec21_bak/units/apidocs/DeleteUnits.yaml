@@ -1,0 +1,51 @@
+Delete Units
+---
+tags:
+  - "Units"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UnitsSubarea"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UnitsSubareaSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UnitsSubareaError"
+definitions:
+  UnitsSubarea:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+  UnitsSubareaSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Units Deleted successfully"
+      units:
+        type: "object"
+        example : {}
+  UnitsSubareaError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,91 @@
+<div class="card mb-5 mb-xl-10" id="user-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">
+                CLMS Raw Data - Details
+                <!-- <small>{{employeeId}}</small> -->
+            </h3>
+        </div>
+        <div class="card-toolbar">
+
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="row" *ngIf="prevcontractors.length > 0">
+            <div class="col-md-6">
+                <div class="row mb-7">
+                    <label class="col-lg-4 fw-bold text-muted text-uppercase">Employee ID</label>
+                    <div class="col-lg-8">
+                        <span class="fw-bolder fs-6 text-gray-800">{{ prevcontractors[0]?.employee_id ?? "N/A" }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row mb-7">
+                    <label class="col-lg-4 fw-bold text-muted text-uppercase">Full Name</label>
+                    <div class="col-lg-8">
+                        <span class="fw-bolder fs-6 text-gray-800">{{ prevcontractors[0]?.full_name ?? "N/A" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-md-12">
+                <hr class="short">
+            </div> -->
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-processing" style="display: none;">
+                    <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-row-bordered gy-5 gs-7 bordered">
+                        <thead>
+                            <tr class="fw-bold fs-6 text-gray-800">
+                                <!-- <th>EMPLOYEE ID</th> -->
+                                <!-- <th>FULL NAME</th> -->
+                                <th>DCODE</th>
+                                <th>DVALUE</th>
+                                <th>CBY</th>
+                                <th>CON</th>
+                                <th>EFROM</th>
+                                <th>ETO</th>
+                                <th>DID</th>
+                                <th>DREMARKS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="prevcontractors.length > 0; else noUserRecordsFound">
+                                <ng-container *ngFor="let item of prevcontractors; let i = index">
+                                    <tr>
+                                        <!-- <td>{{ item?.employee_id ?? "-" }}</td> -->
+                                        <!-- <td>{{ item?.full_name ?? "-" }}</td> -->
+                                        <td>{{ item?.dcode ?? "-" }}</td>
+                                        <td>{{ item?.dvalue ?? "-" }}</td>
+                                        <td>{{ item?.cby ?? "-" }}</td>
+                                        <td>{{ item?.con ?? "-" }}</td>
+                                        <td>{{ item?.efrom ?? "-" }}</td>
+                                        <td>{{ item?.eto ?? "-" }}</td>
+                                        <td>{{ item?.did ?? "-" }}</td>
+                                        <td>{{ item?.dremarks ?? "-" }}</td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-template #noUserRecordsFound>
+                                <tr>
+                                    <td colspan="100%" class="text-center">No Records Found</td>
+                                </tr>
+                            </ng-template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <app-pagination [rows]="prevcontractors" [tableOptions]="tableOptions" (onPrevPageClicked)="fetch({'page': tableOptions.page - 1})" (onNextPageClicked)="fetch({'page': tableOptions.page + 1})"></app-pagination>
+            </div>
+        </div>
+    </div>
+</div>

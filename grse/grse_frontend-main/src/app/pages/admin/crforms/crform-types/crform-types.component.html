@@ -1,0 +1,277 @@
+<div class="card mb-5 mb-xl-10" id="submitted-forms-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">CR Forms History</h3>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex">
+                <form (submit)="fetchFormSubmitted({'page': 1})" class="mx-1" style="width: 250px;">
+                    <select id="table-filter" class="form-control minimal" (change)="fetchFormSubmitted({'page': 1})">
+                        <ng-container *ngFor="let item of formStatusMaster">
+                            <option value="{{item.value}}">{{item.description}}</option>
+                        </ng-container>
+                    </select>
+                </form>
+                
+                <form (submit)="fetchFormSubmitted({'page': 1})" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input id="table-search" type="text" class="form-control" placeholder="Search...">
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-row-bordered gy-5 gs-7">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800">
+                        <th>#</th>
+                        <th>For</th>
+                        <th>State</th>
+                        <th>Submission Date</th>
+                        <th>Initiated By</th>
+                        <th>Current Status</th>
+                        <!-- <th>Current Department</th> -->
+                        <th>Last Updated By</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of formSubmitted; let i = index">
+                        <td class="fw-bolder text-primary">{{item.unique_id}}</td>
+                        <td><b class="text-info">{{item?.form_heading ?? "N/A"}}</b></td>
+                        <td><b class="fw-bolder text-uppercase">{{item.form_state_status}}</b></td>
+                        <td>{{item.created_at | date}}</td>
+                        <td class="fw-bolder">{{item.init_by}}</td>
+                        <td>
+                            <ng-container [ngSwitch]="item.form_status">
+                                <span class="badge badge-sm badge-primary" *ngSwitchCase="'initiated'">Initiated</span>
+                                <span class="badge badge-sm badge-warning" *ngSwitchCase="'inprogress'">In Progress</span>
+                                <span class="badge badge-sm badge-warning" *ngSwitchCase="'pending'">Pending</span>
+                                <span class="badge badge-sm badge-success" *ngSwitchCase="'completed'">Completed</span>
+                                <span class="badge badge-sm badge-success" *ngSwitchCase="'complete'">Completed</span>
+                                <span class="badge badge-sm badge-success" *ngSwitchCase="'onboard'">Onboared</span>
+                                <span class="badge badge-sm badge-danger" *ngSwitchCase="'rejected'">Rejected</span>
+                                <span class="badge badge-sm badge-info text-capitalize" *ngSwitchDefault>{{item.form_status}}</span>
+                            </ng-container>
+                        </td>
+                        <!-- <td>{{item.current_dept}}</td> -->
+                        <td class="fw-bolder">{{item.last_updated_by}}</td>
+                        <td class="text-center">
+                            <!-- <button (click)="startOnboarding(item)" class="btn btn-sm btn-dark mx-1"><i class="fa fa-check"></i> OnBoard</button> -->
+                            <a routerLink="/admin/cr-forms/{{item.unique_id}}/view" class="btn btn-sm btn-primary mx-1"><i class="fa fa-eye"></i> View</a>
+                            <button *ngIf="['completed','complete'].includes(item.form_status)" (click)="startOnboarding(item)" class="btn btn-sm btn-dark mx-1">
+                                <ng-container *ngIf="item.form_state_status == 'release'">
+                                    <i class="fa fa-check"></i> Release
+                                </ng-container>
+                                <ng-container *ngIf="item.form_state_status != 'release'">
+                                    <i class="fa fa-check"></i> OnBoard
+                                </ng-container>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="formSubmitted.length == 0">
+                        <td class="text-center" colspan="100%">No records found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <app-pagination class="mt-5" [rows]="formSubmitted" [tableOptions]="formSubmittedTableOptions" (onPrevPageClicked)="fetchFormSubmitted({'page' : formSubmittedTableOptions.page - 1})" (onNextPageClicked)="fetchFormSubmitted({page : formSubmittedTableOptions.page + 1})"></app-pagination>
+    </div>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#b1onboarding-modal" id="open-b1onboarding-modal"></button>
+<div class="modal fade" tabindex="-1" id="b1onboarding-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">Onboard B1 Form <small class="text-primary">{{formDetails?.unique_id ?? ""}}</small></h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                </span>
+                </div>
+            </div>
+
+            <form [formGroup]="b1FormOnboard">
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b1FormOnboard.controls.vendor_name.dirty || b1FormOnboard.controls.vendor_name.touched )">Vendor Name</label>
+                        <div class="col-lg-8 fv-row">
+                            <input formControlName="vendor_name" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b1FormOnboard.controls.vendor_code.dirty || b1FormOnboard.controls.vendor_code.touched )">Vendor Code</label>
+                        <div class="col-lg-8 fv-row">
+                            <input formControlName="vendor_code" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6" [class.is-invalid]="( b1FormOnboard.controls.scrum_id.dirty || b1FormOnboard.controls.scrum_id.touched )">Scrum ID</label>
+                        <div class="col-lg-8 fv-row">
+                            <input formControlName="scrum_id" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b1FormOnboard.controls.labour_limit.dirty || b1FormOnboard.controls.labour_limit.touched )">Labour Limit</label>
+                        <div class="col-lg-8 fv-row">
+                            <input formControlName="labour_limit" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6" [class.is-invalid]="( b1FormOnboard.controls.logo.dirty || b1FormOnboard.controls.logo.touched )">Vendor Logo</label>
+                        <div class="col-lg-8 fv-row">
+                            <input type="file" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" (change)="onFileImageChanged(b1FormOnboard, $event, 'logo', 'logo_source')">
+                        </div>
+                    </div> -->
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!b1FormOnboard.valid" (click)="submitOnBoardForm($event, 'FormB1')">
+                        <span class="indicator-label">Submit</span>
+                        <span class="indicator-progress">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#b2onboarding-modal" id="open-b2onboarding-modal"></button>
+<div class="modal fade" tabindex="-1" id="b2onboarding-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-none">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <ng-container *ngIf="formDetails?.form_state_status == 'release'">
+                        Release B2 Form
+                    </ng-container>
+                    <ng-container *ngIf="formDetails?.form_state_status != 'release'">
+                        Onboard B2 Form
+                    </ng-container>
+                   <small class="text-primary">{{formDetails?.unique_id ?? ""}}</small>
+                </h5>
+
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="svg-icon svg-icon-2x">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black"></rect>
+                      <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black"></rect>
+                    </svg>
+                </span>
+                </div>
+            </div>
+
+            <form [formGroup]="b2FormOnboard">
+                <div class="modal-body">
+                    <ng-container *ngIf="formDetails?.form_state_status == 'release'">
+                        <div class="row">
+                            <div class="col-lg-12 text-left">
+                                <h3 class="mb-4 text-center">Please make sure about Release confirmation</h3>
+                                <p class="fw-bolder">Note - </p>
+                                <ul class="">
+                                    <li class="">You can not undo it.</li>
+                                    <li class="">Released person will be available under B2 Bucket in designated employee portal.</li>
+                                    <li class="">This Contractor Labour will be restricted from assigned terminals as his/her gate pass will be marked as expired.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="formDetails?.form_state_status != 'release'">
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.employee_id.dirty || b2FormOnboard.controls.employee_id.touched )">Employee ID</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="employee_id" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.aadhar.dirty || b2FormOnboard.controls.aadhar.touched )">Aadhar Number</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="aadhar" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.full_name.dirty || b2FormOnboard.controls.full_name.touched )">Full Name</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="full_name" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6" [class.is-invalid]="( b2FormOnboard.controls.vendor_code.dirty || b2FormOnboard.controls.vendor_code.touched )">Vendor Code</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="vendor_code" type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.employment_start_date.dirty || b2FormOnboard.controls.employment_start_date.touched )">Employment Start Date</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="employment_start_date" type="date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.employment_end_date.dirty || b2FormOnboard.controls.employment_end_date.touched )">Employment End Date</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="employment_end_date" type="date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.cl_pass_valid_upto.dirty || b2FormOnboard.controls.cl_pass_valid_upto.touched )">Gate Pass Validity</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="cl_pass_valid_upto" type="date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.cl_pcc_validity.dirty || b2FormOnboard.controls.cl_pcc_validity.touched )">PCC Validity</label>
+                            <div class="col-lg-8 fv-row">
+                                <input formControlName="cl_pcc_validity" type="date" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6 required" [class.is-invalid]="( b2FormOnboard.controls.group_id.dirty || b2FormOnboard.controls.group_id.touched )">Select Group</label>
+                            <div class="col-lg-8 fv-row">
+                                <ngx-select-dropdown [options]="groupMaster" class="form-control" [config]="{search: true, height: '300px', placeholder: 'Select Group'}" formControlName="group_id" [class.is-invalid]="( b2FormOnboard.controls.group_id.dirty || b2FormOnboard.controls.group_id.touched )"></ngx-select-dropdown>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!b2FormOnboard.valid" (click)="submitOnBoardForm($event, 'FormB2')">
+                        <span class="indicator-label">Continue</span>
+                        <span class="indicator-progress">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,569 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">CR ID : <span class="text-primary">{{formDetails?.unique_id}}</span></h3>
+        </div>
+        <div class="card-toolbar">
+        </div>
+    </div>
+
+    <form [formGroup]="editForm">
+        <div class="card-body border-top p-9">
+            <div class="row text-left">
+                <div class="col-md-4 mb-8">
+                    <div class="fw-bolder">Form Type</div>
+                    <div class="text-gray-600">{{formDetails?.form_type?.form_heading ?? "N/A"}}</div>
+                </div>
+
+                <div class="col-md-4 mb-8">
+                    <div class="fw-bolder">Cost Center</div>
+                    <div class="text-gray-600">{{formDetails?.cost_center ?? "N/A"}}</div>
+                </div>
+
+                <div class="col-md-4 mb-8">
+                    <div class="fw-bolder">Yard No.</div>
+                    <div class="text-gray-600">{{formDetails?.yard_no ?? "N/A"}}</div>
+                </div>
+
+                <div class="col-md-4 mb-8">
+                    <div class="fw-bolder">Unit</div>
+                    <div class="text-gray-600">{{formDetails?.unit ?? "N/A"}}</div>
+                </div>
+
+                <div class="col-md-4 mb-8">
+                    <div class="fw-bolder">P.O. Number</div>
+                    <div class="text-gray-600">{{formDetails?.po_number ?? "N/A"}}</div>
+                </div>
+
+                <div class="col-md-4 mb-8">
+                    <div class="fw-bolder">P.O. Date</div>
+                    <div class="text-gray-600">
+                        <ng-container *ngIf="formDetails?.po_date; else NABLOCK">
+                            {{formDetails?.po_date | date: 'medium' }}
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-10">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row mb-5" *ngIf="formDetails?.form_log && formDetails?.form_log.length > 0">
+                <div class="col">
+                    <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                        <div class="timeline-step" *ngFor="let item of formDetails?.form_log" [ngClass]="{
+                            'step-completed': (['completed', 'complete', 'accept'].includes(item.status)),
+                            'step-current' : item.status === 'current',
+                            'step-pending' : item.status === 'pending',
+                            'step-rejected' : item.status === 'rejected'
+                        }">
+                            <div class="timeline-content">
+                                <div class="inner-circle"></div>
+                                <p class="fw-bolder mt-1 text-capitalize">{{formatUnderscoredString(item.label)}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5" *ngIf="formDetails?.last_submitted">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5 text-center table-striped">
+                            <thead class="fw-bolder ">
+                                <tr class="bg-secondary text-primary fs-5 text-uppercase">
+                                    <th colspan="100%">
+                                        Last Submitted By
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Desgnation During Submission</th>
+                                    <th>Current Designation</th>
+                                    <th>Role</th>
+                                    <th>Submitted Date</th>
+                                    <th>Submitted Revise Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{formDetails?.last_submitted?.employee_id ?? 'NA'}}</td>
+                                    <td>{{formDetails?.last_submitted?.full_name ?? 'NA'}}</td>
+                                    <td>{{formDetails?.last_submitted?.designation_during_submission ?? 'NA'}}</td>
+                                    <td>{{formDetails?.last_submitted?.current_designation ?? 'NA'}}</td>
+                                    <td class="text-capitalize">{{formDetails?.last_submitted?.role ? formatUnderscoredString(formDetails?.last_submitted?.role) : 'NA'}}</td>
+                                    <td>
+                                        <ng-container *ngIf="formDetails?.last_submitted?.submit_date; else NABLOCK">
+                                            {{formDetails?.last_submitted?.submit_date | date: 'medium' }}
+                                        </ng-container>
+                                    </td>
+                                    <td>{{formDetails?.last_submitted?.submit_revised ?? 'NA'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5" *ngIf="formDetails?.doc_details">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5 text-center table-striped">
+                            <thead class="fw-bolder">
+                                <tr class="bg-secondary text-primary fs-5 text-uppercase ">
+                                    <th colspan="100%">
+                                        Submitted Documents / Files
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Document Code</th>
+                                    <th>Document Details</th>
+                                    <th>Uploaded File Name</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let doc of formDetails?.doc_details; let docIndex = index">
+                                    <tr>
+                                        <td>{{doc.attachment_code}}</td>
+                                        <td>{{doc.details}}</td>
+                                        <td colspan="1">
+                                            <ng-container *ngIf="doc.path; else noDocAvail">
+                                                <a href="{{Global.BACKEND_URL}}/{{doc.path}}" target="_blank" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i> View Doc</a>
+                                            </ng-container>
+                                            <ng-template #noDocAvail>
+                                                -
+                                            </ng-template>
+                                        </td>
+                                        <td>
+                                            {{doc.created_at | date: 'medium'}}
+                                        </td>
+                                    </tr>
+                                </ng-container>
+
+                                <tr *ngIf="formDetails?.doc_details?.length == 0">
+                                    <td colspan="100%">No Submitted Docs Available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <!-- <div class="system-docs-collapse my-5">
+                        <ng-container *ngIf="crFormSystemDocsFetched == false">
+                            <a href="javascript:;" (click)="showSystemDocuments()">
+                                <i class="fa fa-angle-down"></i> Show Scanned Documents
+                            </a>
+                        </ng-container>
+
+                        <ng-container *ngIf="crFormSystemDocsFetched == true">
+                            <a href="javascript:;" (click)="hideSystemDocuments()">
+                                <i class="fa fa-angle-up"></i> Hide Scanned Documents
+                            </a>
+                        </ng-container>
+                    </div> -->
+
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5 text-center table-striped mt-5">
+                            <thead class="fw-bolder">
+                                <tr class="bg-secondary text-primary fs-5 text-uppercase ">
+                                    <th colspan="100%">
+                                        Scanned Documents
+
+                                        <span class="float-right collapse-thead">
+                                            <ng-container *ngIf="crFormSystemDocsFetched == false">
+                                                <a href="javascript:;" (click)="showSystemDocuments()" class="text-muted">
+                                                    <i class="fa fa-angle-down"></i> Expand
+                                                </a>
+                                            </ng-container>
+                    
+                                            <ng-container *ngIf="crFormSystemDocsFetched == true">
+                                                <a href="javascript:;" (click)="hideSystemDocuments()" class="text-muted">
+                                                    <i class="fa fa-angle-up"></i> Collapse
+                                                </a>
+                                            </ng-container>
+                                        </span>
+                                    </th>
+                                </tr>
+                                <tr *ngIf="crFormSystemDocsFetched == true">
+                                    <th>SL</th>
+                                    <th>File Name</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="crFormSystemDocsFetched == true">
+                                <ng-container *ngFor="let systemDoc of crFormSystemDocs; let systemDocIndex = index">
+                                    <tr>
+                                        <td>{{ systemDocIndex + 1 }}</td>
+                                        <td>{{ systemDoc.filename }}</td>
+                                        <td class="text-center">
+                                            <a class="btn btn-sm btn-dark" href="{{ systemDoc.file_path }}" download="{{systemDoc.filename}}" target="_blank">
+                                                <i class="fa fa-download"></i> Download
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+
+                                <tr *ngIf="crFormSystemDocs?.length == 0">
+                                    <td colspan="100%">No Scanned Docs Available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="row mb-5" *ngIf="formDetails?.doc_details && formDetails?.doc_details.length > 0">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5 text-center">
+                            <thead class="fw-bolder">
+                                <tr class="bg-secondary text-primary fs-5 text-uppercase ">
+                                    <th colspan="100%">
+                                        Submitted Documents / Files
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th>Document Code</th>
+                                    <th>Document Details</th>
+                                    <th colspan="1">Uploaded File Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let doc of formDetails?.doc_details; let docIndex = index">
+                                    <tr>
+                                        <td style="text-align: left !important;">
+                                            <a href="javascript:;" *ngIf="doc.logs && doc.logs.length > 0" (click)="collpseLog($event, docIndex, 'filehistory')">
+                                                <i class="fa fa-plus-circle text-primary" style="pointer-events: none;"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{doc.document_code}}</td>
+                                        <td>{{doc.document_details}}</td>
+                                        <td colspan="1">
+                                            {{doc.document_filename}}
+                                            <i class="fa fa-check-circle text-success" *ngIf="doc.verified == true"></i>
+                                        </td>
+                                    </tr>
+
+                                    <ng-container *ngIf="doc.logs && doc.logs.length > 0">
+                                        <ng-container *ngFor="let log of doc.logs; let logIndex = index">
+                                            <tr class="collapselog-{{docIndex}}-filehistory text-muted" style="display: none;">
+                                                <td class="">
+                                                    <ng-container *ngIf="log.user_details">
+                                                        {{log.user_details?.full_name}} <b>(#{{log.user_details?.employee_id}})</b> &#8212; <span>{{log.user_details?.designation}}</span>
+                                                    </ng-container>
+                                                </td>
+                                                <td class="fw-bolder">{{ log.date | date : 'medium' }}</td>
+                                                <td>{{ log.document_details }}</td>
+                                                <td>
+                                                    {{ log.document_filename }}
+                                                    <i class="fa fa-check-circle text-success" *ngIf="log.verified == true"></i>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </ng-container>
+
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="row mb-5" *ngFor="let group of formDetails?.form_details; let grpIndex = index">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5">
+                            <thead class="fw-bolder">
+                                <tr class="bg-secondary text-primary fs-5 text-uppercase">
+                                    <th colspan="100%" class="text-center">
+                                        {{group.group_name ?? "-"}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let question of group.demog; let quesIndex = index">
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:;" *ngIf="question.logs && question.logs.length > 0" (click)="collpseLog($event, grpIndex, quesIndex)">
+                                                <i class="fa fa-plus-circle text-primary" style="pointer-events: none;"></i>
+                                                <!-- <i class="fa fa-minus-circle text-primary"></i> -->
+                                            </a>
+                                        </td>
+                                        <td class="fw-bolder">{{question.logs[0]?.label ?? ""}}</td>
+                                        <td>
+                                            {{question.logs[0]?.value}}
+                                            <i class="fa fa-check-circle text-success" *ngIf="question.verified == true"></i>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
+                                    <ng-container *ngIf="question.logs && question.logs.length > 0">
+                                        <ng-container *ngFor="let log of question.logs; let logIndex = index">
+                                            <tr class="collapselog-{{grpIndex}}-{{quesIndex}} text-muted" style="display: none;">
+                                                <td>
+                                                    <i class="fa fa-check-circle text-success" *ngIf="log.verified == true"></i>
+                                                </td>
+                                                <td class="fw-bolder">{{ log.date | date : 'medium' }}</td>
+                                                <td>{{ log.value }}</td>
+                                                <td class="">
+                                                    <ng-container *ngIf="log.user_details">
+                                                        {{log.user_details?.full_name}} <b>(#{{log.user_details?.employee_id}})</b>
+                                                        <!-- &#8212; <span>{{log.user_details?.designation}} </span>-->
+                                                    </ng-container>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="row mb-5" *ngFor="let group of formDetails?.form_details; let grpIndex = index">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-row-bordered gy-3 gx-5">
+                            <thead class="fw-bolder">
+                                <tr class="bg-secondary text-primary fs-5 text-uppercase">
+                                    <th colspan="100%" class="text-center">
+                                        {{group.group_name ?? "-"}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let question of group.questions; let quesIndex = index">
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:;" *ngIf="question.logs && question.logs.length > 0" (click)="collpseLog($event, grpIndex, quesIndex)">
+                                                <i class="fa fa-plus-circle text-primary" style="pointer-events: none;"></i>
+                                            </a>
+                                        </td>
+                                        <td class="fw-bolder">{{question.label}}</td>
+                                        <td>
+                                            {{question.value}}
+                                            <i class="fa fa-check-circle text-success" *ngIf="question.verified == true"></i>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
+                                    <ng-container *ngIf="question.logs && question.logs.length > 0">
+                                        <ng-container *ngFor="let log of question.logs; let logIndex = index">
+                                            <tr class="collapselog-{{grpIndex}}-{{quesIndex}} text-muted" style="display: none;">
+                                                <td>
+                                                    <i class="fa fa-check-circle text-success" *ngIf="log.verified == true"></i>
+                                                </td>
+                                                <td class="fw-bolder">{{ log.date | date : 'medium' }}</td>
+                                                <td>{{ log.value }}</td>
+                                                <td class="">
+                                                    <ng-container *ngIf="log.user_details">
+                                                        {{log.user_details?.full_name}} <b>(#{{log.user_details?.employee_id}})</b> &#8212; <span>{{log.user_details?.designation}}</span>
+                                                    </ng-container>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> -->
+
+            <ng-container *ngIf="isEditing == true">
+                <div class="row mb-10">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <ng-container formArrayName="attachment_code">
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <table class="table table-row-bordered gy-3 gx-5 mb-5">
+                                <thead class="bg-secondary text-primary fw-bolder text-center text-uppercase fs-5">
+                                    <tr>
+                                        <th colspan="3">
+                                            Upload Documents / Files
+                                        </th>
+                                        <th>
+                                            <button type="button" class="btn btn-sm btn-primary mx-1" (click)="addFormRows('attachment_code')"><i class="fa fa-plus"></i> Add New</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of Global.getFormGroupArray(editForm, 'attachment_code'); let i = index" [formGroupName]="i">
+                                        <td>{{i+1}}</td>
+                                        <td>
+                                            <input type="text" class="form-control" placeholder="Enter File Name" formControlName="fl_details" [class.is-invalid]="( item.get('fl_details')!.dirty || item.get('fl_details')!.touched )">
+                                        </td>
+                                        <td>
+                                            <input type="file" class="form-control" formControlName="fl_file" [class.is-invalid]="( item.get('fl_file')!.dirty || item.get('fl_file')!.touched )" (change)="onFormArrayImageChanged($event, 'attachment_code', i, 'fl_filesource')">
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-danger mx-1" (click)="removeFormRow('attachment_code', i)"><i class="fa fa-times"></i> Remove</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="Global.getFormGroupArray(editForm, 'attachment_code')?.length == 0" class="bg-light">
+                                        <td colspan="100%" class="text-center">Please click on the <b>"Add New"</b> button to add files</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-row-bordered gy-3 gx-5">
+                                <thead class="fw-bolder text-uppercase text-center">
+                                    <tr class="">
+                                        <th colspan="100%" class="bg-info text-white fs-5 ">
+                                            Approval / Rejection / Correction
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="100%">
+                                            Please provide your inputs as per above submission
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Select Status <span class="text-danger">*</span></td>
+                                        <td>
+                                            <ngx-select-dropdown [options]="statusMaster" class="form-control" [config]="{placeholder: 'Select One'}" formControlName="status" [class.is-invalid]="( editForm.controls.status.dirty || editForm.controls.status.touched )"></ngx-select-dropdown>
+
+                                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="editForm.controls.status.hasError('required') && ( editForm.controls.status.dirty || editForm.controls.status.touched )">
+                                                <div>This field is required</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Submission Comment</td>
+                                        <td>
+                                            <textarea class="form-control" placeholder="Enter your Submission Comment" formControlName="submission_comment" [class.is-invalid]="( editForm.controls.submission_comment.dirty || editForm.controls.submission_comment.touched )"></textarea>
+
+                                            <div class="fv-plugins-message-container invalid-feedback" *ngIf="editForm.controls.submission_comment.hasError('required') && ( editForm.controls.submission_comment.dirty || editForm.controls.submission_comment.touched )">
+                                                <div>This field is required</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="(formDetails?.next_assigne?.permit ?? []).length > 0">
+                <div class="row mb-10">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-row-bordered gy-3 gx-5 text-center table-striped">
+                                <thead class="fw-bolder">
+                                    <tr class="bg-warning fs-5 text-uppercase">
+                                        <th colspan="100%">
+                                            Assign To (Assigned as Per System Settings)
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Employee ID</th>
+                                        <th>Full Name</th>
+                                        <th>Cost Center</th>
+                                        <th>Designation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngFor="let item of formDetails?.next_assigne?.permit">
+                                        <tr *ngIf="item.status == true">
+                                            <td>{{item?.employee_id ?? 'N/A'}}</td>
+                                            <td>{{item?.full_name ?? 'N/A'}}</td>
+                                            <td>{{item?.costcntr ?? 'N/A'}}</td>
+                                            <td>{{item?.designation ?? 'N/A'}}</td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="isEditing == false && formDetails?.remark">
+                <div class="row mb-10">
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+    
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-row-bordered gy-3 gx-5 text-center table-striped">
+                                <thead class="fw-bolder ">
+                                    <tr class="bg-secondary text-primary fs-5 text-uppercase">
+                                        <th colspan="100%">
+                                            Remarks Submitted
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Remarks</th>
+                                        <th>Employee ID</th>
+                                        <th>Employee Name</th>
+                                        <th>Current Designation</th>
+                                        <th>Designation during Submission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of formDetails?.remark">
+                                        <td>{{item.dremark_date | date : 'medium'}}</td>
+                                        <td>{{item.dremarks}}</td>
+                                        <td>{{item.user_details?.employee_id ?? '-'}}</td>
+                                        <td>{{item.user_details?.full_name ?? '-'}}</td>
+                                        <td>{{item.current_designation}}</td>
+                                        <td>{{item.designation_during_submission}}</td>
+                                    </tr>
+
+                                    <tr *ngIf="formDetails?.remark.length == 0">
+                                        <td colspan="100%" class="text-center">No records found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end py-6 px-9" *ngIf="isEditing == true">
+            <!-- <button type="button" (click)="cancelEntry()" class="btn btn-secondary me-2">Discard</button> -->
+
+            <button type="submit" (click)="submitForm($event)" class="btn btn-primary">
+                <span class="indicator-label">Submit</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </button>
+        </div>        
+    </form>
+</div>
+
+<ng-template #NABLOCK>N/A</ng-template>

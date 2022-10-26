@@ -1,0 +1,47 @@
+Search Department with costcntr
+----
+tags:
+  - "Departments"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/searchDepartment"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/searchDepartmentSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/searchDepartmentError"
+definitions:
+  searchDepartment:
+    type: "object"
+    properties:
+      search:
+        type: "string"
+        example: 0
+
+
+  searchDepartmentSuccess:
+    type: "object"
+    properties:
+      Costcntr:
+        type: "object"
+        example : {}
+  searchDepartmentError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

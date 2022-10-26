@@ -1,0 +1,39 @@
+View ALL Group
+---
+tags:
+  - "Groups"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/groupSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/groupError"
+definitions:
+  groupSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      group:
+        type: "object"
+        example : {}
+  groupError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

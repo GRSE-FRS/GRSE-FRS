@@ -1,0 +1,59 @@
+Search Terminals with short code and name
+----
+tags:
+  - "Terminals"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/searchterminal"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/searchterminalSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/searchterminalError"
+definitions:
+  searchterminal:
+    type: "object"
+    properties:
+      sort_code:
+        type: "string"
+        example: ""
+      name:
+        type: "string"
+        example: ""
+  searchterminalSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      terminals:
+        type: "object"
+        example : {}
+  searchterminalError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,160 @@
+<div class="card mb-5 mb-xl-10" id="demogmaster-view-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">All Demog Masters</h3>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex">
+                <form (submit)="fetch(1)" class="mx-1">
+                    <div class="input-group mx-1">
+                        <input id="table-search" type="text" class="form-control" placeholder="Search...">                        
+                        <div class="input-group-append">
+                            <button class="input-group-text" type="submit"><i class="fa fa-search" style="padding: 4px;"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body border-top p-9">
+        <div class="table-processing" style="display: none;">
+            <span class="">Loading...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+        </div>
+
+        <table class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="fw-bold fs-6 text-gray-800">
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Last Updated</th>
+                    <!-- <th>Current Status</th> -->
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="demogmasters.length > 0; else noDemogMasterRecordsFound">
+                    <tr *ngFor="let item of demogmasters; let i = index">
+                        <td>{{item.id}}</td>
+                        <td>{{item.code}}</td>
+                        <td>{{item.name}} <span class="text-danger" *ngIf="item.is_required == true">*</span></td>
+                        <td class="text-capitalize">{{item.type}}</td>
+                        <td>
+                            <ng-container *ngIf="item.updated_at; else createDateBlock">
+                                {{item.updated_at | date}}
+                            </ng-container>
+                            <ng-template #createDateBlock>
+                                <ng-container *ngIf="item.created_at">
+                                    {{item.created_at | date}}
+                                </ng-container>
+                            </ng-template>
+                        </td>
+                        <!-- <td>
+                            <div class="form-check form-check-solid form-switch fv-row">
+                                <input (click)="changeStatus(item)" class="form-check-input w-45px h-30px" type="checkbox" [attr.checked]="item.status == 'active' ? 'checked' : null" />
+                                <label class="form-check-label" for="allowmarketing"></label>
+                            </div>
+                        </td> -->
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-info mx-1" (click)="getEdit(item)"><i class="fa fa-edit"></i>&nbsp;Edit</button>
+                            <!-- <button class="btn btn-sm btn-danger mx-1" (click)="deleteItem(item)"><i class="fa fa-trash"></i>&nbsp;Delete</button> -->
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <ng-template #noDemogMasterRecordsFound>
+                    <tr>
+                        <td colspan="100%" class="text-center">No Records Found</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+
+        <app-pagination [rows]="demogmasters" [tableOptions]="tableOptions" (onPrevPageClicked)="fetch(tableOptions.page - 1)" (onNextPageClicked)="fetch(tableOptions.page + 1)"></app-pagination>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10" id="demogmaster-submit-section">
+    <div class="card-header border-0">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0" *ngIf="editActionId == ''; else editHeader">Add New Demog Master</h3>
+            <ng-template #editHeader>
+                <h3 class="fw-bolder m-0">Edit Demog Master</h3>
+            </ng-template>
+        </div>
+    </div>
+
+    <form class="form" [formGroup]="demogMasterForm">
+        <div class="card-body border-top p-9">
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Code</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="code" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Demog Master Code" [class.is-invalid]="( demogMasterForm.controls.code.dirty || demogMasterForm.controls.code.touched )">
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="demogMasterForm.controls.code.hasError('required') && ( demogMasterForm.controls.code.dirty || demogMasterForm.controls.code.touched )">
+                        <div>The demog master code field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Name</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Demog Master Name" [class.is-invalid]="( demogMasterForm.controls.name.dirty || demogMasterForm.controls.name.touched )">
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="demogMasterForm.controls.name.hasError('required') && ( demogMasterForm.controls.name.dirty || demogMasterForm.controls.name.touched )">
+                        <div>The demog master name field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Type</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="type" [options]="typeMaster" class="form-control" [config]="{search: true, placeholder: 'Select Type'}" [class.is-invalid]="( demogMasterForm.controls.type.dirty || demogMasterForm.controls.type.touched )"></ngx-select-dropdown>
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="demogMasterForm.controls.type.hasError('required') && ( demogMasterForm.controls.type.dirty || demogMasterForm.controls.type.touched )">
+                        <div>Please select a type for the demog master</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6">Validation</label>
+                <div class="col-lg-8 fv-row">
+                    <ngx-select-dropdown formControlName="is_required" [options]="requiredMaster" class="form-control" [config]="{search: true, placeholder: 'Select One'}" [class.is-invalid]="( demogMasterForm.controls.is_required.dirty || demogMasterForm.controls.is_required.touched )"></ngx-select-dropdown>
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="demogMasterForm.controls.is_required.hasError('required') && ( demogMasterForm.controls.is_required.dirty || demogMasterForm.controls.is_required.touched )">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6" id="dm-value-fields" style="display: none;">
+                <label class="col-lg-4 col-form-label required fw-bold fs-6" [ngClass]="{'required': Global.isFormValidationAvailable(demogMasterForm, 'value', 'required')}">Value</label>
+                <div class="col-lg-8 fv-row">
+                    <input type="text" formControlName="value" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Enter Demog Master value (Comma-Seperated)" [class.is-invalid]="( demogMasterForm.controls.value.dirty || demogMasterForm.controls.value.touched )">
+                    <div class="fv-plugins-message-container invalid-feedback" *ngIf="demogMasterForm.controls.value.hasError('required') && ( demogMasterForm.controls.value.dirty || demogMasterForm.controls.value.touched )">
+                        <div>The demog master value field is required</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="button" (click)="this.cancelSubmit()" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+
+            <button type="submit" (click)="add($event)" class="btn btn-primary" *ngIf="editActionId == ''; else editButtonSection">
+                <span class="indicator-label">Add Demog Master</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+            </button>
+
+            <ng-template #editButtonSection>
+                <button type="submit" (click)="edit($event)" class="btn btn-primary">
+                    <span class="indicator-label">Save Changes</span>
+                    <span class="indicator-progress">Please wait...
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                </button>
+            </ng-template>
+        </div>
+    </form>
+</div>

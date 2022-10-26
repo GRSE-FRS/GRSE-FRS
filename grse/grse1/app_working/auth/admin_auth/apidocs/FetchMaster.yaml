@@ -1,0 +1,39 @@
+Fetch Master
+---
+tags:
+  - "Admin"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchMasterSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchMasterError"
+definitions:
+  FetchMasterSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      master:
+        type: "object"
+        example : {}
+  FetchMasterError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

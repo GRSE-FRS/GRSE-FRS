@@ -1,0 +1,59 @@
+Clm
+---
+tags:
+  - "Clm list"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/ClmSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllClmSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllClmError"
+definitions:
+  Authlog:
+    type: "object"
+  ClmSearch:
+    type: "object"
+    properties:
+      employee_id:
+        type: "string"
+        example: "900001"
+      cl_employer:
+        type: "string"
+        example: "VD10001"
+      page_no:
+        type: "int"
+        example: 1
+      search_status:
+        type: "boolean"
+        example: True
+  FetchAllClmSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Clm data fetch"
+  FetchAllClmError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

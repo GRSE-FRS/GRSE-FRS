@@ -1,0 +1,25 @@
+<div class="d-flex flex-column flex-root">
+    <div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-image: url(assets/images/auth-bg.png)">
+        <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20" style="padding-bottom: 200px !important;">
+            <a routerLink="/" class="mb-12">
+                <img alt="Logo" src="assets/images/icon-logo.png" class="h-100px" />
+            </a>
+            <div class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+                <div class="text-center mb-10">
+                    <h1 class="text-dark mb-3" style="font-size: 50px;">GRSE</h1>
+                    <div class="text-gray-400 fw-bold fs-4">Attendance & Access Control System</div>
+                </div>
+
+                <div class="fv-row mb-10 text-center">
+                    <a routerLink="/auth/admin/login" class="mx-2 btn btn-primary"><i class="fa fa-user-plus"></i> Admin Login</a>
+                    <a routerLink="/auth/user/login" class="mx-2 btn btn-primary"><i class="fa fa-user-circle"></i> Employee Login</a>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-center flex-column-auto p-10">
+            <div class="d-flex align-items-center fw-bold fs-6">
+                <span class="text-gray-400 fw-bold me-1">Copyright © {{ currentYear }} | All Rights Reserved</span>
+            </div>
+        </div>
+    </div>
+</div>

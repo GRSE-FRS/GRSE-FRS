@@ -1,0 +1,56 @@
+Update CR Form Group
+---
+tags:
+  - "CR Form Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateCRFormSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchUpdateCRFormSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchUpdateCRFormError"
+definitions:
+  Authlog:
+    type: "object"
+  UpdateCRFormSearch:
+    type: "object"
+    properties:
+      form_id:
+        type: "int"
+        example: 1
+      group_id:
+        type: "int"
+        example: 1
+      id:
+        type: "int"
+        example: 1
+  FetchUpdateCRFormSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form group updated successfully"
+  FetchUpdateCRFormError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,68 @@
+Add PO Master
+---
+tags:
+  - "PO Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/POMasterAddSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllPOMasterAddSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllPOMasterAddError"
+definitions:
+  Authlog:
+    type: "object"
+  POMasterAddSearch:
+    type: "object"
+    properties:
+      po_number:
+        type: "int"
+        example: 7800000023
+      po_date:
+        type: "Date"
+        example: 2021-07-27
+      po_title:
+        type: "string"
+        example: "M/40701801"
+      supplier_code:
+        type: "int"
+        example: 50008580
+      assign_date:
+        type: "Date"
+        example: 2021-07-27
+      expiry:
+        type: "Date"
+        example: 2023-07-27
+      status:
+        type: "string"
+        example: "active"
+  FetchAllPOMasterAddSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "PO Master created successfully"
+  FetchAllPOMasterAddError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

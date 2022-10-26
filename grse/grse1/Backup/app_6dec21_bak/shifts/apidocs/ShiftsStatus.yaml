@@ -1,0 +1,54 @@
+Shifts Status Update
+---
+tags:
+  - "Shifts"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/shiftsStatusUpdate"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/shiftsStatusUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/shiftsStatusUpdateError"
+definitions:
+  shiftsStatusUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+      status:
+        type: "string"
+        example: "Active"
+  shiftsStatusUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Shifts Status updated successfully"
+      shift:
+        type: "object"
+        example : {}
+  shiftsStatusUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

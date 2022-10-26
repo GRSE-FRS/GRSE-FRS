@@ -1,0 +1,50 @@
+View CR Form
+---
+tags:
+  - "CR Form"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRFormViewSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormViewSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRFormViewError"
+definitions:
+  Authlog:
+    type: "object"
+  CRFormViewSearch:
+    type: "object"
+    properties:
+      cr_code:
+        type: "string"
+        example: "CR_B1_100001"
+  FetchAllCRFormViewSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form created successfully"
+  FetchAllCRFormViewError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

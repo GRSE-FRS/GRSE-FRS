@@ -1,0 +1,45 @@
+Authlog
+---
+tags:
+  - "Authlog"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAttendanceAuthSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAttendanceAuthError"
+definitions:
+  Authlog:
+    type: "object"
+    properties:
+      Date:
+        type: "Datetime"
+        example: "2021-12-06 00:00:00"
+  FetchAttendanceAuthSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "Success"
+      message:
+        type: "string"
+        example: "Authlog Exported"
+      Auth_list:
+        type: "list"
+        example : []
+  FetchAttendanceAuthError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

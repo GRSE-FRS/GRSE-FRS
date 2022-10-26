@@ -1,0 +1,51 @@
+Delete Subarea
+---
+tags:
+  - "Subarea"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DeleteSubarea"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DeleteSubareaSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DeleteSubareaError"
+definitions:
+  DeleteSubarea:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 1
+  DeleteSubareaSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Subarea Deleted successfully"
+      subarea:
+        type: "object"
+        example : {}
+  DeleteSubareaError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,44 @@
+Get CR Form
+---
+tags:
+  - "CR Form"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page_no"
+    in: path
+    required: true
+    description: "page_no"
+    type: "string"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchCRFormGetSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchCRFormGetError"
+definitions:
+  Authlog:
+    type: "object"
+  FetchCRFormGetSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form fetched successfully"
+  FetchCRFormGetError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

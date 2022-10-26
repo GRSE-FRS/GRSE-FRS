@@ -1,0 +1,52 @@
+Get Units By SubArea_ID
+---
+tags:
+  - "Units"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UnitsBySubArea_ID"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UnitsBySubArea_IDSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UnitsBySubArea_IDError"
+definitions:
+  UnitsBySubArea_ID:
+    type: "object"
+    properties:
+      subarea_id:
+        type: "int"
+        example: 1
+  UnitsSubareaSuccess:
+#    "status": 'success', "message": "success", "units": output
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      units:
+        type: "object"
+        example : {}
+  UnitsSubareaError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

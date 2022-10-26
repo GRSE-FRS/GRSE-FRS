@@ -1,0 +1,50 @@
+Add CR Group
+---
+tags:
+  - "CR Group"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllCRSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllCRError"
+definitions:
+  Authlog:
+    type: "object"
+  CRSearch:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "CT-01A-Labour License"
+  FetchAllCRSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR group created successfully"
+  FetchAllCRError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

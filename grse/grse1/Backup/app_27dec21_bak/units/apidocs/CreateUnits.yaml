@@ -1,0 +1,63 @@
+Create Units
+----
+tags:
+  - "Units"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CreateUnits"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/CreateUnitsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/CreateUnitsError"
+definitions:
+  CreateUnits:
+    type: "object"
+    properties:
+      subarea_id:
+        type: "int"
+        example: 2
+      code:
+        type: "string"
+        example: "ab123"
+      name:
+        type: "string"
+        example: "Test_Name"
+      deacription:
+        type: "string"
+        example: "test"
+      status:
+        type: "time"
+        example: "Active"
+  CreateUnitsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Unit created successfully"
+      units:
+        type: "object"
+        example : {}
+  CreateUnitsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

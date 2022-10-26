@@ -1,0 +1,53 @@
+Update status CR Form
+---
+tags:
+  - "CR Form"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/CRFormStatusSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchCRFormStatusSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchCRFormStatusError"
+definitions:
+  Authlog:
+    type: "object"
+  CRFormStatusSearch:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "inactive"
+      id:
+        type: "int"
+        example: 1
+  FetchCRFormStatusSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form status updated successfully"
+  FetchCRFormStatusError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,53 @@
+Update Demog
+---
+tags:
+  - "Demog Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/DemogUpdateSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllDemogUpdateSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllDemogUpdateError"
+definitions:
+  Authlog:
+    type: "object"
+  DemogUpdateSearch:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "active"
+      id:
+        type: "int"
+        example: 1
+  FetchAllDemogUpdateSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Demong master updated successfully"
+  FetchAllDemogUpdateError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

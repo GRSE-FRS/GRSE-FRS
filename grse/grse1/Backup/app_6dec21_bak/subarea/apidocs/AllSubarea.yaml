@@ -1,0 +1,39 @@
+View ALL Subarea
+---
+tags:
+  - "Subarea"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/ALLSubareaSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/ALLSubareaError"
+definitions:
+  ALLSubareaSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      subarea:
+        type: "object"
+        example : {}
+  ALLSubareaError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

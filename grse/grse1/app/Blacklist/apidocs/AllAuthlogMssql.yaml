@@ -1,0 +1,48 @@
+Sql Server
+---
+tags:
+  - "Sql Server Authlog"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/AuthlogMs"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllAuthMsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllAuthMsError"
+definitions:
+  AuthlogMs:
+    type: "object"
+    properties:
+      Date:
+        type: "Datetime"
+        example: "2021-12-06"
+  FetchAllAuthMsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Authlog Saved to Database"
+  FetchAllAuthMsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

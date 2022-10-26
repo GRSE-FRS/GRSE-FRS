@@ -1,0 +1,54 @@
+Search PO with PO number and PO Title or get all PO 
+----
+tags:
+  - "PO Master"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/searchPO"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/searchPOSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/searchPOError"
+definitions:
+  searchPO:
+    type: "object"
+    properties:
+      search:
+        type: "string"
+        example: 0
+      page_no:
+        type: "int"
+        example: 0
+  searchPOSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      PO:
+        type: "object"
+        example : {}
+  searchPOError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

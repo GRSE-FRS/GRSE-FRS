@@ -1,0 +1,55 @@
+Assign User to terminal
+
+
+----
+
+
+tags:
+  - "Admin"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/user_to_ter"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/user_to_terSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/user_to_terError"
+definitions:
+  user_to_ter:
+    type: "object"
+    properties:
+      terminalID:
+        type: "int"
+        example: 1
+      userID:
+        type: "int"
+        example: 1
+  user_to_terSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+  user_to_terError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

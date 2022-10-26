@@ -1,0 +1,41 @@
+GET User Info From Terminal_ID
+---
+
+tags:
+  - "Users"
+produces:
+  - "application/json"
+parameters:
+  - name: "id"
+    in: path
+    required: true
+    description: "User Info From Terminal_ID"
+    type: "string"
+responses:
+  200:
+    description: "Success"
+    schema:
+      $ref: "#/definitions/user_info_success"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/user_info_Error"
+definitions:
+  user_info_success:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+  user_info_Error:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

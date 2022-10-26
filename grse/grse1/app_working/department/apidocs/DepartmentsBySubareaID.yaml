@@ -1,0 +1,52 @@
+Get Departments By subareaID
+---
+tags:
+  - "Departments"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    description: "subarea_id"
+    schema:
+      $ref: "#/definitions/DepartmentsByUnitId"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/DepartmentsByUnitIdSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/DepartmentsByUnitIdError"
+definitions:
+  DepartmentsByUnitId:
+    type: "object"
+    properties:
+      subarea_id:
+        type: "int"
+        example: 1
+  DepartmentsByUnitIdSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      departments:
+        type: "object"
+        example : {}
+  DepartmentsByUnitIdError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

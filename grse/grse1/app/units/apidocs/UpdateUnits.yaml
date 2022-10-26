@@ -1,0 +1,66 @@
+Update Units
+----
+tags:
+  - "Units"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateUnits"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UpdateUnitsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UpdateUnitsError"
+definitions:
+  UpdateUnits:
+    type: "object"
+    properties:
+      id:
+        type: "int"
+        example: 2
+      subarea_id:
+        type: "int"
+        example: 2
+      code:
+        type: "string"
+        example: "ab123"
+      name:
+        type: "string"
+        example: "Test_Name"
+      deacription:
+        type: "string"
+        example: "test"
+      status:
+        type: "time"
+        example: "Active"
+  UpdateUnitsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Units updated successfully"
+      units:
+        type: "object"
+        example : {}
+  UpdateUnitsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

@@ -1,0 +1,63 @@
+.finger-box {
+    text-align: center;
+    border: 1px solid;
+    padding: 10px;
+    width: 45px;
+    position: absolute;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 30%;
+}
+
+.finger-box.finger-registered {
+    cursor: not-allowed;
+    color: #50cd89;
+}
+
+.finger-box.item-1 {
+    right: 350px;
+    top: 182px;
+}
+
+.finger-box.item-2 {
+    right: 215px;
+}
+
+.finger-box.item-3 {
+    right: 115px;
+    top: 5px;
+}
+
+.finger-box.item-4 {
+    right: 50px;
+    top: 50px;
+}
+
+.finger-box.item-5 {
+    right: 10px;
+    top: 130px;
+}
+
+.finger-box.item-6 {
+    left: 345px;
+    top: 182px;
+}
+
+.finger-box.item-7 {
+    left: 215px;
+}
+
+.finger-box.item-8 {
+    left: 115px;
+    top: 5px;
+}
+
+.finger-box.item-9 {
+    left: 50px;
+    top: 50px;
+}
+
+.finger-box.item-10 {
+    left: 10px;
+    top: 130px;
+}

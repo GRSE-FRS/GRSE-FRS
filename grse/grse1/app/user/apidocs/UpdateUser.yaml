@@ -1,0 +1,95 @@
+Update Users details
+
+---
+
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/UpdateUser"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/UpdateUserSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/UpdateUserError"
+definitions:
+  UpdateUser:
+    type: "object"
+    properties:
+      alpeta_id:
+        type: "int"
+        example: 1
+      user_id:
+        type: "int"
+        example: 1
+      alpeta_fingerprint_data:
+        type: "list"
+        example: [
+                     {
+                        "ConvImage1":" ",
+                        "ConvImage2":" ",
+                        "FingerID":4,
+                        "Template1":"",
+                        "Template2":"",
+                        "TotalSize":74752,
+                        "UserID":"12"
+                     }
+                  ]
+      alpeta_face_data:
+        type: "object"
+        example: [{
+                "TemplateData":" ",
+                "TemplateSize":1388,
+                "TemplateType":0,
+                "UserID":""
+             }
+
+        ]
+      auth_comb:
+        type: "object"
+        example: {"authentication_combination":[{"value":"FAW","description":"Face"},
+                                                {"value":"CD","description":"Card"}],"authentication_mode":"AND"}
+      type:
+        type: "string"
+        example: "auth_comb"
+      password:
+        type: "string"
+        example: "12345678"
+  UpdateUserSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "User updated successfully and downloaded"
+      user_update_details:
+        type: "object"
+        example: { }
+      updated_type:
+        type: "string"
+        example: "auth_comb"
+  UpdateUserError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""
+      user_update_details:
+        type: "object"
+        example: { }

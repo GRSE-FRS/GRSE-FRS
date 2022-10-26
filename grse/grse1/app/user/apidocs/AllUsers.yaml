@@ -1,0 +1,92 @@
+View ALL Users By RoleID And Search User By Search key
+---
+tags:
+  - "Users"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "role_id"
+    in: path
+    required: true
+    description: "Fetch all users by role_id"
+    type: "string"
+  - name: "page"
+    in: path
+    required: true
+    description: "page no"
+    type: "string"
+  - name: "status"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/search"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/searchSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/searchError"
+definitions:
+  search:
+    type: "object"
+    properties:
+      search_status:
+        type: "Boolean"
+        example: True
+      emoloyee_id:
+        type: "string"
+        example: "I00021"
+      cost_cntr:
+        type: "string"
+        example: "ab123"
+      name:
+        type: "string"
+        example: "Soum"
+      export:
+        type: "Boolean"
+        example: false
+      Filter:
+        type: "Boolean"
+        example: true
+      filter_params:
+        type: "object"
+        example: {"status":"not deleted","alpeta_user_id":"not null",
+          "biometric_reg":true,"Alpeta_Reg_date":true,
+          "start_date":"2021-10-10",
+          "end_date":"2021-10-10"}
+
+  searchSuccess:
+#    "status": 'success', "message": "Success", "units": data
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Success"
+      Users:
+        type: "object"
+        example : {}
+      SearchCount:
+        type: "int"
+        example: 10
+  searchError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

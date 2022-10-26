@@ -1,0 +1,43 @@
+Next Registerable UserID
+----
+tags:
+  - "Admin"
+produces:
+  - "application/json"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/RegisterableUserIDSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/RegisterableUserIDSuccessError"
+definitions:
+  RegisterableUserIDSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+      user_id:
+        type: "Object"
+        example: {}
+  RegisterableUserIDSuccessError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: "Exception occured in alpetaServer"
+
+
+
+
+
+

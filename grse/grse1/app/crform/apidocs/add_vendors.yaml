@@ -1,0 +1,62 @@
+Add Vendors
+---
+tags:
+  - "Vendors"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/VendorsAddSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchAllVendorsAddSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchAllVendorsAddError"
+definitions:
+  Authlog:
+    type: "object"
+  VendorsAddSearch:
+    type: "object"
+    properties:
+      vd_code:
+        type: "int"
+        example: 10001
+      vd_scrum_id:
+        type: "int"
+        example: 130
+      is_deleted:
+        type: "boolean"
+        example: true
+      name:
+        type: "string"
+        example: "SCRUM SYSTEM PVT LTD"
+      status:
+        type: "string"
+        example: "active"
+  FetchAllVendorsAddSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "CR Form created successfully"
+  FetchAllVendorsAddError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

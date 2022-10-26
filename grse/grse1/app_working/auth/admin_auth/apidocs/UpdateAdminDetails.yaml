@@ -1,0 +1,71 @@
+Update Admin Pass
+
+----
+
+tags:
+  - "Admin"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/upd_details"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/upd_detailsSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/upd_detailsError"
+definitions:
+  upd_details:
+    type: "object"
+    properties:
+      user_id:
+        type: "int"
+        example: 1
+      email:
+        type: "string"
+        example: "qwerty@123"
+      first_name:
+        type: "string"
+        example: "test"
+      middle_name:
+        type: "string"
+        example: "qwerty"
+      last_name:
+        type: "string"
+        example: "qwe"
+      dob:
+        type: "string"
+        example: "date"
+      gender:
+        type: "string"
+        example: "M"
+      phone:
+        type: "string"
+        example: "785858956"
+  upd_detailsSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "success"
+  upd_detailsError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""

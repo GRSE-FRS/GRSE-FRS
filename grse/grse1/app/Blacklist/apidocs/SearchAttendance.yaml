@@ -1,0 +1,74 @@
+Authlog
+---
+tags:
+  - "Authlog"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "page"
+    in: path
+    required: true
+    description: ""
+    type: "string"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: "#/definitions/AuthlogSearch"
+responses:
+  200:
+    description: "success"
+    schema:
+      $ref: "#/definitions/FetchSearchAuthSuccess"
+  error:
+    description: "Error"
+    schema:
+      $ref: "#/definitions/FetchSearchAuthError"
+definitions:
+  AuthlogSearch:
+    type: "object"
+    properties:
+      employee_id:
+        type: "string"
+        example: "10"
+      start_date:
+        type: "string"
+        example: "18.02.2022"
+      end_date:
+        type: "string"
+        example: "23.02.2022"
+      start_time:
+        type: "string"
+        example: "15:44:48"
+      end_time:
+        type: "string"
+        example: "15:44:48"
+      attendance:
+        type: "list"
+        example: ["P10","P20"]
+      search_status:
+        type: "boolean"
+        example: True
+  FetchSearchAuthSuccess:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "Success"
+      message:
+        type: "string"
+        example: "Search Complete"
+      Search:
+        type: "list"
+        example: []
+  FetchSearchAuthError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "error"
+      message:
+        type: "string"
+        example: ""
